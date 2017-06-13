@@ -42,6 +42,7 @@ pontos kidolgozásáért.
     2. Többrétegű architektúra, elosztott szerveroldal. Kommunikációs eszközök: távolieljárás-hívás és üzenet alapú
     infrastruktúra (point-to-point és publish-subscribe modell). Névszolgáltatás. Enterprise JavaBeans komponensmodell,
     EJB-k fajtái. Beanek életciklusa. Dependency injection. Elosztott és globális tranzakciók.
+    [kidolgozás](s04/2.md)
     3. Többszálú programok ütemezése. A Java nyelv szinkronizációs eszközei. Jól szinkronizált programok, a
     happens-before reláció. Data race és race condition fogalma. Konkurrens használatra tervezett adatszerkezetek.
     Szinkronizáló osztályok. Szálak és feladatok. Félbeszakíthatóság. Haladási problémák (holtpont, kiéheztetés,
