@@ -47,6 +47,7 @@ pontos kidolgozásáért.
     happens-before reláció. Data race és race condition fogalma. Konkurrens használatra tervezett adatszerkezetek.
     Szinkronizáló osztályok. Szálak és feladatok. Félbeszakíthatóság. Haladási problémák (holtpont, kiéheztetés,
     livelock, priority inversion).
+    [kidolgozás](s04/3.md)
 - S5 - Szoftvertechnológia speciális területei
     1. A B helyettesítések szemantikája. A B komponensek fajtái, tulajdonságai. Interaktív bizonyító rendszer.
     Bizonyítandó állítások.
