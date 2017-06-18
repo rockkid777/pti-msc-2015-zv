@@ -3,6 +3,8 @@
 **Fontos**, a kidolgozásokat hallgatócsoport készíti, kik nem vállalnak felelőséget a tételek kellően rézletes és
 pontos kidolgozásáért.
 
+A projekt [weboldalán](https://rockkid777.github.io/pti-msc-2015-zv/) megtekinthetitek a kész kidolgozásokat.
+
 ## Tételek
 
 - S0, S1 - Tudományos alapozás, Szoftvertechnológia
