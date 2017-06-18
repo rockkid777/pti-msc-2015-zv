@@ -91,6 +91,6 @@ a külön paragrafusba megjelenőket. A képleteket tartalmazó dokumentumokból
 
 ### Mappastruktúra
 
-A tételeket az alábbi helyekre tedd: ./<blokkazonosító>/<tételsorszám>.md, pl: ./s02/2.md
+A tételeket az alábbi helyekre tedd: `./<blokkazonosító>/<tételsorszám>.md`, pl: ./s02/2.md
 
 Egy referencia kidolgozás nemsokára elkészül, az a segítségedre lesz a formázással kapcsolatban.
