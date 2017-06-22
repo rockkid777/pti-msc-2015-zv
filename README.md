@@ -9,16 +9,63 @@ A projekt [weboldalán](https://rockkid777.github.io/pti-msc-2015-zv/) megtekint
 
 ## Tételek
 
+A kidolgozások az ELTE IK honlapján elérhető [hivatalos tételsor](http://www.inf.elte.hu/karunkrol/szervezet/dekanihivatal/to/szigorlat_nagyprogram_zarovizsga/Zrvizsga/PTIMScSZT_zv_tetelek_2015.docx) alapján készülnek.
+
 - S0, S1 - Tudományos alapozás, Szoftvertechnológia
-    + Ezen blokk tételsora várhatóan eltér a 2013-as verziótól, ajánlott a végére hagyni (vagy megvárni az új verziót).
+    1. Programozási alapfogalmak: feladat, program, megoldás (parciális és teljes helyesség).
+    Elemi programok (üres, értékadás) és program konstrukciók (szekvencia, elágazás, ciklus, atomi utasítás,
+    várakozó utasítás, párhuzamos blokk) definíciói. Nem-determinisztikus strukturált programok valamint párhozamos
+    programok formális verifikációja (A helyesség-vizsgálati módszerek menete, a nevezetes programszerkezetek
+    helyességének szabályai.) Az interferencia-mentesség és a holtpont-mentesség (Owicki-Gries) vizsgálata.
+    A kölcsönös kizárás és megvalósítása.
+    2. Absztrakt adattípus univerzális algebrai modellje, adattípus, absztrakt adattípus.
+    Adattípus specifikációk, példák. Adattípusok specifikációjának elemzése. Tulajdonságok felírása, bizonyítása.
+    Adattípus osztály specifikációja. Szignatúra morfizmus és kiterjesztése axiómákra. Paraméterátadás, annak jelentése,
+    morfizmus diagramja. Típusspecifikáció újrafelhasználása. Reprezentációs függvény. Típusöröklődés és polimorfizmus.
+    Szintaxis, jelentés. Az öröklődés definíciója a morfizmus diagram alapján. A Liskov féle értelemben vett szemantikai
+    öröklődéssel előállított típus definíciója. Liskov féle szubsztitúciós elv. Liskov féle értelemben vett szemantikai
+    öröklődéssel előállított típusra vonatkozó tétel. A tétel elő- utó-feltételes formája.
+    3. Formális kontra informális definíciók, a formális szemantika alkalmazási területei, a szemantikamegadási
+    módszerek áttekintése. Mesterséges nyelvek konkrét és absztrakt szintaxisa. Statikus és dinamikus szemantika.
+    Attribútum-grammatikák és alkalmazásaik. Alapvető imperatív nyelvi elemek strukturális és természetes műveleti,
+    illetve leíró szemantikája, hasonlóságok és különbségek. Kompozícionalitás és strukturális indukció. Rekurzív
+    függvények és ciklusok leíró szemantikája, fixpont-elmélet.
+    4. Absztrakt szintaxisfák, absztrakt kötéses fák, levezetési fák. Szintaxis, típusrendszer, operációs szemantika.
+    Típusrendszer és operációs szemantika kapcsolata: haladás és típusmegőrzés tétele. Magasabbrendű függvények, Church
+    típusrendszere. Let kifejezések. Szorzat és összeg típusok. Induktív típusok: Bool, természetes számok.
+    Polimorfizmus (System F), absztrakt típusok. Altípus.
+    5. Informatikai projektek specialitásai és típusai. A projekt politikai, gazdasági és jogi környezete. Vállalati
+    szintű tervezés, vállalatok életciklusai. Projekt szervezet felépítése. A projekt életciklusa.
+    Projekttervezés: feladat és szervezet lebontási struktúra; időelemzés, kritikus út meghatározása,
+    erőforrás-ütemezés, költségvetés hozzárendelése, kritikus lánc módszer. A projektet kísérő folyamatok.
+    Projektirányítási módszertanok (Prince, PMBOK CMM és CMMI). Projektirányítás emberi vonatkozásai.
+    6. Szoftverfejlesztési modellek (vízesés, spirális, evolúciós, RUP, XP, xUML). Architekturális minták és hatásuk
+    a rendszer minőségi jellemzőire. Tervezési minták (GoF, valamint 3 további létrehozási minta). Konkurens minták.
+    Antiminták, újratervezési minták.
+    7. A szoftverfejlesztési modell fogalma. A komponens és komponens modell fogalma. UML kompozíciós diagram fogalma.
+    A szoftverarchitektúrák fogalma, összetevői. A KobrA programfejlesztési modell alapjai. A KobrA modell környezeti
+    térképe: vállalati vagy üzleti modell, használati modell, strukturális modell, viselkedési modell. Komponens
+    specifikáció részei: funkcionális modell, viselkedési modell és strukturális modell.
+    8. Komponens megvalósítása: kölcsönhatás modell, viselkedési vagy algoritmikus modell és strukturális modell.
+    Komponens megtestesítés: finomítás és fordítás, a normál objektum forma (NOF) fogalma, komponensek
+    újrafelhasználása, polcról levett komponensek, rendszer létrehozása komponensekből, termékcsalád fogalma.
+    Rendszer létrehozása polcról levehető komponensekből. A burkoló és a híd fogalma, szerepük.
+    9. A szoftverminőség komplex kérdésköre, termék és folyamat alapú megközelítés. A szoftverfejlesztés és a
+    tesztelés kapcsolata, V modell, agilitás. A tesztelés szintjei. A tesztelés életciklusa. Teszttervezési technikák.
+    Specifikáció alapú: ekvivalencia-osztályozás, határérték elemzés, döntési táblák, állapotgépek, használati eset
+    tesztelés; struktúra alapú: utasítás és döntési lefedettség. Review technikák, statikus tesztelés. A tesztelés
+    dokumentálása. Teszteszközök.
 - S2 - Programozási nyelvek
     1. Funkcionális nyelvek alapfogalmai: modell, kiértékelés, listák, curry-zés, magasabbrendű függvények, tisztaság.
     Típusok: algebrai adattípusok, típusosztályok, típuskonstruktorok, kindok. Monadikus programozás. Példák.
     [kidolgozás](s02/1.md)
-    2. Típusok, típuskonstrukciók, absztrakt adattípusok támogatása a programozási nyelvekben. Vezérlési szerkezetek,
-    kifejezéskiértékelés, alprogramok, kivételkezelés. Generatív programozási technikák. Az objektum-orientált
-    programozás eszközei. Párhuzamos és konkurrens programozási konstrukciók. 
-    3. A szerződésalapú programtervezés és -megvalósítás módszere, célja, szerepe. Szerződések leírását támogató nyelvi
+    2. Memóriakezelés: referencia- és érték-szemantika. Referenciakezelési technikák, Objektumok másolása,
+    move-szemantika. Erőforrásbiztos programozás, RAII, destruktor és szemétgyűjtés. Kivételkezelés, kivételbiztos
+    programozás. A konkurens programozás alapelemei Javában és C++-ban.
+    3. Generikus programozás, típussal való paraméterezés, példányosítás és típustörlés. Absztrakt adatszerkezetek és
+    algoritmusok. Konténerek és iterátorok. A C++ standard template könyvtár. Funktorok. Java annotációk. Önelemzés,
+    osztálybetöltés. Objektumszerializáció.
+    4. A szerződésalapú programtervezés és -megvalósítás módszere, célja, szerepe. Szerződések leírását támogató nyelvi
     eszközök az Eiffel nyelvben. A szerződések formális jelentése Hoare-hármasokkal. A szerződések és a típusrendszer
     viszonya. Szerződések és objektum-orientáltság: öröklődés és felüldefiniálás. Üres referenciák. Kivételek.
 - S3 - Intelligens rendszerek
@@ -56,13 +103,13 @@ A projekt [weboldalán](https://rockkid777.github.io/pti-msc-2015-zv/) megtekint
 - S5 - Szoftvertechnológia speciális területei
     1. A B helyettesítések szemantikája. A B komponensek fajtái, tulajdonságai. Interaktív bizonyító rendszer.
     Bizonyítandó állítások.
-    2. Az ítéletlogika és elsőrendű logika leíró nyelve, szintaxis, szemantika. Formulák, formulahalmazok szemantikus
-    tulajdonságai. Szemantikus következményfogalom és szemantikus eldöntésproblémák tetszőleges és véges
-    feltételhalmazok esetén; automatikus tételbizonyítás szemantikus eszközei és ezek kivitelezhetetlensége – Gödel
-    tétel. Levezethetőség fogalma, szintaktikus kalkulusuk áttekintése. Szemantikus eldöntésproblémához köthető
-    szintaktikus kalkulusok áttekintése. A rezolúció és alkalmazásai, lehetőségek és korlátok, példák.
-    3. A szoftverminőség komplex kérdésköre, termék és folyamat alapú megközelítés. A szoftverfejlesztés és a tesztelés
-    kapcsolata, V modell, agilitás. A tesztelés szintjei. A tesztelés életciklusa. Teszttervezési technikák.
-    Specifikáció alapú: ekvivalencia-osztályozás, határérték elemzés, döntési táblák, állapotgépek, használati eset
-    tesztelés; struktúra alapú: utasítás és döntési lefedettség. Review technikák, statikus tesztelés. A tesztelés
-    dokumentálása. Teszteszközök.
+    2. Az ítéletlogika leíró nyelve, szintaxis, szemantika. Formulák, formulahalmazok szemantikus tulajdonságai,
+    szemantikus következményfogalom és eldöntésprobléma ítéletlogikában. Az ítéletlogika szintaktikus tárgyalásához
+    kapcsolódó fogalmak (levezethetőség, bizonyíthatóság, konzisztens és inkonzisztens formulahalmazok); szintaktikus
+    kalkulusok (bizonyításelméleti levezetés, természetes technika, Genzten stílusú kalkulusok)
+    áttekintése: az eldöntésprobléma mely formájára és hogyan adnak választ, helyesség és teljesség kimondása.
+    3. Az elsőrendű logika leíró nyelve, szintaxis, szemantika. Formulák, formulahalmazok szemantikus tulajdonságai,
+    szemantikus következményfogalom és eldöntésprobléma első rendben. Az eldöntésprobléma szemantikus eszközökkel való
+    vizsgálatának korlátai, a szemantikus eldöntésproblémához köthető szintaktikus
+    kalkulusok (tabló módszer és rezolúciós kalkulus) áttekintése: az eldöntésprobléma mely formájára és hogyan
+    adnak választ, helyesség és teljesség kimondása. A rezolúció alkalmazása a logikai programozásban.
