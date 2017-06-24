@@ -18,6 +18,7 @@ A kidolgozások az ELTE IK honlapján elérhető [hivatalos tételsor](http://ww
     programok formális verifikációja (A helyesség-vizsgálati módszerek menete, a nevezetes programszerkezetek
     helyességének szabályai.) Az interferencia-mentesség és a holtpont-mentesség (Owicki-Gries) vizsgálata.
     A kölcsönös kizárás és megvalósítása.
+    [kidolgozás](s00/1.md)
     2. Absztrakt adattípus univerzális algebrai modellje, adattípus, absztrakt adattípus.
     Adattípus specifikációk, példák. Adattípusok specifikációjának elemzése. Tulajdonságok felírása, bizonyítása.
     Adattípus osztály specifikációja. Szignatúra morfizmus és kiterjesztése axiómákra. Paraméterátadás, annak jelentése,
@@ -46,9 +47,11 @@ A kidolgozások az ELTE IK honlapján elérhető [hivatalos tételsor](http://ww
     A szoftverarchitektúrák fogalma, összetevői. A KobrA programfejlesztési modell alapjai. A KobrA modell környezeti
     térképe: vállalati vagy üzleti modell, használati modell, strukturális modell, viselkedési modell. Komponens
     specifikáció részei: funkcionális modell, viselkedési modell és strukturális modell.
+    [kidolgozás](s01/7.md)
     8. Komponens megvalósítása: kölcsönhatás modell, viselkedési vagy algoritmikus modell és strukturális modell.
     Komponens megtestesítés: finomítás és fordítás, a normál objektum forma (NOF) fogalma, komponensek
     újrafelhasználása, polcról levett komponensek, rendszer létrehozása komponensekből, termékcsalád fogalma.
+    [kidolgozás](s01/8.md)
     Rendszer létrehozása polcról levehető komponensekből. A burkoló és a híd fogalma, szerepük.
     9. A szoftverminőség komplex kérdésköre, termék és folyamat alapú megközelítés. A szoftverfejlesztés és a
     tesztelés kapcsolata, V modell, agilitás. A tesztelés szintjei. A tesztelés életciklusa. Teszttervezési technikák.
@@ -68,6 +71,7 @@ A kidolgozások az ELTE IK honlapján elérhető [hivatalos tételsor](http://ww
     4. A szerződésalapú programtervezés és -megvalósítás módszere, célja, szerepe. Szerződések leírását támogató nyelvi
     eszközök az Eiffel nyelvben. A szerződések formális jelentése Hoare-hármasokkal. A szerződések és a típusrendszer
     viszonya. Szerződések és objektum-orientáltság: öröklődés és felüldefiniálás. Üres referenciák. Kivételek.
+    [kidolgozás](s02/4.md)
 - S3 - Intelligens rendszerek
     1. Ismeretalapú rendszerek jellegzetes komponensei és szolgáltatásai. Az ismeretszerzés módszerei, az ismeretek
     fajtái, az ismeret-reprezentáció szintjei. Ontológia fogalma az informatikában. Az ontológia formája, tipikus elemei.
@@ -91,6 +95,7 @@ A kidolgozások az ELTE IK honlapján elérhető [hivatalos tételsor](http://ww
     vizsgálatára szolgáló eszközök (elérési, fedési fa). Petri doboz alkalmazása párhuzamos folyamatok modelljének
     felépítésében. Párhuzamos és elosztott rendszerek szemantikai leírása lehetséges formáinak (műveleti, leíró,
     axiomatikus) bemutatása egy konkrét példán keresztül.
+    [kidolgozás](s04/1.md)
     2. Többrétegű architektúra, elosztott szerveroldal. Kommunikációs eszközök: távolieljárás-hívás és üzenet alapú
     infrastruktúra (point-to-point és publish-subscribe modell). Névszolgáltatás. Enterprise JavaBeans komponensmodell,
     EJB-k fajtái. Beanek életciklusa. Dependency injection. Elosztott és globális tranzakciók.
