@@ -51,8 +51,8 @@ A kidolgozások az ELTE IK honlapján elérhető [hivatalos tételsor](http://ww
     8. Komponens megvalósítása: kölcsönhatás modell, viselkedési vagy algoritmikus modell és strukturális modell.
     Komponens megtestesítés: finomítás és fordítás, a normál objektum forma (NOF) fogalma, komponensek
     újrafelhasználása, polcról levett komponensek, rendszer létrehozása komponensekből, termékcsalád fogalma.
-    [kidolgozás](s01/8.md)
     Rendszer létrehozása polcról levehető komponensekből. A burkoló és a híd fogalma, szerepük.
+    [kidolgozás](s01/8.md)
     9. A szoftverminőség komplex kérdésköre, termék és folyamat alapú megközelítés. A szoftverfejlesztés és a
     tesztelés kapcsolata, V modell, agilitás. A tesztelés szintjei. A tesztelés életciklusa. Teszttervezési technikák.
     Specifikáció alapú: ekvivalencia-osztályozás, határérték elemzés, döntési táblák, állapotgépek, használati eset
