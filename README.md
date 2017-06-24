@@ -14,9 +14,10 @@ A projekt [weboldalán](https://rockkid777.github.io/pti-msc-2015-zv/) megtekint
 - S2 - Programozási nyelvek
     1. Funkcionális nyelvek alapfogalmai: modell, kiértékelés, listák, curry-zés, magasabbrendű függvények, tisztaság.
     Típusok: algebrai adattípusok, típusosztályok, típuskonstruktorok, kindok. Monadikus programozás. Példák.
+    [kidolgozás](s02/1.md)
     2. Típusok, típuskonstrukciók, absztrakt adattípusok támogatása a programozási nyelvekben. Vezérlési szerkezetek,
     kifejezéskiértékelés, alprogramok, kivételkezelés. Generatív programozási technikák. Az objektum-orientált
-    programozás eszközei. Párhuzamos és konkurrens programozási konstrukciók.
+    programozás eszközei. Párhuzamos és konkurrens programozási konstrukciók. 
     3. A szerződésalapú programtervezés és -megvalósítás módszere, célja, szerepe. Szerződések leírását támogató nyelvi
     eszközök az Eiffel nyelvben. A szerződések formális jelentése Hoare-hármasokkal. A szerződések és a típusrendszer
     viszonya. Szerződések és objektum-orientáltság: öröklődés és felüldefiniálás. Üres referenciák. Kivételek.
