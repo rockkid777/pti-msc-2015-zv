@@ -1,0 +1,249 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="s01-7-komponens-alapú-szoftverfejlesztés-1">S01-7 Komponens alapú szoftverfejlesztés 1</h1>
+<ol style="list-style-type: decimal">
+<li>A szoftverfejlesztési modell fogalma.</li>
+<li>A komponens és komponens modell fogalma.</li>
+<li>UML kompozíciós diagram fogalma.</li>
+<li>A szoftverarchitektúrák fogalma, összetevői.</li>
+<li>A KobrA programfejlesztési modell alapjai.</li>
+<li>A KobrA modell környezeti térképe: vállalati vagy üzleti modell, használati modell, strukturális modell, viselkedési modell.</li>
+<li>Komponens specifikáció részei: funkcionális modell, viselkedési modell és strukturális modell.</li>
+</ol>
+<hr />
+<h2 id="a-szoftverfejlesztési-modell-fogalma">A szoftverfejlesztési modell fogalma</h2>
+<p>Alapvetően eljárások, ajánlások gyűjteménye</p>
+<ul>
+<li>Segíti a szoftverfejlesztés teljes ciklusát</li>
+<li>Megmondja, hogy egy adott fejlesztési lépésben mit kell tenni és azt hogyan kell megtenni</li>
+<li>Egyetlen mondatba sűrítve a szoftverfejlesztési modell egy recept a programok létrehozására</li>
+</ul>
+<p>Minden szoftver rendelkezik életciklussal, amely meghatározza létét a feladat kitűzésétől a program használatának befejeztéig. Az életciklus általában négy fő fázisra bontható:</p>
+<ol style="list-style-type: decimal">
+<li>specifikáció: a szoftver funkcionalitásának és megszorításainak megadása</li>
+<li>tervezés és implementáció: a specifikációnak megfelelő szoftver előállítása</li>
+<li>verifikáció és validáció: a szoftver ellenőrzése a specifikációnak történő megfelelésre</li>
+<li>evolúció: a szoftver továbbfejlesztése a változó elvárásoknak megfelelően</li>
+</ol>
+<p>A szoftverfejlesztési modell határozza meg az említett fázisok közötti kapcsolatot, időbeliséget.</p>
+<p>Szoftverfejlesztési modellek például:</p>
+<ul>
+<li>Vízesés modell</li>
+<li>Spirál modell</li>
+<li>Komponensalapú</li>
+<li>stb.</li>
+</ul>
+<h2 id="a-komponens-és-komponens-modell-fogalma">A komponens és komponens modell fogalma</h2>
+<h3 id="komponens">Komponens</h3>
+<p>Szyperski féle szoftver komponens definíció:</p>
+<ul>
+<li>„A szoftver komponens
+<ul>
+<li>egy kompozíciós egység, aminek</li>
+<li>szerződéssel definiált interfészei</li>
+<li>és csak explicit környezeti függőségei vannak.</li>
+</ul></li>
+<li>A szoftver komponenst
+<ul>
+<li>függetlenül lehet telepíteni és</li>
+<li>független fél használhatja fel kompozícióban.&quot;</li>
+</ul></li>
+</ul>
+<p>&quot;szerződéssel definiált interfészei&quot;:</p>
+<ul>
+<li>interfész: a komponens kapcsolódási felületeinek specifikációja (szolgáltatott és elvárt)</li>
+<li>szerződés: a szolgáltatót és a klienst kölcsönösen megkötő feltételek
+<ul>
+<li>funkcionális és nem funkcionális aspektusok</li>
+<li>műveletek elő- és utófeltétele</li>
+</ul></li>
+</ul>
+<p>&quot;explicit környezeti függőségei vannak&quot;:</p>
+<ul>
+<li>környezeti függőségek: a telepítési és futási környezet specifikációja
+<ul>
+<li>pl. milyen eszközökre, platformokra, erőforrásokra vagy más komponensekre van szükség</li>
+</ul></li>
+</ul>
+<p>&quot;függetlenül lehet telepíteni és független fél használhatja fel kompozícióban&quot;:</p>
+<ul>
+<li>komponens platformra telepíthető és utána az interfészein keresztül elérhető</li>
+<li>a felhasználó különbözhet a fejlesztőtől és telepítőtől</li>
+</ul>
+<h3 id="komponens-modell">Komponens modell</h3>
+<p>A komponens modell azon szabványok és konvenciók specifikációja, amelyek szükségesek ahhoz, hogy az egymástól függetlenül fejlesztett komponensek kompozícióját elő lehessen állítani. Ilyenek például:</p>
+<ul>
+<li>a kompozíciós mechanizmusok</li>
+<li>a sikeres együttműködéshez a komponensek által betartandó konvenciók</li>
+</ul>
+<p>Komponens technológiának nevezzük a komponens modell megvalósítását, szabványok és szoftver eszközök biztosításával a komponensek megvalósításához, összeállításához és működtetéséhez. Példák:</p>
+<ul>
+<li>.Net,</li>
+<li>Corba Component Model,</li>
+<li>Enterprise Java Bean, ...</li>
+</ul>
+<h2 id="uml-kompozíciós-diagram-fogalma">UML kompozíciós diagram fogalma</h2>
+<p>Az UML kompozíciós (komponens) diagrammal a rendszer komponenseit, azok kapcsolatait, valamint nyújtott és elvárt interfészeiket ábrázolhatjuk.</p>
+<p>A kompozíciós diagram részei:</p>
+<ul>
+<li>Structured Classifier: Olyan (absztakt) osztályt jelöl, melynek van belső struktúrája és működését részben vagy teljesen a Part-ok írják le.</li>
+<li>Part, Role: valamilyen általánosított szereplő, amely csak magát a szerepet (funkcionalitást) jelöli ki, de lehet konkrét osztálypéldány vagy valamilyen absztrakt superclass is akár.</li>
+<li>Port: A komponensek közötti kommunikáció csomópontjai. Definiálják saját required és provided interface-eiket. A portokat connector-okkal összekötve lehet kifejezni a komponensek közötti kommunikációt.</li>
+<li>Provided interface: Azok az interfacek, melyeken keresztül a komponens szolgáltatásokat nyújt. (Mint a HiFi-n a Jack dugalj)</li>
+<li>Required interface: Azok az interfacek, melyek a komponens működéséhez szükségesek, ezekt használja. (Mint egy HiFi-nek az áramforrás csatlakozó)</li>
+<li>Connector
+<ul>
+<li>Delegation connector: A bennfoglaló kompozit külvilág számára látható portjait köti össze a benne lévő komponensekkel.</li>
+<li>Assembly connector: Ugyanazon strukturális szinten lévő komponensek portjait köti össze.</li>
+</ul></li>
+</ul>
+<div class="figure">
+<img src="img/component_diagram.PNG" alt="Kompozíciós diagram" width="450" />
+<p class="caption">Kompozíciós diagram</p>
+</div>
+<h2 id="a-szoftverarchitektúrák-fogalma-összetevői">A szoftverarchitektúrák fogalma, összetevői</h2>
+<p>Szoftver architektúrának nevezzük a szoftver fejlesztése során meghozott elsődleges tervezési döntések halmazát.</p>
+<ul>
+<li>Olyan döntések, amelyek megváltoztatása később a szoftver jelentős újratervezését igényelné</li>
+<li>Kihatnak a rendszer
+<ul>
+<li>felépítésére</li>
+<li>viselkedésére</li>
+<li>kommunikációjára</li>
+<li>nem funkcionális jellemzőire</li>
+<li>megvalósítására</li>
+</ul></li>
+</ul>
+<p>A szoftver architektúra elsődleges feladata a rendszer magas szintű felépítésének és működésének meghatározása, a komponensek és kapcsolataik kiépítése.</p>
+<p>Fontosabb strukturális összetevői:</p>
+<ul>
+<li>Architektúra sémák
+<ul>
+<li>elemek és reláció típusok leírása, amely a használatukra vonatkozó megszorításokat is tartalmazza</li>
+<li>pl.: a kliens szerver architektúra egy jól ismert séma</li>
+</ul></li>
+<li>Referencia modellek
+<ul>
+<li>egy referencia modell a funkcionalitás egy olyan felosztása, amely az egyes részek közötti adatfolyamot is tartalmazza</li>
+<li>a referencia modell egy ismert probléma felbontása olyan részekre, amelyek egymással kooperálva megoldják az eredeti problémát</li>
+</ul></li>
+<li>A referencia architektúra
+<ul>
+<li>a referencia architektúra egy olyan referencia modell, amelyet a szoftverelemekre és azok kapcsolataira képeztünk le</li>
+</ul></li>
+</ul>
+<p>Szoftverarchitektúrák például:</p>
+<ul>
+<li>monolitikus architektúra</li>
+<li>réteges architektúrák (pl. Model-View-Persistence)</li>
+<li>mikroszolgáltatások architektúra (microservices)</li>
+</ul>
+<h2 id="a-kobra-programfejlesztési-modell-alapjai">A KobrA programfejlesztési modell alapjai</h2>
+<h3 id="komponensalapú-fejlesztés-általánosan">Komponensalapú fejlesztés általánosan</h3>
+<ul>
+<li>Meglévő szoftverkomponensekből építjük fel a rendszerünket</li>
+<li>A komponensek kellően általánosak <span class="math inline">\(\Rightarrow\)</span> újrafelhasználhatóak</li>
+<li>A komponens alapú fejlesztés alapvetően két diszjunkt területre bomlik:
+<ul>
+<li>a komponens fejlesztés
+<ul>
+<li>a komponensek, mint egyedi építőkövek kifejlesztése</li>
+</ul></li>
+<li>az alkalmazás fejlesztés
+<ul>
+<li>a kész komponensekből a rendszer felépítése</li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="kobra-programfejlesztési-modell">KobrA programfejlesztési modell</h3>
+<p>A KobrA-ban legfontosabb célunk, hogy a rendszer alapvető struktúráját absztrakt formában állítsuk elő, hogy sokféle implementációs technológiára leképezhető legyen.</p>
+<p>Legfontosabb elvek:</p>
+<ul>
+<li>Problémák elkülönítése</li>
+<li>Modellalapú fejlesztés</li>
+<li>Komponensek használata</li>
+<li>Objektumorientált technológiák alkalmazása</li>
+</ul>
+<p>A KobrA a fejlesztési folyamatot két alapvető dimenzióra osztja</p>
+<ul>
+<li>Kompozíció/dekompozíció:
+<ul>
+<li>Dekompozíció: a rendszer alkalmas szétvágása önmagukban kezelhető részekre</li>
+<li>Kompozíció: az implementált részek összeillesztése</li>
+</ul></li>
+<li>Absztrakció/konkretizáció:
+<ul>
+<li>A felhasználók számára jól érthető modelltől közelítünk a számítógép által értelmezhető, futtatható program felé</li>
+</ul></li>
+</ul>
+<p>Megtestesítés: a specifikált szolgáltatások tényleges megvalósításának folyamata</p>
+<p>Érvényesítés (validáció): az implementált elemek összevetése az absztrakt modellel</p>
+<h2 id="a-kobra-modell-környezeti-térképe">A KobrA modell környezeti térképe</h2>
+<ul>
+<li>A környezetet definiáló leíróelemek összessége</li>
+<li>A környezet önálló, saját jogú komponens</li>
+</ul>
+<h3 id="vállalati-vagy-üzleti-modell">Vállalati vagy üzleti modell</h3>
+<ul>
+<li>A rendszerünk üzleti környezetét írja le</li>
+<li>Banki rendszerek esetében például a vállalati modell reprezentálja azokat a fogalmakat, amelyek a banki világ számára relevánsak</li>
+<li>Azt kell megadni, hogy ezek a fogalmak milyen hatással lesznek az elkészülő szoftverrendszerre</li>
+</ul>
+<h3 id="használati-modell">Használati modell</h3>
+<ul>
+<li>A felhasználónak a rendszerrel fenntartott magas szintű kapcsolatait specifikálja</li>
+<li>Használati eset diagramok összességéből áll elő
+<ul>
+<li>Bemutatják a rendszer szereplőit és a használati eseteket, valamint a közöttük lévő kapcsolatokat</li>
+<li>Minden használati eset valamilyen absztrakt tevékenységet reprezentál, amelyet a rendszer felhasználója hajt végre</li>
+</ul></li>
+<li>A használati esetek főleg a rendszer összetevői közötti interakciókra, valamint a rendszer és határai közötti kapcsolatokra koncentrálnak</li>
+</ul>
+<h3 id="strukturális-modell">Strukturális modell</h3>
+<ul>
+<li>A környezeti térképen belüli strukturális modell definiálja azon entitások struktúráját, amelyek kívül esnek a kifejlesztendő rendszer hatáskörén, de hatással vannak a rendszerre</li>
+<li>Például:
+<ul>
+<li>input</li>
+<li>output, amelyet valamilyen módon tovább feldolgoznak</li>
+</ul></li>
+</ul>
+<h3 id="viselkedési-modell">Viselkedési modell</h3>
+<ul>
+<li>A rendszer szereplőinek a rendszer határára vonatkozó tevékenységeit írja le</li>
+<li>Az UML aktivitás diagramjával történik</li>
+</ul>
+<h2 id="komponens-specifikáció-részei">Komponens specifikáció részei</h2>
+<ul>
+<li>A komponens specifikáció azon leíró dokumentumok összessége, amely definiálja a komponens működését</li>
+<li>Minden ilyen dokumentum a komponens működésének valamilyen aspektusát vizsgálja és csak arra koncentrál, hogy az adott aspektusból a komponens mit csinál</li>
+<li>Cél: az elvárt és szolgáltatott interfészek leírása</li>
+<li>A komponens specifikáció mindent tartalmaz, amit tudni lehet és kell a komponensről</li>
+</ul>
+<h3 id="funkcionális-modell">Funkcionális modell</h3>
+<ul>
+<li>A komponens szolgáltatott és az elvárt műveleteit írja le</li>
+<li>Definiálja a szolgáltatott műveletek kívülről látható hatásait</li>
+</ul>
+<h3 id="viselkedési-modell-1">Viselkedési modell</h3>
+<ul>
+<li>Megmutatja, hogyan viselkedik külső hatásokra a komponens</li>
+<li>UML állapotdiagramok formájában készül el</li>
+<li>Ha egy komponensnek nincsenek állapotai (tisztán funkcionális komponens), akkor nincs szükség viselkedési modellre</li>
+</ul>
+<h3 id="strukturális-modell-1">Strukturális modell</h3>
+<ul>
+<li>Definiálja a komponens műveleteit, attribútumait és azt, hogy milyen komponensekkel van kapcsolatban</li>
+<li>Rávilágít a jó dekompozíciós lehetőségekre</li>
+</ul>
+</body>
+</html>

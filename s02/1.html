@@ -1,0 +1,643 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #0000ff; } /* Keyword */
+code > span.ch { color: #008080; } /* Char */
+code > span.st { color: #008080; } /* String */
+code > span.co { color: #008000; } /* Comment */
+code > span.ot { color: #ff4000; } /* Other */
+code > span.al { color: #ff0000; } /* Alert */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #008000; font-weight: bold; } /* Warning */
+code > span.cn { } /* Constant */
+code > span.sc { color: #008080; } /* SpecialChar */
+code > span.vs { color: #008080; } /* VerbatimString */
+code > span.ss { color: #008080; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { } /* Variable */
+code > span.cf { color: #0000ff; } /* ControlFlow */
+code > span.op { } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #ff4000; } /* Preprocessor */
+code > span.do { color: #008000; } /* Documentation */
+code > span.an { color: #008000; } /* Annotation */
+code > span.cv { color: #008000; } /* CommentVar */
+code > span.at { } /* Attribute */
+code > span.in { color: #008000; } /* Information */
+  </style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="s2-01-funkcionális-nyelvek-alapfogalmai">S2-01 Funkcionális nyelvek alapfogalmai</h1>
+<h2 id="tartalom">Tartalom</h2>
+<ol style="list-style-type: decimal">
+<li><a href="#chapter01">Funkcionális nyelvek alapfogalmai</a>
+<ul>
+<li><a href="#section01_01">Modell</a></li>
+<li><a href="#section01_02">Kiértékelés</a></li>
+<li><a href="#section01_03">Curry-zés</a></li>
+<li><a href="#section01_04">Magasabbrendű függvények</a></li>
+<li><a href="#section01_05">Listák</a></li>
+<li><a href="#section01_06">Tisztaság</a></li>
+</ul></li>
+<li><a href="#chapter02">Típusok</a>
+<ul>
+<li><a href="#section02_01">Algebrai adattípusok</a></li>
+<li><a href="#section02_01">Típusosztályok</a></li>
+<li><a href="#section02_03">Típuskonstruktorok</a></li>
+<li><a href="#section02_04">Kindok</a></li>
+</ul></li>
+<li><a href="#chapter03">Monadikus programozás</a></li>
+<li><a href="#references">További források</a></li>
+</ol>
+<h2 id="funkcionális-nyelvek-alapfogalmai">1.Funkcionális nyelvek alapfogalmai <a name="chapter01"></a></h2>
+<h3 id="modell">1.1 Modell <a name="section01_01"></a></h3>
+<p><strong>Funkcionális programozási paradigma, nyelvek</strong></p>
+<ul>
+<li>Nem az algoritmust írjuk le <span class="math inline">\(\Longrightarrow\)</span> függvényekkel specifikáljuk a feladatot</li>
+<li>Deklaratív nyelvek családjába tartozik
+<ul>
+<li>Imperatív nyelvek: <strong>HOGYAN</strong> csinálja meg a feladatot a program, utasítások írása, sokszor a memóriát is mi kezeljük</li>
+<li>Deklaratív nyelvek: <strong>MIT</strong> csináljon a program, magát a feladatot adjuk meg</li>
+</ul></li>
+<li>Minden program alapegysége a függvény
+<ul>
+<li>Maga a program, programmodul <span class="math inline">\(\rightarrow\)</span> az egy függvényhalmaz</li>
+<li>Program végrehajtása <span class="math inline">\(\rightarrow\)</span> kezdeti függvénykifejezés (<code>main</code>) kiértékelése</li>
+</ul></li>
+<li>Matematikai számítási modellje a lambda-kalkulus
+<ul>
+<li>(<em>Érdekesség: szokták lambda-kalkulust a funkcionális nyelvek &quot;assembly-jének&quot; is hívni</em>)</li>
+</ul></li>
+<li>Nincsenek változók, nincsen állapot, minden immutable, minden másolódik</li>
+<li>Iteráció helyett paraméterek mintaillesztése (<em>pattern matching</em>) és rekurzió
+<ul>
+<li>Mintaillesztés + rekurzió: mint a teljes indukció matematikában</li>
+<li>Első minta: alapeset</li>
+<li>Rekurzív minta: indukciós lépés</li>
+</ul></li>
+</ul>
+<p><strong>Funkcionális programozás előnyei</strong></p>
+<ol style="list-style-type: decimal">
+<li>Közelebb áll a feladat és annak leírása</li>
+<li>Szemlélete közelebb áll a formális, matematikai leíráshoz, precízebb</li>
+<li>Helyességet könnyű kifejezni
+<ul>
+<li>Hoare-hármasokat (elő-utó feltétel) könnyű funkcionális nyelvekkel leírni</li>
+</ul></li>
+<li>Feladatosztályok absztrakcióinak kifejezése
+<ul>
+<li>Van egy nagyon általános feladatsémám (nem algoritmus!)</li>
+<li>Ezt egy függvénnyel felparaméterezve (<em>magasabbrendű függvények</em>) eljutok a konkrétabb feladathoz</li>
+</ul></li>
+<li>Kevesebb sor, tömörebb program, kevesebb hiba, könnyebb karbantarthatóság</li>
+<li>Könnyű funkcionális programokat párhuzamosítani
+<ul>
+<li>Például <code>(2 + 3) + (7 + 1)</code></li>
+<li>Egyik CPU: <code>(2 + 3)</code></li>
+<li>Másik CPU: <code>(7 + 1)</code></li>
+<li>Minden asszociatív műveletre igaz: ha zárójelezünk, akkor több CPU tudja feldolgozni a zárójelezett részeket</li>
+</ul></li>
+</ol>
+<p><strong>Végrehajtási modell</strong></p>
+<ul>
+<li>Végrehajtási modell egy konfluens redukciós (átíró) rendszer</li>
+<li>Mitől konfluens:
+<ul>
+<li>Az egyes részkifejezések átírásának sorrendje a végeredményre nincs hatással</li>
+<li><p>A sorrend legfeljebb azt befolyásolja</p>
+<p><span class="math inline">\(\Longrightarrow\)</span> hogy az átírási lépéssorozattal eljutunk-e a végeredményig</p></li>
+</ul></li>
+<li>Tehát a végrehajtás redukciós, átírási lépések, redukáló kifejezések (redex-ek) sorozata</li>
+</ul>
+<h3 id="kiértékelés">1.2 Kiértékelés <a name="section01_02"></a></h3>
+<ul>
+<li>Kiértékelőrendszer feladata
+<ul>
+<li>Kiértékeli a specifikációt</li>
+<li>majd megadja a függvényértéket</li>
+</ul></li>
+<li>Függvénydefiníció részei
+<ol style="list-style-type: decimal">
+<li>Függvény azonosító</li>
+<li>Formális paraméterek</li>
+<li>Függvény törzse</li>
+</ol></li>
+<li>Kiértékelés menete
+<ul>
+<li>Átírási lépések (redukciók) sorozatával</li>
+<li>Átírási lépésben függvény alkalmazásában: függvény helyettesítése <span class="math inline">\(\Longrightarrow\)</span> függvény törzsével</li>
+<li>Addig írunk át, amíg el nem érjük a normálformát <span class="math inline">\(\Longrightarrow\)</span> azaz tovább már nem lehet átírni</li>
+</ul></li>
+<li>Kiértékelési stratégiák nem mások, mint redex-ek kiválasztási sorrendje. Ezek lehetnek:
+<ul>
+<li>Mohó</li>
+<li>Lusta</li>
+<li>Párhuzamos</li>
+</ul></li>
+</ul>
+<h4 id="lusta-lazy-kiértékelés">Lusta (Lazy) kiértékelés</h4>
+<ul>
+<li>Nem fontos a függvénykiértékelések sorrendje</li>
+<li>Először a <strong>FÜGGVÉNYT</strong> értékeli ki</li>
+<li>Haskell-ban és Clean-ben: alapértelmezett kiértékelési mód</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">squareinc <span class="dv">7</span>       <span class="fu">=</span>
+square (inc <span class="dv">7</span>)    <span class="fu">=</span>
+(inc <span class="dv">7</span>) <span class="fu">*</span> (inc <span class="dv">7</span>) <span class="fu">=</span>
+<span class="dv">8</span> <span class="fu">*</span> (inc <span class="dv">7</span>)       <span class="fu">=</span>
+<span class="dv">8</span> <span class="fu">*</span> <span class="dv">8</span>             <span class="fu">=</span>
+<span class="dv">64</span></code></pre></div>
+<h4 id="mohó-strict-kiértékelés">Mohó (strict) kiértékelés</h4>
+<ul>
+<li>Fontos a függvénykiértékelések sorrendje</li>
+<li>Először az <strong>ARGUMENTUMOKAT</strong> értékeli ki</li>
+<li>Haskell-ban és Clean-ben: alfüggvény/paraméter <code>!</code>-el való megjelölése</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">squareinc <span class="dv">7</span>     <span class="fu">=</span>
+square (inc <span class="dv">7</span>)  <span class="fu">=</span>
+square (<span class="dv">1</span> <span class="fu">+</span> <span class="dv">7</span>)  <span class="fu">=</span>
+square <span class="dv">8</span>        <span class="fu">=</span>
+<span class="dv">8</span> <span class="fu">*</span> <span class="dv">8</span>           <span class="fu">=</span>
+<span class="dv">64</span></code></pre></div>
+<h3 id="curry-zés">1.3 Curry-zés <a name="section01_03"></a></h3>
+<ul>
+<li>Matematikában: több argumentumot elfogadó függvény átalakítása <strong>függvények sorozatára</strong> amik csak egy-egy argumentumot kapnak</li>
+<li>Minden függvény csak egy argumentummal rendelkezik</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">((<span class="fu">+</span>) x) y   <span class="co">-- x + y helyett</span></code></pre></div>
+<h3 id="magasabbrendű-függvények">1.4 Magasabbrendű függvények <a name="section01_04"></a></h3>
+<p>Függvények, melyeknek</p>
+<ul>
+<li>argumentumaik egy- vagy több függvény</li>
+<li>vagy visszatérési értékük egy függvény</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">applyFunctionTwice ::</span> (<span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Int</span>) <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Int</span>
+applyFunctionTwice f x <span class="fu">=</span> f(f x)
+
+applyFunctionTwice (\x <span class="ot">-&gt;</span> x <span class="fu">+</span> x) <span class="dv">3</span> <span class="fu">=</span> <span class="dv">12</span></code></pre></div>
+<h3 id="listák">1.5 Listák <a name="section01_05"></a></h3>
+<h4 id="listák-ábrázolása">Listák ábrázolása</h4>
+<ul>
+<li>Láncolt listákkal</li>
+<li>Maga a listaábrázolás is egy függvény. Funkcionális programozásban mindennek az alapja a függvény.
+<ul>
+<li><code>[]</code> listaépítés függvénye, listakonstruktor (<code>[a]</code> írható <code>[] a</code> -ként is, mint <code>[]</code> függvény alkalmazása)</li>
+<li><code>:</code> listaragasztás, konkatenáció függvénye</li>
+</ul></li>
+<li>Listaműveletek esetén nem írunk felül semmit, <strong>NEM MÓDOSÍTUNK ELEMET!</strong>
+<ul>
+<li>Listafüggvény eredménye egy új lista lesz</li>
+<li>Immutable, mindig másolódik (valójában csak a lista váza másolódik)</li>
+</ul></li>
+</ul>
+<div class="figure">
+<img src="img/list.png" alt="Lista felépítése és ábrázolása funkcionális nyelvekben." />
+<p class="caption">Lista felépítése és ábrázolása funkcionális nyelvekben.</p>
+</div>
+<p>Listakonstruktor mintaillesztést használ:</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">                     <span class="co">-- &quot;a&quot; bármilyen típusú (polimorf) paraméter.</span>
+<span class="kw">data</span> [] a <span class="fu">=</span> []       <span class="co">-- Üres lista ha nem adunk elemet.</span>
+          <span class="fu">|</span> a <span class="fu">:</span> [a]  <span class="co">-- Értékhez hozzáragasztunk egy következő listát.</span>
+                     <span class="co">-- A következő lista lehet üres is ([]).</span></code></pre></div>
+<p>Lista típus definíciója Haskell-ban:</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">List</span> a <span class="fu">=</span> <span class="dt">Nil</span>               <span class="co">-- Üres lista.</span>
+            <span class="fu">|</span> <span class="dt">Cons</span> a (<span class="dt">List</span> a)   <span class="co">-- &quot;Cons&quot; a ragasztás, &quot;(List a)&quot; lehet üres is</span></code></pre></div>
+<ul>
+<li>Ez egy rekurzív, paraméteres típus</li>
+<li>Szétszedhető, újra összeragasztható, az elejéről könnyű kivenni, könnyű hozzátenni
+<ul>
+<li>Végére nehéz elemet tenni, költségesen végig kell járni</li>
+<li>(<em>Megjegyzés: mint ahogy láncolt listákban szokás imperatív programozásban is.</em>)</li>
+</ul></li>
+</ul>
+<h4 id="szabványos-listafüggvények-clean-nyelv">Szabványos listafüggvények (Clean nyelv)</h4>
+<div class="figure">
+<img src="img/listfunctions.png" alt="Head, Tail, Last és Init függvények" />
+<p class="caption">Head, Tail, Last és Init függvények</p>
+</div>
+<ul>
+<li><em>Head</em>: lista első elemének olvasása</li>
+</ul>
+<pre><code>hd [x : xs] = x                     -- Minteillesztés első elemre
+hd []       = abort &quot;hd of []&quot;      -- Üres lista esetén hiba</code></pre>
+<ul>
+<li><em>Tail</em>: lista végéről olvasás
+<ul>
+<li>Nem egy elemet, hanem a maradék listát adja vissza</li>
+</ul></li>
+</ul>
+<pre><code>tl [x : xs] = xs                    -- Minteillesztés első elem után ragasztott listára
+tl []       = abort &quot;tl of []&quot;      -- Üres lista esetén hiba</code></pre>
+<ul>
+<li><em>Last</em>: lista utolsó elemének olvasása (head ellentétje)</li>
+</ul>
+<pre><code>last [x]      = x                   -- Minteillesztés egy elemre
+last [x : xs] = last xs             -- Rekurzív hívás maradék listára amíg egy elemet
+                                    -- nem kapunk
+last []       = abort &quot;last of []&quot;  -- Üres lista esetén hiba</code></pre>
+<ul>
+<li><em>Init</em>: lista elejének olvasása (tail ellentéte)</li>
+</ul>
+<pre><code>init []       = []                  -- &quot;I didn&#39;t do anything and I still got paid.&quot;
+init [x]      = []                  -- Utolsó elem a listában már nem kell
+init [x : xs] = [x : init xs]       -- Rekurzív hívás amíg egy elem nincs a listában</code></pre>
+<ul>
+<li><em>Length</em>: lista hossza</li>
+</ul>
+<pre><code>length []       = 0                 -- Minteillesztés üres listára
+length [_ : xs] = 1 + length xs     -- &quot;_&quot; a thunk-ot (&quot;tönk&quot;) jelenti. Tökmindegy
+                                    -- mi van ott, nem kerül kiértékelésre, nem
+                                    -- foglalkozunk vele.</code></pre>
+<ul>
+<li><em>Reverse</em>: <strong>NEM FORDÍTJA MEG A MEGLÉVŐ LISTÁT!</strong> Másolatot készít, ami meg van fordítva.</li>
+<li><em>Sort</em>: <strong>NEM RENDEZI A MEGLÉVŐ LISTÁT!</strong> Másolatot készít, ami rendezve van.</li>
+</ul>
+<h4 id="magarabbrendű-listafüggvények">Magarabbrendű listafüggvények</h4>
+<ul>
+<li><em>Filter</em>: megadott logikai függvény (<em>predikátum</em>, <em>predicate</em>) alapján kiválogatja azokat az elemeket a listából amelyekre teljesül a logikai függvény</li>
+</ul>
+<pre><code>evenNumberFunction :: Int -&gt; Bool
+evenNumberFunction x = x mod 2 == 0
+
+evenNumbers = filter (evenNumberFunction) [0..]</code></pre>
+<ul>
+<li><em>Map</em>: elemenkénti függvényalkalmazás
+<ul>
+<li>Első paraméter: függvény, amit <code>map</code> a második paraméterben kapott lista elemeire alkalmaz</li>
+<li>Második paraméter: lista, aminek elemeire az első paraméterben kapott függvényt alkalmazza</li>
+</ul></li>
+</ul>
+<pre><code>map :: (a -&gt; b) [a] -&gt; [b]
+map f [] = []
+map f [x : xs] = [f x : map f xs]</code></pre>
+<ul>
+<li><em>Fold</em>: elemenkénti fogyasztás
+<ul>
+<li>Paraméterként kapott függvénnyel kicseréli a lista összeragasztó függvényt (<code>:</code>)</li>
+<li>Van jobbasszociatív (<code>foldr</code>) és balasszociatív (<code>foldl</code>) változata</li>
+</ul></li>
+</ul>
+<pre><code>foldr :: (a -&gt; b -&gt; b) -&gt; b -&gt; [a] -&gt; b     -- (a -&gt; b -&gt; b): Alkalmazandó listafüggvény
+foldr f z [] = z                            -- b:             Kezdőérték ami nincs listában
+foldr f z (x : xs) = f x (foldr f z xs)     -- [a]:           Lista amire fold alkalmazva van
+                                            -- b:             Eredményérték</code></pre>
+<p>További magasabbrendű listafüggvények:</p>
+<ul>
+<li><code>takeWhile</code>: elemek megtartása míg predikátum teljesül</li>
+<li><code>dropWhile</code>: elemek eldobása míg predikátum teljesül</li>
+</ul>
+<h3 id="tisztaság">1.6 Tisztaság <a name="section01_06"></a></h3>
+<ul>
+<li>Nyelvi elemei felhasználásánál mellékhatások biztosan nem lépnek fel (<em>pure programming</em>)</li>
+<li>Az előző értéket megsemmisítő értékadás vagy más imperatív programozásra jellemző nyelvi elem nem áll rendelkezésre</li>
+</ul>
+<p>Pár tulajdonság:</p>
+<ul>
+<li><em>Hivatkozási helyfüggetlenség</em>
+<ul>
+<li>Ugyanannak a kifejezésnek a programszöveg bármely pontján <span class="math inline">\(\Longrightarrow\)</span> ugyanaz lesz a végeredménye</li>
+</ul></li>
+<li><em>Egyenlőségi érvelés</em>
+<ul>
+<li>Minden egyes előforduláshoz beírható a „végeredmény” <span class="math inline">\(\Longrightarrow\)</span> hisz úgy is egyenlőek a hivatkozási helyfüggetlenség miatt</li>
+</ul></li>
+</ul>
+<p>Egyéb tulajdonságok:</p>
+<ul>
+<li><em>Szigorú típusosság</em>
+<ul>
+<li>Kevés, vagy egyáltalán nincs implicit típuskonverzió</li>
+</ul></li>
+<li><em>Statikus típusrendszer</em>
+<ul>
+<li>A kifejezések típusa fordítási időben ismert</li>
+<li>Absztrakt- és algebrai adattípusok leírásához adottak a nyelvi eszközök</li>
+<li>Hindley–Milner-féle korlátozottan polimorfikus típusrendszer</li>
+</ul></li>
+<li><em>Rekurzió, mintaillesztés</em>
+<ul>
+<li>Konstruktorokra, típusértékekre (amelyek valójában konstruktorok, konstans függvények)</li>
+<li>Joker minta</li>
+<li>Őrfeltételek (argumentumokra, <code>x when x &gt; 10</code>)</li>
+</ul></li>
+<li><em>Margó-szabály</em>
+<ul>
+<li>Összetartozó kifejezések csoportjának azonosítására és deklarációk hatáskörének korlátozására alkalmas a bal oldali margó szélességének változtatása</li>
+</ul></li>
+<li><em>IO-modell</em>
+<ul>
+<li>Haskell <code>IO</code> monádja</li>
+<li>Vagy a Clean <code>Unique World</code> típusa (egyszeresen hivatkozott, egyedi környezet)</li>
+<li>A műveletek „láncolásával” (<code>&gt;&gt;=</code>, <em>bind</em>) egy rejtett változó, a külvilág modellje adódik át</li>
+</ul></li>
+</ul>
+<h2 id="típusok">2.Típusok <a name="chapter02"></a></h2>
+<h3 id="algebrai-adattípusok">2.1 Algebrai adattípusok <a name="section02_01"></a></h3>
+<p>Algebrai adattípusok: összetett típusok amiket több típusból kapjuk</p>
+<p>Példák:</p>
+<ul>
+<li><code>List</code>: <code>Nil</code>, <code>Cons</code> és <code>List</code>-ből épül fel</li>
+<li><code>Tree</code>: <code>Node</code>, <code>Leaf</code> és <code>Tree</code>-ből épül fel</li>
+</ul>
+<p>De mitől algebrai egy algebrai adattípus?</p>
+<ul>
+<li>Típuselméletből:
+<ul>
+<li>összeg típusok (<em>sum types</em>)</li>
+<li>szorzat típusok (<em>product types</em>)</li>
+</ul></li>
+<li>Összeg típus: <code>A | B</code>, választás, <code>A</code> és <code>B</code> altípus egy összeg típust alkot (mintha <span class="math inline">\(A + B\)</span> lenne)</li>
+<li>Szorzat típus: <code>A B</code> együtt, kombináció, <code>A</code> és <code>B</code> altípus egy szorzat típust alkot (mintha <span class="math inline">\(A \times B\)</span> lenne)</li>
+</ul>
+<h4 id="paraméteres-algebrai-adattípusok">Paraméteres algebrai adattípusok</h4>
+<ul>
+<li>Fa (egyparaméteres algebrai típus)</li>
+<li>Ez a paraméter most az <code>a</code> lesz</li>
+<li>Típus definiálása</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Tree</span> a <span class="fu">=</span> <span class="dt">Node</span> a (<span class="dt">Tree</span> a) (<span class="dt">Tree</span> a)
+            <span class="fu">|</span> <span class="dt">Leaf</span></code></pre></div>
+<ul>
+<li>Jelölések:
+<ul>
+<li><code>Tree</code>: alaptípus</li>
+<li><code>a</code>: típusváltozó</li>
+<li><code>Node</code>: adatkonstruktor (ragasztó, fordító lefoglal neki memóriát)</li>
+<li>(<code>Tree a</code>): leszármazott típus, lehet <code>Tree Int</code> vagy <code>Tree String</code> is</li>
+</ul></li>
+</ul>
+<p>Típus használata</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">fa <span class="fu">=</span> <span class="dt">Node</span> <span class="dv">2</span> (<span class="dt">Node</span> <span class="dv">1</span> <span class="dt">Leaf</span> <span class="dt">Leaf</span>) (<span class="dt">Node</span> <span class="dv">3</span> <span class="dt">Leaf</span> <span class="dt">Leaf</span>)</code></pre></div>
+<p>Lehet akár két különböző típusparamétere, <code>a</code> és <code>b</code>, ekkor kétparaméteres lesz</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Tree</span> a b <span class="fu">=</span> <span class="dt">Node</span> b (<span class="dt">Tree</span> a b) (<span class="dt">Tree</span> a b)
+              <span class="fu">|</span> <span class="dt">Leaf</span> a                        <span class="co">-- most Leaf-ben is tárolok értéket</span></code></pre></div>
+<h4 id="paraméternélküli-adattípus">Paraméternélküli adattípus</h4>
+<ul>
+<li>Nem adok típusváltozót paraméterként</li>
+<li>Ilyen például a felsorolásos típus (<em>enumeration</em>)</li>
+<li>Tipikusan összeg típusokból áll</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Day</span> <span class="fu">=</span> <span class="dt">Mon</span> <span class="fu">|</span> <span class="dt">Tue</span> <span class="fu">|</span> <span class="dt">Wed</span> <span class="fu">|</span> <span class="dt">Thu</span> <span class="fu">|</span> <span class="dt">Fri</span> <span class="fu">|</span> <span class="dt">Sat</span> <span class="fu">|</span> <span class="dt">Sun</span></code></pre></div>
+<ul>
+<li><code>Day</code> típuskonstruktornak hét darab adatkonstruktora van</li>
+</ul>
+<h4 id="rekurzív-adattípusok">Rekurzív adattípusok</h4>
+<ul>
+<li>Olyan adattípus, ami saját magát is tartalmazza más értékkel</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">List</span> a <span class="fu">=</span> <span class="dt">Cons</span> a (<span class="dt">List</span> a)
+            <span class="fu">|</span> <span class="dt">Nul</span></code></pre></div>
+<ul>
+<li>Lista adatkonstruktorai
+<ul>
+<li><code>Nul</code>: üres lista (<code>[]</code>)</li>
+<li><code>Cons</code>: összeragasztott lista (<code>:</code>)</li>
+</ul></li>
+</ul>
+<h4 id="más-adattípusok-felírása">Más adattípusok felírása</h4>
+<p>Például parser-ek írásához kifejezésfákat (parse tree) BNF-formában megadhatjuk</p>
+<pre><code>:: Statement  = Skip
+              | Sequence Statement Statement
+              | Assign Var ArithmeticExpression
+              | If BoolExpression Statement Statement
+              | While BoolExpression Statement</code></pre>
+<h3 id="típusosztályok">2.2 Típusosztályok <a name="section02_02"></a></h3>
+<ul>
+<li>Hasonló egy interfészhez
+<ul>
+<li>Megad pár függvényt, melyet a típusnak teljesíteni kell</li>
+</ul></li>
+<li>Azt mondjuk: egy típusnak van példánya adott típusosztályra
+<ul>
+<li>amennyiben megadtunk egy példányt (instance)</li>
+<li>és definiáltuk a megfelelő függvényeket.</li>
+</ul></li>
+<li>Van lehetőség egy függvényre megadni „default” implementációt a többi függvény felhasználásánál.</li>
+<li>A függvények típusdeklarációiban előfordulhatnak típusparaméterek
+<ul>
+<li>Ezekre megadhatóak megszorítások</li>
+<li>Hiszen egyébként a paraméter helyére bármely típus behelyettesíthető lenne (ez a parametrikus polimorfizmus egyébként)</li>
+</ul></li>
+<li>A megszorításban megadható, milyen típusosztály példányokat várunk el az adott típustól.</li>
+<li>Egyes funkcionális nyelvek képesek az alapvető típusosztályok függvényeit automatikusan levezetni egy típus számára (<code>deriving</code>). Ezek beépített, egyszerűbb típusosztályok
+<ul>
+<li><code>Eq</code>: egyenlőség</li>
+<li><code>Ord</code>: rendezés</li>
+<li><code>Show</code>: sztringgé alakítás</li>
+<li><code>Read</code>: beolvasás sztringből</li>
+</ul></li>
+</ul>
+<h3 id="típuskonstruktorok">2.3 Típuskonstruktorok <a name="section02_03"></a></h3>
+<ul>
+<li>Típuskonstruktor: típus felépítése és származtatása. Például <code>List</code> és <code>Tree</code></li>
+<li>Adatkonstruktor: típuskonstruktor paramétere. Ezektől függ mi lesz a típus.</li>
+</ul>
+<p>Nulláris típuskonstruktor</p>
+<ul>
+<li>Ha nulla argumentuma van: nulláris típuskonstruktornak hívják (<em>nullary type constructor</em>)
+<ul>
+<li>Például <code>data Bool = True | False</code> (Haskell)</li>
+<li><code>Bool</code>: típuskonstruktor</li>
+<li><code>True</code> és <code>False</code>: két nullás adatkonstruktor</li>
+</ul></li>
+</ul>
+<p>Unáris típuskonstruktor</p>
+<ul>
+<li><code>data Tree a = Leaf | Node a (Tree a) (Tree a)</code></li>
+<li><code>Tree</code>: típuskonstruktor</li>
+</ul>
+<h3 id="kindok">2.4 Kindok <a name="section02_04"></a></h3>
+<ul>
+<li>Magasabb rendű típus: típust kap argumentumként (akárcsak magasabb rendű függvényeknél)</li>
+<li>Kind: típusok, amik információt mondanak el a kapott típusról</li>
+<li><p>&quot;Kind of a type&quot;, avagy &quot;mi a típus típusa?&quot;</p></li>
+<li>Elsőrendű típus kindja (konkrét típus vagy típuskonstans): *</li>
+<li>Magasabbrendű típus kindjai (Curry-zve írjuk őket)
+<ul>
+<li>Unáris típuskonstruktor kindja (egy típusparamétert fogad el): <span class="math inline">\(* \rightarrow *\)</span></li>
+<li>Bináris típuskonstruktor kindja (két típusparamétert fogad el): <span class="math inline">\(* \rightarrow * \rightarrow *\)</span></li>
+</ul></li>
+</ul>
+<p>Kind-ok nyelvtana: <span class="math display">\[K :== * | (K \rightarrow K)\]</span></p>
+<p>Kind-ok jobb asszociatívak (jobbról kezdjük a zárójelezést) <span class="math display">\[* \rightarrow * \rightarrow * = * \rightarrow (* \rightarrow *)\]</span></p>
+<h4 id="melyik-típus-milyen-kind-al-rendelkezik">Melyik típus milyen kind-al rendelkezik?</h4>
+<ul>
+<li><code>Int</code>: * (konkrét típus)</li>
+<li><code>Char</code>: * (konkrét típus)</li>
+<li><code>Bool</code>: * (konkrét típus)</li>
+<li><code>[a]</code>: <span class="math inline">\(* \rightarrow *\)</span> (unáris típuskonstruktor)
+<ul>
+<li>Mert még kell neki hogy milyen típusú lista lesz belőle</li>
+<li>Ne felejtsd el, <code>[a]</code> ugyanaz mint <code>[] a</code></li>
+</ul></li>
+<li><code>List</code>: <span class="math inline">\(* \rightarrow *\)</span> (unáris típuskonstruktor)
+<ul>
+<li><code>data List a = Nil | Cons a (List a)</code></li>
+<li>Argumentum: milyen típusú értékek legyenek a listában és milyen típusú értéket ragasszon össze <code>Cons</code></li>
+</ul></li>
+<li><code>Tree</code>: <span class="math inline">\(* \rightarrow * \rightarrow *\)</span> (bináris típuskonstruktor)
+<ul>
+<li><code>data Tree a b = Leaf a | Node b (Tree a b) (Tree a b)</code></li>
+<li>Argumentumok: milyen típusú legyen <code>a</code>, majd utána milyen típusú legyen <code>b</code></li>
+</ul></li>
+</ul>
+<h2 id="monadikus-programozás">3.Monadikus programozás <a name="chapter03"></a></h2>
+<ul>
+<li>Módszer mellyel számításokat lehet építeni
+<ul>
+<li>Funkcionális nyelvekben adattípus, amiben a számítások lépések láncaiként vannak definiálva</li>
+<li>Monád meghatározza hogy az összekombinált számítások hogyan alkossanak egy új számítást</li>
+</ul></li>
+<li>Három fő művelet:
+<ul>
+<li>bind (<code>&gt;&gt;=</code>)</li>
+<li><code>&gt;&gt;</code></li>
+<li><code>return</code></li>
+</ul></li>
+<li>Ha nem lennének monadikus műveletek, akkor fejjel lefelé nézne ki egy program tele lambda kifejezésekkel</li>
+<li>Pure programming: funkcionális nyelvekben nincsenek mellékhatások.
+<ul>
+<li>Monádok: &quot;Lennél szíves csinálni nekem egy mellékhatást?&quot; (<em>Rinus Plasmeijer</em>)</li>
+</ul></li>
+</ul>
+<h4 id="monad-mint-típusosztály">Monad mint típusosztály</h4>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">class</span> <span class="dt">Monad</span> m <span class="kw">where</span>
+<span class="ot">    return ::</span> a <span class="ot">-&gt;</span> m a
+    (<span class="fu">&gt;&gt;=</span>) <span class="kw">infixl</span> <span class="dv">1</span><span class="ot"> ::</span> (m a) (a <span class="ot">-&gt;</span> m b) <span class="ot">-&gt;</span> m b
+
+    (<span class="fu">&gt;&gt;</span>) <span class="kw">infixl</span> <span class="dv">1</span><span class="ot"> ::</span> (m a) (m b) <span class="ot">-&gt;</span> m b
+    (<span class="fu">&gt;&gt;</span>) m k <span class="fu">:==</span> m <span class="fu">&gt;&gt;=</span> \_ <span class="ot">-&gt;</span> k
+
+<span class="ot">    fail ::</span> <span class="dt">String</span> <span class="ot">-&gt;</span> m a</code></pre></div>
+<p>Amikor ezt a típuszosztályt akarjuk példányosítani</p>
+<ul>
+<li><code>&gt;&gt;</code> műveletet már meg se kell adni az instance-ban, mert <code>&gt;&gt;=</code> definíciójából származtatjuk</li>
+</ul>
+<h3 id="return">return</h3>
+<ul>
+<li>Egyszerű típusból (<code>a</code>) fogja az értéket <span class="math inline">\(\Longrightarrow\)</span> monadikus értéket (<code>m a</code>) csinál belőle</li>
+<li>Értéket beemeli a monadikus környezetbe</li>
+<li>Szerencsétlen elnevezése van, semmi köze az imperatív megfelelőjéhez, nem tér vissza semmivel</li>
+</ul>
+<h3 id="bind-művelet">Bind művelet (&gt;&gt;=)</h3>
+<ul>
+<li>Számítás eredményét másik akcióhoz rendeli</li>
+<li>Argumentumként vesz
+<ul>
+<li>Monadikus értéket (<code>m a</code>)</li>
+<li>Függvényt, mely egyszerű típusból monadikus értéket csinál (<code>a -&gt; m b</code>)</li>
+</ul></li>
+<li>Visszatérési értéke újabb monadikus érték lesz (<code>m b</code>)</li>
+<li>Utána lambdakifejezést kell használni</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">f <span class="fu">&gt;&gt;=</span> \x <span class="ot">-&gt;</span> return x</code></pre></div>
+<h3 id="section">&gt;&gt;</h3>
+<ul>
+<li>Bind-ból származtatott művelet</li>
+<li>Nem bind-ol semmilyen eredményt</li>
+<li>Szekvenciaként lehet felfogni</li>
+<li>Programozható pontosvesszőnek is mondják</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">m <span class="fu">&gt;&gt;</span> k
+
+(<span class="fu">&gt;&gt;</span>) m k <span class="fu">=</span> m <span class="fu">&gt;&gt;=</span> \_ <span class="ot">-&gt;</span> k</code></pre></div>
+<h4 id="maybe">Maybe</h4>
+<ul>
+<li>Mellékhatás: számítás eredményének opcionalitása adható meg
+<ul>
+<li>Exception-ök szimulálása</li>
+<li>&quot;Hiba&quot; a függvényből felfele propagálódik</li>
+</ul></li>
+<li>Ha függvény adott pontban nem értelmezhető: <code>Nothing</code></li>
+<li>Ha igen: számításokat sorba is kapcsolhatjuk bind-al amíg van eredmény</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">::</span> <span class="dt">Maybe</span> a <span class="fu">=</span> <span class="dt">Just</span> a
+           <span class="fu">|</span> <span class="dt">Nothing</span>
+
+<span class="kw">instance</span> <span class="dt">Monad</span> <span class="dt">Maybe</span> <span class="kw">where</span>
+    return x <span class="fu">=</span> <span class="dt">Just</span> x
+    (<span class="fu">&gt;&gt;=</span>) (<span class="dt">Just</span> m) k <span class="fu">=</span> k m
+    (<span class="fu">&gt;&gt;=</span>) _ _ <span class="fu">=</span> <span class="dt">Nothing</span></code></pre></div>
+<h4 id="state">State</h4>
+<ul>
+<li>Mellékhatás: bármilyen típusú állapotinformációt lehet rendelni számításhoz</li>
+<li>Bemenetként állapotot kap</li>
+<li>Kiementként
+<ul>
+<li><code>t</code> típusú visszatérési értéket</li>
+<li>és egy <code>s</code> típusú új állapotot add</li>
+</ul></li>
+<li>Önmagában még nem monád, hanem absztrakt monád
+<ul>
+<li>állapot típusával, <code>s</code>-el paraméterezhető</li>
+</ul></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">::</span> <span class="dt">State</span> s a <span class="fu">=</span> <span class="dt">ST</span> (<span class="dt">S</span> s a)     <span class="co">-- Clean nyelv</span>
+
+<span class="ot">unST ::</span> (<span class="dt">State</span> s a) <span class="ot">-&gt;</span> <span class="dt">S</span> s a
+unST (<span class="dt">ST</span> m) <span class="fu">=</span> m</code></pre></div>
+<ul>
+<li><code>State</code> kétparaméteres típus, <code>Monad</code> csak egy
+<ul>
+<li>nem baj, mert <code>State</code> kind-jait lehet Curry-zni</li>
+</ul></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> <span class="dt">Monad</span> (<span class="dt">State</span> s) <span class="kw">where</span>  <span class="co">-- (State s) absztrakt monád, kell még s típusa</span>
+    return x <span class="fu">=</span> <span class="dt">ST</span> (return_S x)
+    (<span class="fu">&gt;&gt;=</span>) m k <span class="fu">=</span> <span class="dt">ST</span> ((unST m) bind_S (\x <span class="ot">-&gt;</span> unST (k x)))</code></pre></div>
+<h4 id="list-monád">List monád</h4>
+<ul>
+<li>Lista típusára, <code>[]</code> típusra is felírható egy monadikus típuspéldány
+<ul>
+<li>Listák segtíségével is lehet monadikus műveleteket ábrázolni</li>
+</ul></li>
+<li>Mellékhatás:
+<ul>
+<li>egy monadikus akciót egyszerre több elemen lehet végrehajtani</li>
+<li>ezeket az elemeket újra listává ragasztjuk össze</li>
+</ul></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> <span class="dt">Monad</span> [] <span class="kw">where</span>
+    return x <span class="fu">=</span> [x]
+    (<span class="fu">&gt;&gt;=</span>) m k <span class="fu">=</span> flatten [k x \\ x <span class="ot">&lt;-</span> m]</code></pre></div>
+<h4 id="do-jelölés">&quot;do&quot; jelölés</h4>
+<ul>
+<li>Szintaktikai cukor monadikus programozásra Haskell-ban</li>
+<li>Megfelelő átírási szabályok, melyekkel olvashatóbbá tehető a program</li>
+<li>Mintha imperatívan programoznánk</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">do</span> { e1; e2 }         <span class="co">-- e1 &gt;&gt; do { e2 }</span>
+
+<span class="kw">do</span> { p <span class="ot">&lt;-</span> e1; e2 }    <span class="co">-- e1 &gt;&gt;= \x -&gt; case x of p -&gt; do { e2 }</span>
+                      <span class="co">--                        _ -&gt; fail &quot;error&quot;</span>
+
+<span class="kw">do</span> { <span class="kw">let</span> p <span class="fu">=</span> e1; e2 } <span class="co">-- let p = e1 in do { e2 }</span>
+
+<span class="kw">do</span> { e }              <span class="co">-- e</span></code></pre></div>
+<h2 id="további-források">4.További források <a name="references"></a></h2>
+<ul>
+<li>Egy korábbi Funkcionális Nyelvek 1 vizsga anyagom</li>
+<li>Korábbi záróvizsga tételkidolgozások</li>
+<li>http://lambda.inf.elte.hu/fp/Index.xml</li>
+<li>https://wiki.haskell.org/Thunk</li>
+<li>https://wiki.haskell.org/Fold</li>
+<li>https://wiki.haskell.org/Constructor</li>
+<li>https://wiki.haskell.org/Monad</li>
+<li>http://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html</li>
+</ul>
+</body>
+</html>

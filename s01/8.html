@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="s01-8-komponens-alapú-szoftverfejlesztés-2">S01-8 Komponens alapú szoftverfejlesztés 2</h1>
+<h2 id="tartalom">Tartalom</h2>
+<ol style="list-style-type: decimal">
+<li><a href="#chapter01">Komponens megvalósítása: kölcsönhatás modell, viselkedési vagy algoritmikus modell és strukturális modell.</a></li>
+<li><a href="#chapter02">Komponens megtestesítés: finomítás és fordítás, a normál objektum forma (NOF) fogalma, komponensek újrafelhasználása, polcról levett komponensek, rendszer létrehozása komponensekből, termékcsalád fogalma.</a></li>
+<li><a href="#chapter03">Rendszer létrehozása polcról levehető komponensekből.</a></li>
+<li><a href="#chapter04">A burkoló és a híd fogalma, szerepük.</a></li>
+</ol>
+<hr />
+<h2 id="komponens-megvalósítása">1. Komponens megvalósítása <a name="chapter01"></a></h2>
+<ul>
+<li>azon dokumentumok gyűjteménye, melyek együttesen leírják a komponens megvalósításának módját</li>
+<li>mindent tartalmaz ami a specifikáció alapján történő implementációhoz szükséges</li>
+<li>magasabb szintű komponensek kompozícióval valósíthatók meg</li>
+<li>a kobra modellben az egész termék/alkalmazás is egy nagy komponens, ami kisebb komponensek kompozíciója</li>
+</ul>
+<p><strong>A megvalósítás tartalmazza:</strong></p>
+<ul>
+<li>az al-komponensek specifikációját és a tőlük elvárt szolgáltatások interfészét</li>
+<li>illetve saját megvalósítását, amely alatt a komponens nem látható privát részének megvalósítását értjük</li>
+</ul>
+<p><strong>A megvalósítás dokumentumai tartalmazzák:</strong></p>
+<ul>
+<li>a komponens belső felépítésének modelljét UML osztály-, és objektum diagramok formájában</li>
+<li>a komponensben megvalósított algoritmusok specifikációja UML aktivitás diagramok formájában</li>
+<li>más komponensekkel való kölcsönhatásait UML szekvencia és együttműködés diagramokkal</li>
+</ul>
+<div class="figure">
+<img src="img/component_metamodel.png" alt="Komponens megvalósítás meta-modellje" />
+<p class="caption">Komponens megvalósítás meta-modellje</p>
+</div>
+<h3 id="kölcsönhatás-modell">1.1 Kölcsönhatás modell</h3>
+<ul>
+<li>a vezérlés folyamatát mutatják be a komponens példány perspektívájából</li>
+<li>ezeket kölcsönhatás diagramokkal írjuk le</li>
+</ul>
+<h3 id="viselkedési-vagy-algoritmikus-modell">1.2 Viselkedési vagy algoritmikus modell</h3>
+<ul>
+<li>a komponens műveleteit részletesebben specifikáljuk: aktivitás diagramokat készítünk, melyekkel leírjuk azokat az algoritmusokat, melyek a specifikációban leírt műveleteket valósítják meg</li>
+<li>a specifikáció viselkedési modelljében leírt műveletek finomítása</li>
+<li>az algoritmus belső, specifikációban nem látható részeinek definiálása</li>
+<li>megadhatjuk a megvalósítás nyelvét is</li>
+</ul>
+<h3 id="strukturális-modell">1.3 Strukturális modell</h3>
+<ul>
+<li>leírja azon osztályok fajtáit és kapcsolatait amelyekből a komponens felépül</li>
+<li>valamint a komponens belső architektúráját</li>
+<li>a specifikáció strukturális modelljének a finomítása</li>
+<li>olyan elemek is megjelennek amelyek a specifikáció szintjén még nem (pl.: osztályok, a specifikációban még csak komponensek voltak)</li>
+</ul>
+<h2 id="komponensek-megtestesítése-embodiment">2. Komponensek megtestesítése (embodiment) <a name="chapter02"></a></h2>
+<p>Azon tevékenységek összefoglaló neve, amelyek során a rendszerünk absztrakt specifikációból konkrétabb, például végrehajtható, vagy telepíthető komponenst hozunk létre.</p>
+<p><strong>A megtestesítés lépései:</strong></p>
+<ul>
+<li>Keressünk már létező komponenseket, melyek megfelelnek a specifikáció által támasztott követelményeknek <span class="math inline">\(\Longrightarrow\)</span> Ha nincs ilyen, új komponenst készítünk</li>
+<li>Integráljuk ezeket a rendszerünkbe</li>
+<li>Fordítás (összeépítés)</li>
+<li>Telepítsük a célhardverre</li>
+</ul>
+<p>Egy modell transzformálása forráskóddá manuális tevékenység, nem automatizálható, mert a modell és a forráskód szemantikus leírása különbözik: más a jelölésmód (szintaxis) és a leírás szemantikája is</p>
+<div class="figure">
+<img src="img/manual_transform.png" alt="Manuális transzformálás" />
+<p class="caption">Manuális transzformálás</p>
+</div>
+<h3 id="finomítás-és-fordítás">2.1 Finomítás és fordítás</h3>
+<p><strong>Két alapvető elv:</strong></p>
+<ul>
+<li>finomítás és fordítás szigorú megkülönböztetése</li>
+<li>használjuk a Normal Object Form (NOF) implementációs profilt, hogy minimalizáljuk az információs szakadékot az OO modellek és az adott OO nyelven elkészítendő program között</li>
+</ul>
+<p><strong>Finomítás:</strong> Egy reláció ugyanazon dolog kétféle leírása között, csak az újabb már jobban részletezett.</p>
+<p><strong>Fordítás:</strong> Egy reláció egy dolog két különböző leírása között, azonos részletességi szinten.</p>
+<p>A fenti két lépés alapján a manuális transzformáció felbontása:</p>
+<ul>
+<li>Finomítsuk a komponensünk modelljét első lépésen úgy, hogy egy megfelelően részletes modellt kapjunk.</li>
+<li>Ez a szint már alkalmas arra, hogy onnan transzformációval forráskódot kapjunk.</li>
+</ul>
+<div class="figure">
+<img src="img/compile.png" alt="Finomítás és fordítás" />
+<p class="caption">Finomítás és fordítás</p>
+</div>
+<h3 id="nof-normal-object-form">2.2 NOF (Normal Object Form)</h3>
+<ul>
+<li>UML profil: az UML kiegészítése nem szabványos elemekkel, melyek segítik a modell leképezését úgy, hogy közben az eredeti modell szemantikus elemeit finomítják. A létrejövő finomított modell így ellentmondásmentes lesz.</li>
+<li>többféle UML profil definiálható egy specifikációs modellhez (tesztelési, implementációs)</li>
+<li>a NOF egy ilyen implementációs profil, mely az UML-t leképezi az OO nyelvek alapvető fogalmaira, majd ez tovább finomítható konkrét programozási nyelvekre</li>
+</ul>
+<p><strong>Elemei:</strong></p>
+<ul>
+<li>egy olyan UML részhalmaz, mely az implementációs szint elemeinek modellezésére alkalmas</li>
+<li>sztereotípiák mint új modellező elemek</li>
+<li>megszorítások a régi és új elemekre</li>
+</ul>
+<h3 id="komponensek-újrafelhasználása">2.3 Komponensek újrafelhasználása</h3>
+<p>Kompozíció/dekompozíció és absztrakció/konkretizáció dimenziókhoz tartozó aktivitás. Általában az újrafelhasznált komponens nem felel meg a specifikációnak teljes mértékben, megoldás lehet:</p>
+<ul>
+<li>Az elkészült modell megváltoztatása, de ez szembemegy a modell alapú szoftverfejlesztéssel.</li>
+<li>Az újrafelhasznált komponens átírása → túl bonyolult lehet, vagy akár lehetetlen.</li>
+<li>Átalakító (adapter) komponens bevezetése, pl. wrapper osztály</li>
+</ul>
+<p>Ha nem sikerül már meglévő komponenst találni, egy újat kell létrehozni:</p>
+<ul>
+<li>További dekompozíciós lépések lehetnek szükségesek, hogy megtaláljuk az illeszkedő implementációt.</li>
+<li>Ha elkészült, integrálhatjuk az új komponenst a rendszerünkbe.</li>
+</ul>
+<h3 id="polcról-levett-komponensek-cots">2.4 Polcról levett komponensek (COTS)</h3>
+<p><strong>COTS (Commercial off-the-shelf) komponens:</strong> egy óriási funkcionalitással felvértezett, gyorsan hozzáférhető, készre csomagolt szoftver. A belsejéről semmit nem tudunk, kizárólag a funkciói és a kommunikációt bonyolító interfészei publikusak.</p>
+<p>Az összetettebb, nagy rendszerek fejlesztésénél egyre inkább előtérbe kerülnek a polcról levehető, kész komponensek. Fő okai:</p>
+<ul>
+<li><strong>Gazdaságosság:</strong> kevesebb időt, munkaerőt, ezáltal pénzt emészt fel egy készre gyártott komponens megvásárlása</li>
+<li><strong>Szakértelem hiánya:</strong> az egyes tudományterületeken olyan mértékű a specializáció, hogy nehézkes és költséges a megfelelő szakemberek alkalmazása</li>
+</ul>
+<h3 id="rendszer-létrehozása-komponensekből-felépítés-telepítés">2.5 Rendszer létrehozása komponensekből (felépítés, telepítés)</h3>
+<p>A megtestesítés folyamatának két utolsó lépése tartozik ide, úgy mint a fizikai komponensek elkészítése és azok telepítése a célplatformra. Különböző telepítési forgatókönyvek léteznek a telepítésre:</p>
+<ul>
+<li>Egy vagy több logikai komponenst egy fizikai komponenssé transzformálunk.</li>
+<li>Egy logikai komponenst több fizikai komponenssé transzformálunk.</li>
+<li>Több logikai komponenst több fizikai komponensé transzformálunk.</li>
+</ul>
+<p>Pontos irányelvek nincsenek arra, hogy hogyan konstruáljuk meg és telepítsük fel a rendszerünket.</p>
+<h3 id="termékcsalád-fogalma">2.6 Termékcsalád fogalma</h3>
+<p>Azon elvek, amik szerint már eleve újrafelhasználható, generikus komponenseket lehet létrehozni (az eddigiekben egy adott probléma megoldásához készített komponensek újrafelhasználhatóvá tételével foglalkoztunk). Itt az újrafelhasználás kérdése már az architektúra szintjén jelenik meg.</p>
+<p><strong>Termékcsalád:</strong> egy generikus rendszer vagy pontosabban egy generikus komponens keretrendszer, amely alkalmas több hasonló rendszer létrehozására.</p>
+<p><strong>Termékcsalád mérnökség:</strong> A termékcsalád mérnökség nem más mint egy felhasználó által tervezett komponens újrafelhasználásának egy szervezési módja.</p>
+<div class="figure">
+<img src="img/product_line.png" alt="Termékcsalád" />
+<p class="caption">Termékcsalád</p>
+</div>
+<p>Egy új fejlesztési dimenziót hoz be a szoftverfejlesztésbe, ez az alkalmazás és keretrendszer mérnökség. Az alkalmazás mérnökség a közös mag példányosításával foglalkozik, még a keretrendszer mérnökség a közös mag kifejlesztésével, vagyis:</p>
+<ul>
+<li>Egy keretrendszer kifejlesztésénél ugyanazokat a fejlesztési, modellezési és tervezési lépéseket kell végrehajtani, mint egy egyedi rendszer létrehozásakor.</li>
+<li>Egy keretrendszer nem más, mint komponensek olyan nem teljes összeállítása, amelyet további komponensekkel teljessé kell tenni, hogy egy egyedi rendszer előálljon.</li>
+<li>Egy egyedi rendszer tehát egy generikus termékcsalád egy példánya.</li>
+</ul>
+<h2 id="rendszer-létrehozása-polcról-levehető-komponensekből">3. Rendszer létrehozása polcról levehető komponensekből</h2>
+<p>Az újrafelhasználhatóság akkor a legegyszerűbb, ha a specifikációk megegyeznek (elvárt és kínált).</p>
+<div class="figure">
+<img src="img/component_integration.png" alt="COTS integráció" />
+<p class="caption">COTS integráció</p>
+</div>
+<p>A 2.23. ábra baloldala azt az általános esetet mutatja be, amikor a felhasználó a fejlesztést ezen szempontok figyelembevételével készíti el. A 2.23. ábra jobboldala ellenben azt az esetet mutatja be, amikor szintaktikus és szemantikus eltérés van az elvárt és a szolgáltatott interfészek között.</p>
+<h4 id="megfelelési-térkép-elkészítése">Megfelelési térkép elkészítése</h4>
+<ul>
+<li>Leírja egy COTS komponens kívülről látható tulajdonságait egy olyan leképezés segítségével, amely megadja azt, hogy a COTS komponens kifejlesztésekor használt jelölés és az általunk használt között mi a kapcsolat.</li>
+</ul>
+<h4 id="szemantikus-térkép-elkészítése">Szemantikus térkép elkészítése</h4>
+<ul>
+<li>Ha egy megfelelési térkép összeállítása után pozitív a döntésünk egy komponens újra felhasználása tekintetében, akkor a következő lépés a szemantikus térkép létrehozása.</li>
+<li>A szemantikus térkép a két komponens (a megtervezett és a felhasználni szánt) specifikációjának hasonlóságaira és különbözőségeire koncentrál és megpróbálja modellezni a leképezést a két eltérő interfész között.</li>
+</ul>
+<p><em>Megjegyzés: megfelelési térkép - összehasonlíthatóak-e (jelölésrendszer), szemantikus térkép -mi a különbség és a hasonlóság</em></p>
+<div class="figure">
+<img src="img/cots_integration.png" alt="COTS integráció" />
+<p class="caption">COTS integráció</p>
+</div>
+<h2 id="a-burkoló-és-a-híd-fogalma-szerepük">4. A burkoló és a híd fogalma, szerepük</h2>
+<p><strong>Wrapper (burkoló):</strong> egy különleges komponens a beburkolandó komponens és a környezete közé</p>
+<ul>
+<li>hasznos ha nehéz/költséges megváltoztatni a komponenst, amikor egy új rendszerbe akarjuk integrálni</li>
+<li>egyszerűbb lehet a wrapperen keresztül új funkciókat hozzáadni</li>
+<li>használható cache-elésre, bufferelésre</li>
+</ul>
+<p><strong>Bridge (híd):</strong> egy tetszőleges komponens követelményeit fordítja át egy másik komponens számára, hogy biztosítsa neki a szükséges feltételeket</p>
+<ul>
+<li>teljesen független bármely komponenstől</li>
+<li>explicit meg kell hívni kívülről</li>
+<li>pl.: egy híd PostScriptből PDF-et készít</li>
+</ul>
+<h2 id="további-források">További források</h2>
+<ul>
+<li>Előző kidolgozott záróvizsga tételek</li>
+<li>http://people.inf.elte.hu/biaeadt/komp/06-COTS-eloadas.pdf</li>
+</ul>
+</body>
+</html>

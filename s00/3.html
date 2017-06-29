@@ -1,0 +1,567 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="s00-03-formális-szemantika">S00-03 Formális szemantika</h1>
+<h2 id="tartalom">Tartalom</h2>
+<ol style="list-style-type: decimal">
+<li><a href="#chapter01">Formális kontra informális definíciók, a formális szemantika alkalmazási területei, a szemantikamegadási módszerek áttekintése</a></li>
+<li><a href="#chapter02">Mesterséges nyelvek konkrét és absztrakt szintaxisa</a></li>
+<li><a href="#chapter03">Statikus és dinamikus szemantika</a></li>
+<li><a href="#chapter04">Attribútum-grammatikák és alkalmazásaik</a></li>
+<li><a href="#chapter05">Alapvető imperatív nyelvi elemek strukturális és természetes műveletei, illetve leíró szemantikája, hasonlóságok és különbségek</a></li>
+<li><a href="#chapter06">Kompozicionális és strukturális indukció</a></li>
+<li><a href="#chapter07">Rekurzív függvények és ciklusok leíró szemantikája, fixpont-elmélet</a></li>
+<li><a href="#references">További források</a></li>
+</ol>
+<h2 id="formális-kontra-informális-definíciók-a-formális-szemantika-alkalmazási-területei-a-szemantikamegadási-módszerek-áttekintése">1. Formális kontra informális definíciók, a formális szemantika alkalmazási területei, a szemantikamegadási módszerek áttekintése <a name="chapter01"></a></h2>
+<h3 id="bevezetés">Bevezetés</h3>
+<ul>
+<li>Nyelvek informális specifikációjának fő gondja az, hogy félreérthető, ez a programnyelvek szemantikájának megadásakor is előjött.
+<ul>
+<li>Általában angolul adták meg a dokumentációkban, természetes nyelvű leírással</li>
+<li>Például <code>if &lt;cond&gt; then &lt;stm&gt; fi</code></li>
+<li>&quot;Itt a fordító, ezt meg azt csinálja&quot;</li>
+</ul></li>
+<li>Informális leírás problémát okoz a fordító tervezőknek és a programozóknak is.
+<ul>
+<li>Ellenben matematikával és matematikai logikával</li>
+</ul></li>
+<li>A formális megadás komoly feladat: dokumentációt ad, a rossz koncepciók kijönnek <span class="math inline">\(\Longrightarrow\)</span> precíz!
+<ul>
+<li>Viszont nehezebb készíteni és bonyolultabb megérteni</li>
+</ul></li>
+<li>Alkalmazási területei:
+<ul>
+<li>Fordítóprogramok</li>
+<li>Parser generátorok</li>
+<li>Generátor generátorok</li>
+<li>Fordító fordítók</li>
+</ul></li>
+</ul>
+<p><strong>Formális szemantika</strong>: programok jelentésének</p>
+<ul>
+<li>szigorú</li>
+<li>precíz</li>
+<li>egyértelmű</li>
+<li>matematikai definíciója</li>
+</ul>
+<h3 id="formális-szemantika-előnyei">Formális szemantika előnyei</h3>
+<ol style="list-style-type: decimal">
+<li>Alapvető dokumentáció</li>
+<li>Félreérthető elemek feltárása</li>
+<li>Precíz jelentésfogalom <span class="math inline">\(\Longrightarrow\)</span> bizonyíthatóság</li>
+</ol>
+<h3 id="három-fő-komponens">Három fő komponens</h3>
+<ol style="list-style-type: decimal">
+<li>Szintaxis
+<ul>
+<li>szimbólumok sorozatának megadása, ami jelent is valamit</li>
+</ul></li>
+<li>Szemantika
+<ul>
+<li>helyesen formált programok hatása</li>
+</ul></li>
+<li>Pragmatika
+<ul>
+<li>olvasható, konvencionális, hatékony kód írásának módja</li>
+</ul></li>
+</ol>
+<h3 id="megközelítései">Megközelítései</h3>
+<ol style="list-style-type: decimal">
+<li><strong>Attribútum grammatikákkal</strong>
+<ul>
+<li>Átírási szemantika megadása</li>
+<li>Másik nyelvre fordítunk át</li>
+<li>Statikus szemantika elemzéshez szükséges</li>
+<li>Alkalmazás: grammatikák írása, szintaktikus-, szemantikus parser és kódgenerátor előállítása fordítóhoz</li>
+</ul></li>
+<li><strong>Operációs (műveleti) szemantikával</strong>
+<ul>
+<li>Azoknak, akik tudni akarják hogyan hajtódik végre a program</li>
+<li>Konfigurációt készít a programhoz</li>
+<li>Két fajtája
+<ul>
+<li>Strukturális (Small-step): program végrehajtása lépésről lépésre</li>
+<li>Természetes (Big-step): program végrehajtása kezdő állapotból végállapotba</li>
+</ul></li>
+<li>Alkalmazás: fordítók és értelmezők készítése</li>
+</ul></li>
+<li><strong>Denotációs (leíró) szemantikával</strong>
+<ul>
+<li>Nem érdekel hogyan hajtódik végre <span class="math inline">\(\Longrightarrow\)</span> hanem hogy milyen eredmények lesznek</li>
+<li>Programok és részeinek leképzése matematikai jelölésekre</li>
+<li>Nyelvi elemek jelentésének megadása kompozicionálisan (<em>lásd 6. fejezet</em>)</li>
+<li>Absztraktabb az operációs szemantikánál</li>
+<li>Alkalmazás: nyelvtervezés és helyességbizonyítás</li>
+</ul></li>
+<li><strong>Axiomatikus szemantikával</strong>
+<ul>
+<li>Program jelentésének specifikálása elő- és utófeltétellel (Hoare-hármasok)</li>
+<li>Még a denotációs szemantikánál is absztraktabb</li>
+</ul></li>
+</ol>
+<h2 id="mesterséges-nyelvek-konkrét-és-absztrakt-szintaxisa">2. Mesterséges nyelvek konkrét és absztrakt szintaxisa <a name="chapter02"></a></h2>
+<h3 id="konkrét-szintaxis">Konkrét szintaxis</h3>
+<ul>
+<li>&quot;Hogy írok jó mondatokat?&quot;</li>
+<li>Megadja, hogy a programnyelvben, hogy lehet mondatokat, kifejezéseket leírni.</li>
+<li>Pontos, konkrét leírást ad a nyelvi elemekről.</li>
+<li>Szintaktikus elemzőt, lexikális elemzőt (<em>lexical analyzer</em>) tudunk írni ezzel a jelöléssel</li>
+</ul>
+<pre><code>&lt;assignment&gt; ::= &#39;LET&#39; &lt;variable&gt; &#39;:=&#39; &lt;expression&gt; &#39;;&#39;</code></pre>
+<h3 id="absztrakt-szintaxis">Absztrakt szintaxis</h3>
+<ul>
+<li>&quot;Milyen szintaktikus kategóriák, elemek, konstrukciók vannak?&quot;</li>
+<li>Ez az absztrakt specifikáció adja a szemantikák definíciójának alapját</li>
+<li>Ez inkább matematikai leírás</li>
+<li>Absztrakt szintaxisfák felépítésének megadása</li>
+</ul>
+<p><span class="math display">\[A :== assignment(V, E)\]</span></p>
+<p>ahol</p>
+<ul>
+<li><em>A</em>: értékadás nemterminálisa (assigment)</li>
+<li><em>V</em>: változó nemterminálisa (variable)</li>
+<li><em>E</em>: kifejezés nemterminálisa (expression)</li>
+</ul>
+<h2 id="statikus-és-dinamikus-szemantika">3. Statikus és dinamikus szemantika <a name="chapter03"></a></h2>
+<p>Szintaxisnak nem minden elemét lehet környezetfüggetlen grammatikával kifejezni</p>
+<h3 id="statikus-szemantika">Statikus szemantika</h3>
+<ul>
+<li>&quot;Környezetfüggő szintaxis&quot;, a szintaxis és szemantika határa</li>
+<li>Szintaxishoz tartozik, &quot;mi számít értelmes mondatnak?&quot;</li>
+<li>Olyan tulajdonságok <span class="math inline">\(\Longrightarrow\)</span> amiket legtöbb esetben a fordító ellenőriz (fordítási időben való ellenőrzés)</li>
+<li>Kifejezőbb jelölésrendszer kell leírásukhoz mint környezetfüggetlen grammatika. Ezért itt környezetfüggő grammatika van</li>
+</ul>
+<h3 id="dinamikus-szemantika">Dinamikus szemantika</h3>
+<ul>
+<li>Mi a végső eredmény? Mit hajt végre a program?</li>
+<li>&quot;Futásidejű szemantika&quot;</li>
+<li>Például mi lesz <code>x + y</code> kiértékelése futásidőben?</li>
+</ul>
+<h3 id="példák">Példák</h3>
+<ul>
+<li><code>&quot;4&quot; == 4</code> erősen típusos nyelvekben (C, C++, Haskell)
+<ul>
+<li><span class="math inline">\(&lt;Exp&gt; == &lt;Exp&gt;\)</span></li>
+<li>Nem szintaktikai, hanem statikus szemantikai hiba</li>
+</ul></li>
+<li><code>&quot;4&quot; == 4</code> gyengén típusos nyelvekben (Python, JavaScript)
+<ul>
+<li>Van olyan nyelv, ami kasztolja 4-et és <code>true</code>-t ad</li>
+<li>Van olyan nyelv, ami meg <code>false</code>-t</li>
+<li>Statikus szemantika engedi</li>
+<li>Dinamikus szemantika nem</li>
+</ul></li>
+<li><code>&quot;4&quot; == &quot;4&quot;</code>
+<ul>
+<li>Java nyelvben: Java elfogadja</li>
+<li>Ám nem sztringek értékét hasonlítja össze, hanem String objektum referenciákat</li>
+<li>Statikus szemantika engedi</li>
+<li>Dinamikus szemantika is engedi</li>
+<li><strong>DE!</strong> Nem azt csinálja amit szeretnénk! Nem egyértelmű!</li>
+</ul></li>
+</ul>
+<h2 id="attribútum-grammatikák-és-alkalmazásaik">4. Attribútum-grammatikák és alkalmazásaik <a name="chapter04"></a></h2>
+<ul>
+<li>A szintaxist környezetfüggetlen grammatikákkal adják meg általában.</li>
+<li>Általában nagyobb nyelvet generál, mint amit a fordító elfogad.</li>
+<li>Kifejezi, hogy hogy kell egy kifejezést megkonstruálni, egymással összekombinálni, miként kell használni.</li>
+</ul>
+<h3 id="környezetfüggetlen-grammatika">Környezetfüggetlen grammatika</h3>
+<p><span class="math display">\[G = (T, N, P, S)\]</span></p>
+<p>ahol</p>
+<ul>
+<li><em>G</em>: maga a környezetfüggetlen grammatika</li>
+<li><em>T</em>: terminálisok (nyelv ábécéje)</li>
+<li><em>N</em>: nem-terminálisok (szintaktikus kategóriák)</li>
+<li><em>P</em>: létrehozási szabályok halmaza (produkciós szabályok, <em>production rules</em>)
+<ul>
+<li><em>p</em> produkciós szabályok <em>A</em> nemterminálisból (<span class="math inline">\(A \in N\)</span>) állítanak elő <span class="math inline">\(\alpha\)</span> szintaktikai elemet (<span class="math inline">\(\alpha \in (T \cup N)*\)</span>, <span class="math inline">\(\alpha\)</span> lehet nemterminális vagy terminális)</li>
+<li><span class="math inline">\(\forall p \in P: p \equiv A \rightarrow \alpha\)</span></li>
+</ul></li>
+<li><em>S</em>: kezdőllapot, eleme <em>N</em>-nek
+<ul>
+<li>eleme a nem-terminálosoknak (<span class="math inline">\(S \in N\)</span>)</li>
+<li>innen kezdünk el levezetési fákat gyártani</li>
+</ul></li>
+</ul>
+<p>Mitől környezetfüggetlen egy környezetfüggetlen grammatika?</p>
+<ul>
+<li><em>p</em> produkciós szabály bal oldalán: <em>A</em> nemterminális áll</li>
+<li><em>p</em> produkciós szabály jobb oldalán: <span class="math inline">\(\alpha\)</span> terminális vagy nemterminális áll</li>
+</ul>
+<h3 id="attribútum-grammatika">Attribútum grammatika</h3>
+<ul>
+<li>A szintaxisfa kidekorálásra kerül és minden csomópont rekorddá válik.</li>
+<li>Mire jók? Minek?
+<ul>
+<li>Parser generátorok</li>
+<li>Kódgenerálás (Visitor design pattern)</li>
+</ul></li>
+</ul>
+<h3 id="attribútum-grammatika-formálisan">Attribútum grammatika formálisan</h3>
+<p>Hogy csinálunk attribútum grammatikát?</p>
+<ul>
+<li>Veszünk egy <em>G</em> környezetfüggetlen grammatikát és hozzádobunk egy <em>ARC</em>-ot!</li>
+<li><em>Attributes, Rules, Conditions</em></li>
+</ul>
+<p><span class="math display">\[AG = (G, A, R, C)\]</span></p>
+<p>ahol</p>
+<ul>
+<li><em>AG</em>: maga az attribútum grammatika</li>
+<li><em>G</em>: egy környezetfüggetlen grammatika</li>
+<li><em>A (Attributes)</em>: az attribútumok halmaza
+<ul>
+<li>szimbólumokhoz tulajdonságok (attribútumok) rendelése</li>
+</ul></li>
+<li><em>R (Rules)</em>: az attribútumszámítási szabályok
+<ul>
+<li>egyszerű függvények</li>
+<li>paraméterük az attribútum</li>
+</ul></li>
+<li><em>C (Conditions)</em>: az attribútumszámítási feltételek
+<ul>
+<li>feltétel hogy milyen attribútum megengedett</li>
+<li>ha az attribútum kiszámítása után teljesül <span class="math inline">\(\Longrightarrow\)</span> boldog vagyok</li>
+</ul></li>
+</ul>
+<h3 id="attribútumok">Attribútumok</h3>
+<ul>
+<li>Attribútumokat rendelünk midnen <em>T</em> és <em>N</em>-beli terminálishoz és nemterminálishoz</li>
+</ul>
+<p>Jelölések:</p>
+<ul>
+<li><em>X</em>: terminális vagy nem terminális szimbólum</li>
+<li><em>Attr</em>: attribútum</li>
+<li><em>A(X)</em>: <em>X</em> szimbúlum attribútumainak halmaza</li>
+<li><em>X.Attr</em> vagy <em>Attr(X)</em>: <em>X</em> szimbúlum <em>Attr</em> nevű attribútuma
+<ul>
+<li>a két jelölés felcserélhető</li>
+</ul></li>
+</ul>
+<h3 id="attribútumok-típusai">Attribútumok típusai</h3>
+<p><strong>Szintetizált</strong></p>
+<ul>
+<li>Ha <em>p</em> egy olyan <span class="math inline">\(p = A \rightarrow \alpha\)</span> szabály
+<ul>
+<li>ahol <span class="math inline">\(r \in R(p)\)</span> attribútumszámítási szabály beállítja <em>A.Attr</em>-t</li>
+<li>tehát az <em>A.Attr</em> egy olyan <em>p</em> szabályban van <span class="math inline">\(\rightarrow\)</span> ahol <em>A</em> a <strong>bal oldalon</strong> van.</li>
+</ul></li>
+<li>Az attribútumfában felfelé szállít infót (gyerekből szülőbe)</li>
+</ul>
+<p><strong>Örökölt</strong></p>
+<ul>
+<li>Ha <em>p</em> egy olyan <span class="math inline">\(p = A \rightarrow \alpha X \beta\)</span> szabály (<span class="math inline">\(\alpha\)</span>: terminális, <em>X</em>: nemterminális, <span class="math inline">\(\beta\)</span>: terminális)
+<ul>
+<li>ahol <span class="math inline">\(r \in R(p)\)</span> attribútumszámítási szabály beállítja <em>X.Attr</em>-t</li>
+<li>tehát az <em>X.Attr</em> egy olyan <em>p</em> szabályban van <span class="math inline">\(\rightarrow\)</span> ahol <em>X</em> a <strong>jobb oldalon</strong> van.</li>
+</ul></li>
+<li>Az attribútumfában lefelé szállít infót (szülőből gyerekbe)</li>
+<li>Például kontextus megadása</li>
+</ul>
+<p>Egyéb tudnivalók az attribútumok típusairól:</p>
+<ul>
+<li>Egy szimbólum minden attribútumát maximum egy szabály számíthatja!</li>
+<li>Egy attribútum egyszerre szintetizált és örökölt nem lehet! Egyszerre csak az egyik!</li>
+<li>Levezetési fa gyökerében lévő kezdő <em>S</em> szimbúlumnak nem lehet örökölt attribútuma
+<ul>
+<li>Mert az ős kitől örökölne attribútumot?</li>
+</ul></li>
+</ul>
+<h3 id="jól-definiált-attribúm-grammatika-well-defined-attributum-grammatics-wag">Jól definiált attribúm grammatika (Well-defined Attributum Grammatics, WAG)</h3>
+<ul>
+<li>Minden származtatási fához létezik számítható attribútum sorrend
+<ul>
+<li>minden feltétel kiértékelhető</li>
+<li>egyszerűen implementálható, de nem determinisztikus algoritmussal</li>
+</ul></li>
+<li>Az attribútum függőségek körmentesek!</li>
+<li>WAG speciális osztályai
+<ul>
+<li>S attribútum grammatika
+<ul>
+<li>csak szintetizált attribútumok</li>
+<li>alulról felfelé bejárás</li>
+</ul></li>
+<li>L attribútum grammatika
+<ul>
+<li>szintetizált és örökölt attribútumokat is tartalmazhat</li>
+<li>felülről lefelé bejárás</li>
+<li>egyszeri bejárással kiszámíthatók az attribútumok</li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="alapvető-imperatív-nyelvi-elemek-strukturális-és-természetes-műveleti-illetve-leíró-szemantikája-hasonlóságok-és-különbségek">5. Alapvető imperatív nyelvi elemek strukturális és természetes műveleti, illetve leíró szemantikája, hasonlóságok és különbségek <a name="chapter05"></a></h2>
+<h3 id="állapotok-a-szemantikában">Állapotok a szemantikában</h3>
+<ul>
+<li>Az utasítások és kifejezések változókat tartalmaznak.</li>
+<li><span class="math inline">\(s \in State = Var \to \mathbb{Z}\)</span>, azaz
+<ul>
+<li><em>s</em> egy függvény <em>State</em> függvényhalmazban</li>
+<li>ami változóhoz (<em>Var</em>) egész értéket rendel (<span class="math inline">\(\mathbb{Z}\)</span>)</li>
+</ul></li>
+<li>Változó olvasása: <em>s[x]</em>
+<ul>
+<li><em>x</em> változó értéke az <em>s</em> állapotban</li>
+</ul></li>
+<li>Változó értékadása: <span class="math inline">\(s[y \rightarrow v]\)</span>
+<ul>
+<li><em>s</em> állapotban <em>y</em> változó értéke <em>v</em> lesz</li>
+</ul></li>
+</ul>
+<p>Ebből: <span class="math inline">\((s[y \rightarrow v])[x]\)</span></p>
+<ul>
+<li><em>v</em>, ha <em>x = y</em></li>
+<li>vagy <em>s[x]</em> minden egyéb esetben</li>
+</ul>
+<p>(<em>Egy másik formalizáltabb felírásban ami nincs a jegyzetben, de annak jó aki így könnyebben megtanulja:</em>)</p>
+<p><span class="math display">\[
+(s[y \rightarrow v])[x] =
+\begin{cases}
+    v&#39; &amp;\mbox{ha } x = y&#39; \\ 
+    s[x] &amp; \mbox{egyébként}
+\end{cases}
+\]</span></p>
+<h3 id="strukturális-operációs-szemantika">Strukturális operációs szemantika</h3>
+<ul>
+<li>Lépésről lépésre hajtódnak végre az állapotok.</li>
+<li>Az átmenetek az általános következtetéssel definiálhatóak, feladata egy végeredmény meghatározása.</li>
+</ul>
+<p>Átmenet</p>
+<ul>
+<li>Köztes lépés a számításban: <span class="math display">\[\langle S, s \rangle \Longrightarrow \langle S&#39;, s&#39; \rangle \qquad
+  s, s&#39; \in State\]</span></li>
+<li><em>S</em> végrehajtásának végetérése <span class="math inline">\(s&#39;\)</span> állapotot eredményezve: <span class="math display">\[\langle S, s \rangle \Longrightarrow s&#39;
+\qquad s, s&#39; \in State\]</span></li>
+</ul>
+<h4 id="skip-strukturális-operációs-szemantikája">Skip strukturális operációs szemantikája</h4>
+<span class="math display">\[\begin{align*}
+\cline{1-2}
+&amp; \langle \textbf{skip}, s \rangle \Longrightarrow s
+\end{align*}\]</span>
+<ul>
+<li><em>s</em> állapotban kiértékelem <strong>skip</strong>-et és <em>s</em>-be kerülök</li>
+<li><strong>NEM AZ VAN</strong> hogy &quot;nem csinál semmit&quot;</li>
+</ul>
+<h4 id="értékadás-strukturális-operációs-szemantikája">Értékadás strukturális operációs szemantikája</h4>
+<span class="math display">\[\begin{align*}
+\cline{1-2}
+&amp; \langle x := a, s \rangle \Longrightarrow s[x \rightarrow A [\![a]\!] s]
+\end{align*}\]</span>
+<ul>
+<li>Ha <em>s</em> állapotban kiértékelem <span class="math inline">\(x := a\)</span>-t: teljesen kiértékelem a jobb oldalt</li>
+<li><em>x</em> frissítése: <em>A</em> kifejezés <em>s</em> állapotban lévő <em>a</em> szintaktikai elem kiértékelése</li>
+</ul>
+<h4 id="szekvencia-strukturális-operációs-szemantikája">Szekvencia strukturális operációs szemantikája</h4>
+<p>Köztes állapot:</p>
+<span class="math display">\[\begin{align*}
+&amp; \langle S_1, s \rangle \Longrightarrow \langle S&#39;_1, s&#39; \rangle \\
+\cline{1-2}
+&amp; \langle S_1; S_2, s \rangle \Longrightarrow \langle S&#39;_1; S_2, s \rangle
+\end{align*}\]</span>
+<p>Végállapot:</p>
+<span class="math display">\[\begin{align*}
+&amp; \langle S_1, s \rangle \Longrightarrow s&#39; \\
+\cline{1-2}
+&amp; \langle S_1; S_2, s \rangle \Longrightarrow \langle S_2, s&#39; \rangle
+\end{align*}\]</span>
+<h4 id="elágazás-strukturális-operációs-szemantikája">Elágazás strukturális operációs szemantikája</h4>
+<p>Ha igaz:</p>
+<span class="math display">\[\begin{align*}
+\cline{1-2} &amp;&amp; B[\![b]\!]s = tt \\
+&amp; \langle \textbf{if}\ b\ \textbf{then}\ S_1\ \textbf{else}\ S_2, s \rangle \Longrightarrow \langle S_1, s \rangle
+\end{align*}\]</span>
+<p>Ha hamis:</p>
+<span class="math display">\[\begin{align*}
+\cline{1-2} &amp;&amp; B[\![b]\!]s = ff \\
+&amp; \langle \textbf{if}\ b\ \textbf{then}\ S_1\ \textbf{else}\ S_2, s \rangle \Longrightarrow \langle S_2, s \rangle
+\end{align*}\]</span>
+<ul>
+<li>Mielőtt kiértékelem az ágat, előtte a feltételt értékelem ki</li>
+</ul>
+<h4 id="ciklus-strukturális-operációs-szemantikája">Ciklus strukturális operációs szemantikája</h4>
+<span class="math display">\[\begin{align*}
+\cline{1-2}
+&amp; \langle \textbf{while}\ b\ \textbf{do}\ S, s \rangle \Longrightarrow \langle 
+  \textbf{if}\ b\ \textbf{then}\ (S;\ \textbf{while}\ b\ \textbf{do}\ S)\ \textbf{else}\ \textbf{skip}, s \rangle
+\end{align*}\]</span>
+<ul>
+<li>Ha feltétel teljesül
+<ul>
+<li>Megcsinálja <em>S</em>-t</li>
+<li>Majd iterál újra</li>
+</ul></li>
+<li>Ha feltétel nem teljesül
+<ul>
+<li>Nem csinál semmit, megy végállapotba</li>
+</ul></li>
+</ul>
+<h3 id="szemantikus-ekvivalencia-strukturális-operációs-szemantika">Szemantikus ekvivalencia (strukturális operációs szemantika)</h3>
+<p>Szemantikus ekvivalencia általában: megadja, hogy két utasítás jelentése megegyezik-e</p>
+<p>Strukturális operációs szemantika esetén</p>
+<ul>
+<li>Nem akkor egyezik meg, ha ugyanaz a programszöveg</li>
+<li>Akkor egyezik meg, ha ugyanabba a konfigurációba jutok</li>
+</ul>
+<p><span class="math inline">\(S_1\)</span> és <span class="math inline">\(S_2\)</span> szemantikusan ekvivalensek (<span class="math inline">\(S_1 \equiv S_2\)</span>), ha minden <em>s</em> állapotra</p>
+<ul>
+<li><span class="math inline">\(\langle S_1, s \rangle \Longrightarrow ^* c\)</span> akkor és csak akkor <span class="math inline">\(\langle S_2, s \rangle \Longrightarrow ^* c\)</span></li>
+<li><span class="math inline">\(\langle S_1, s \rangle \Longrightarrow ^* \infty\)</span> akkor és csak akkor <span class="math inline">\(\langle S_2, s \rangle \Longrightarrow ^*  \infty\)</span></li>
+</ul>
+<p>ahol <em>c</em> termináló vagy zsákutca konfiguráció</p>
+<ul>
+<li>Ha egy program egy adott állapotból terminál, akkor a másiknak is terminálnia kell ugyanabban a konfigurációban</li>
+<li>Ha ez egyik program nem terminál, akkor a másiknak sem kell</li>
+</ul>
+<h3 id="szemantikus-függvény-strukturális-operációs-szemantika">Szemantikus függvény (strukturális operációs szemantika)</h3>
+<p><span class="math display">\[S_{SOS} : Stm \rightarrow (State \hookrightarrow State)\]</span></p>
+<p><span class="math display">\[
+S_{SOS}[\![S]\!]s =
+\begin{cases}
+    s&#39; &amp;\mbox{ha } \langle S, s \rangle \Longrightarrow ^* s&#39; \\ 
+    undefined &amp; \mbox{egyébként}
+\end{cases}
+\]</span></p>
+<ul>
+<li>Ha normál végrehajtás történik, akkor véges lépésben eljutunk s'-be</li>
+<li>ha végrehajtás elakad vagy divergál akkor nem definiált hogy mi lesz</li>
+</ul>
+<h3 id="természetes-operációs-szemantika">Természetes operációs szemantika</h3>
+<ul>
+<li>Egy reláció a kezdő és végállapot között</li>
+<li>Nincs köztes átmenet se beragadt konfiguráció</li>
+</ul>
+<p><em>S</em> utasítás végrehajtása <span class="math inline">\(s&#39;\)</span> állapotot eredményezi</p>
+<ul>
+<li><span class="math inline">\(\langle S, s \rangle \rightarrow s&#39; \qquad s, s&#39; \in Sate\)</span></li>
+</ul>
+<p>Következtetési szabályai:</p>
+<h4 id="skip-természetes-operációs-szemantikája">Skip természetes operációs szemantikája</h4>
+<span class="math display">\[\begin{align*}
+\cline{1-2}
+&amp; \langle \textbf{skip}, s \rangle \Longrightarrow s
+\end{align*}\]</span>
+<h4 id="értékadás-természetes-operációs-szemantikája">Értékadás természetes operációs szemantikája</h4>
+<span class="math display">\[\begin{align*}
+\cline{1-2}
+&amp; \langle x := a, s \rangle \Longrightarrow s[x \rightarrow A [\![a]\!] s]
+\end{align*}\]</span>
+<h4 id="szekvencia-természetes-operációs-szemantikája">Szekvencia természetes operációs szemantikája</h4>
+<span class="math display">\[\begin{align*}
+&amp; \langle S_1, s \rangle \Longrightarrow s&#39; \qquad 
+ \langle S_2, s&#39; \rangle \Longrightarrow s&#39;&#39; \\
+\cline{1-2}
+&amp; \langle S_1; S_2, s \rangle \Longrightarrow \langle s&#39;&#39; \rangle
+\end{align*}\]</span>
+<h4 id="elágazás-természetes-operációs-szemantikája">Elágazás természetes operációs szemantikája</h4>
+<span class="math display">\[\begin{align*}
+&amp; \langle S_1, s \rangle \rightarrow s&#39; \\
+\cline{1-2} &amp;&amp; B[\![b]\!]s = tt \\
+&amp; \langle \textbf{if}\ b\ \textbf{then}\ S_1\ \textbf{else}\ S_2, s \rangle \Longrightarrow s&#39;
+\end{align*}\]</span>
+<span class="math display">\[\begin{align*}
+&amp; \langle S_2, s \rangle \rightarrow s&#39; \\
+\cline{1-2} &amp;&amp; B[\![b]\!]s = ff \\
+&amp; \langle \textbf{if}\ b\ \textbf{then}\ S_1\ \textbf{else}\ S_2, s \rangle \Longrightarrow s&#39;
+\end{align*}\]</span>
+<h4 id="ciklus-természetes-operációs-szemantikája">Ciklus természetes operációs szemantikája</h4>
+<span class="math display">\[\begin{align*}
+&amp; \langle S, s \rangle \rightarrow s&#39; \qquad \langle \textbf{while}\ b\ \textbf{do}\ S, s&#39; \rangle \rightarrow s&#39;&#39; \\
+\cline{1-2} &amp;&amp; B[\![b]\!]s = tt \\
+&amp; \langle \textbf{while}\ b\ \textbf{do}\ S, s \rangle \rightarrow s&#39;&#39;
+\end{align*}\]</span>
+<span class="math display">\[\begin{align*}
+\cline{1-2} &amp;&amp; B[\![b]\!]s = ff \\
+&amp; \langle \textbf{while}\ b\ \textbf{do}\ S, s \rangle \rightarrow s
+\end{align*}\]</span>
+<h3 id="szemantikus-ekvivalencia-természetes-operációs-szemantika">Szemantikus ekvivalencia (természetes operációs szemantika)</h3>
+<p><span class="math inline">\(S_1\)</span> és <span class="math inline">\(S_2\)</span> szemantikusan ekvivalensek, ha minden <em>s</em> és <em>s'</em> állapotra</p>
+<ul>
+<li><span class="math inline">\(\langle S_1, s \rangle \rightarrow s&#39;\)</span> akkor és csak akkor, ha <span class="math inline">\(\langle S_2, s \rangle \rightarrow s&#39;\)</span></li>
+</ul>
+<h3 id="szemantikus-függvény-természetes-operációs-szemantika">Szemantikus függvény (természetes operációs szemantika)</h3>
+<p><span class="math display">\[S_{NS} : Stm \rightarrow (State \hookrightarrow State)\]</span></p>
+<p><span class="math display">\[
+S_{NS}[\![S]\!]s =
+\begin{cases}
+    s&#39; &amp;\mbox{ha } \langle S, s \rangle \rightarrow s&#39; \\ 
+    undefined &amp; \mbox{egyébként}
+\end{cases}
+\]</span></p>
+<h3 id="denotációs-szemantika">Denotációs szemantika</h3>
+<ul>
+<li>Matematikai objektumok segítségével megadja a program jelentését</li>
+<li>A matematikai objektumok adják a nyelvi elemek jelentését.</li>
+<li><em>S</em> meghatároz egy parciális függvényt az állapotokra <span class="math inline">\(\Longrightarrow\)</span> ez <em>S</em> denotációja.</li>
+<li>A szemantikus függvények axiómákkal definiáltak</li>
+<li>A szemantikus függvény kulcskérdés és nem plusz lépés!</li>
+</ul>
+<p><span class="math display">\[S_{ds} : Stm \rightarrow (State \rightarrow State)\]</span></p>
+<h4 id="imperatív-nyelvi-elemek-denotációs-szemantikája">Imperatív nyelvi elemek denotációs szemantikája</h4>
+<p><span class="math display">\[
+\begin{aligned}
+S_{ds}[\![\textbf{skip}]\!] = id_{State} \\
+S_{ds}[\![x := a]\!]s = s[x \mapsto A[\![a]\!]s] \\
+S_{ds}[\![S_1; S_2]\!] = S_{ds}[\![S_2]\!] \circ S_{ds}[\![S_1]\!] \\
+S_{ds}[\![\textbf{if}\ b\ \textbf{then}\ S_1\ \textbf{else}\ S_2]\!] = 
+  cond(B[\![b]\!], S_{ds}[\![S_1]\!], S_{ds}[\![S_2]\!]) \\
+S_{ds}[\![\textbf{while}\ b\ \textbf{do}\ S]\!] = FIX\ F\ \\
+\qquad where\ F\ g\ = cond(B[\![b]\!], g \circ S_{ds}[\![S]\!], id_{State})
+\end{aligned}
+\]</span></p>
+<h2 id="kompozicionális-és-strukturális-indukció">6. Kompozicionális és strukturális indukció <a name="chapter06"></a></h2>
+<h3 id="kompozicionalitás">Kompozicionalitás</h3>
+<ul>
+<li>Minden szintaktikai elemhez megadunk egy függvényklózt</li>
+<li>Összetett kifejezések jelentése <span class="math inline">\(\Longrightarrow\)</span> részkifejezések jelentése alapján</li>
+<li>Denotációs szemantikában mindig a részkifejezéseket értékeljük ki először és az alapján a teljes kifejezést</li>
+<li>Például aritmetikai negációt sokszor elhibázzák. Igazából <span class="math display">\[A[\![-a]\!]s = A[\![0 - a]\!]s\]</span></li>
+<li>Kompozicionalitás kell a strukturális indukciós bizonyításokhoz</li>
+</ul>
+<h3 id="mi-bizonyítható-a-strukturális-indukcióval">Mi bizonyítható a strukturális indukcióval?</h3>
+<ol style="list-style-type: decimal">
+<li><strong>A definíció teljes</strong>
+<ul>
+<li>Minden lehetséges kifejezésnek megadtuk a jelentését</li>
+</ul></li>
+<li><strong>A szemantika konzisztens</strong>
+<ul>
+<li>Ha egy kifejezéshez két különböző jelentés is levezethető <span class="math inline">\(\Longrightarrow\)</span> akkor azok ekvivalensek</li>
+</ul></li>
+<li>A kifejezésekre definiált <strong>operációs és denotációs szemantika ekvivalens</strong></li>
+</ol>
+<h2 id="rekurzív-függvények-és-ciklusok-leíró-szemantikája-fixpont-elmélet">7. Rekurzív függvények és ciklusok leíró szemantikája, fixpont-elmélet <a name="chapter07"></a></h2>
+<ul>
+<li>Logikusnak tűnik a ciklus szemantikáját az elágazás, szekvencia és skip szemantikájára visszavezetni</li>
+</ul>
+<p><span class="math display">\[S_{ds}[\![\textbf{while}\ b\ \textbf{do}\ S]\!] = cond(B[\![b]\!], S_{ds}[\![\textbf{while}\ b\ \textbf{do}\ S]\!]
+\circ S_{ds}[\![S]\!], id_{State})\]</span> <span class="math display">\[g = cond(B[\![b]\!], g \circ S_{ds}[\![S]\!], id_{State})\]</span></p>
+<ul>
+<li>Ez mégsem jó
+<ul>
+<li>ciklus szemantikájához felhasználjuk megint a ciklus szemantikáját</li>
+<li>A szabály nem kompozicionális. Kompozicionálisan kell definiálni a jelentését.</li>
+</ul></li>
+</ul>
+<p>Megoldás: <span class="math inline">\(S_{ds}[\![\textbf{while}\ b\ \textbf{do}\ S]\!]\)</span> jobb oldalát alakítsuk át magasabbrendű függvénnyé, aminek paramétere <em>g</em> függvény!</p>
+<p><span class="math display">\[F : (State \hookrightarrow State) \rightarrow (State \hookrightarrow State)\]</span> <span class="math display">\[F g = cond(B[\![b]\!], g \circ S_{ds}[\![S]\!], id_{State}) = g\]</span></p>
+<ul>
+<li><em>F g</em> akkor egyenlő <em>g</em>-vel, ha <em>g</em> a fixpont</li>
+<li>Ha <em>F</em> magasabbrendű függvény fixpontját megtaláljuk: az kielégíti a <em>cond()</em>-ot</li>
+</ul>
+<p>Formula megoldásait tehát <em>F</em> fixpontjának kiszámításával kapjuk meg:</p>
+<p><span class="math display">\[S_{ds}[\![\textbf{while}\ b\ \textbf{do}\ S]\!] = FIX\ F\]</span></p>
+<h2 id="további-források">8. További források <a name="references"></a></h2>
+<ul>
+<li>Korábbi záróvizsga tételek</li>
+</ul>
+</body>
+</html>

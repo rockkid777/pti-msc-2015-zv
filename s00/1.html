@@ -1,0 +1,390 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #0000ff; } /* Keyword */
+code > span.ch { color: #008080; } /* Char */
+code > span.st { color: #008080; } /* String */
+code > span.co { color: #008000; } /* Comment */
+code > span.ot { color: #ff4000; } /* Other */
+code > span.al { color: #ff0000; } /* Alert */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #008000; font-weight: bold; } /* Warning */
+code > span.cn { } /* Constant */
+code > span.sc { color: #008080; } /* SpecialChar */
+code > span.vs { color: #008080; } /* VerbatimString */
+code > span.ss { color: #008080; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { } /* Variable */
+code > span.cf { color: #0000ff; } /* ControlFlow */
+code > span.op { } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #ff4000; } /* Preprocessor */
+code > span.do { color: #008000; } /* Documentation */
+code > span.an { color: #008000; } /* Annotation */
+code > span.cv { color: #008000; } /* CommentVar */
+code > span.at { } /* Attribute */
+code > span.in { color: #008000; } /* Information */
+  </style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="s0-01-szintézis-és-verifikáció-programozás-elmélet">S0-01 Szintézis és verifikáció (Programozás elmélet)</h1>
+<h2 id="tartalom">Tartalom</h2>
+<ol style="list-style-type: decimal">
+<li><a href="#chapter01">Programozási alapfogalmak</a></li>
+<li><a href="#chapter02">Elemi programok és program konstrukciók definíciói</a></li>
+<li><a href="#chapter03">Nem-determinisztikus strukturált programok formális verifikációja</a></li>
+<li><a href="#chapter04">Párhozamos programok formális verifikációja</a></li>
+<li><a href="#chapter05">Az interferencia-mentesség és a holtpont-mentesség vizsgálata</a></li>
+<li><a href="#chapter06">A kölcsönös kizárás és megvalósítása</a></li>
+<li><a href="#references">További források</a></li>
+</ol>
+<h2 id="programozási-alapfogalmak">1.Programozási alapfogalmak <a name="chapter01"></a></h2>
+<p>A Programozás elméletben adatközpontú megközelítést alkalmazunk. Ezzel a megközelítéssel mind a feladat, mind a program, stb. definícióját adatok halmazán, állapottér meghatározásával írjuk le.</p>
+<h3 id="állapottér">Állapottér</h3>
+<p>Egy adat <strong>típus-értékhalmaza</strong> az adat lehetséges értékeiből áll. <strong>Állapotnak</strong> hívjuk azt az érték-együttest, amikor egy feladat vagy egy program <em>minden</em> adata felvesz a saját típus-értékhalmazából egy-egy értéket.</p>
+<p>Formálisan:</p>
+<p>Legyenek <span class="math inline">\(A_1, ... , A_n (n\in\mathbb{N}^+)\)</span> típusérték-halmazok, és a halmazokat azonosító (egyedi, páronként különböző) <span class="math inline">\(v_1, ... , v_n\)</span> címkék (változók)</p>
+<p>Minden cimke egy adatot (változó) jelöl. Egy állapot <span class="math inline">\(\{v_1:a_1, ... , v_n:a_n\}\)</span> (cimkézett értékek halmaza), ahol minden változó felvesz egy értéket a hozzátartozó típus-értékhalmazból. (<span class="math inline">\(a_i\in A_i\)</span>)</p>
+<p>Az összes így képzett állapot halmazát <strong>állapottérnek</strong> nevezzük:</p>
+<p><span class="math display">\[A := \{ \ \{v_1:a_1, ... ,v_n:a_n\} \ | \ a_i\in A_i \ (i=1,...,n) \ \}\]</span></p>
+<h3 id="feladat">Feladat</h3>
+<p>A feladat egy kapcsolat (leképezés) a bemenet és az eredmény között: <span class="math inline">\(F \subseteq A \times A\)</span></p>
+<p>Figyeljük meg, hogy az <span class="math inline">\(F\)</span> reláció csak része az <span class="math inline">\(A\times A\)</span> descartes-szorzatnak. Mivel azonban a kiinduló állapotok csak az állapottér egy részhalmazát képzik, illetve az ezekhez rendelt állapotok ugyancsak az állapottérnek egy részhalmazát képzik, így érthető, hogy a feladat nem feltétlenül érvényes a teljes állapottéren.</p>
+<p>Példa:</p>
+<p>Osztója reláció</p>
+<p>Kérdés: <span class="math inline">\(d\)</span> osztója-e <span class="math inline">\(n\)</span>-nek, melyet az <span class="math inline">\(l\)</span> logikai változó jelöl.</p>
+<span class="math display">\[\begin{align}
+    A &amp; = ( n:\mathbb{Z}, d:\mathbb{Z}, l:\mathbb{L} ) \\
+    F &amp; \subseteq A \times A \\
+    &amp; \text{ahol} \\
+    D_f &amp; = \{\{n,d,l\} \in A \ | \ d \neq 0 \} \\
+    \forall a &amp; \in D_F : F(a) = \{ \{n, d, l\} \in A \ | \ l = d|n \}
+\end{align}\]</span>
+<p>Tehát láthatjuk, hogy az <span class="math inline">\(F\)</span> értelmezési tartományába csak azok az állapotok tartoznak bele, ahol az osztó nemnulla. Az <span class="math inline">\(l\)</span> változó értéke <span class="math inline">\(F(a)\)</span>-ban pedig aszerint alakul, hogy az <span class="math inline">\(d\)</span> osztja-e <span class="math inline">\(n\)</span>-et.</p>
+<h4 id="előfeltétel-és-utófeltétel">Előfeltétel és utófeltétel</h4>
+<p>Válasszunk egy <span class="math inline">\(P\)</span> paraméterhalmazt, mellyel az <span class="math inline">\(F\)</span> feladat felbontható két reláció kompozíciójára: <span class="math display">\[F = F_1 \circ F_2\]</span> ahol <span class="math inline">\(F_1 \subseteq A \times P\)</span> és <span class="math inline">\(F_2 \subseteq P \times A\)</span>, úgy hogy: <span class="math inline">\(\forall a \in D_F: F(a) = F_2(F_1(a))\)</span></p>
+<p>Ekkor definiálni tudjuk a feladat elő- és utófeltételét:</p>
+<p><span class="math inline">\(\forall p \in P:\)</span></p>
+<ul>
+<li><span class="math inline">\(Ef_P : A \rightarrow \mathbb{L}\)</span> melyre <span class="math inline">\([Ef_P] = F_1^{(-1)}(p)\)</span></li>
+<li><span class="math inline">\(Uf_P : A \rightarrow \mathbb{L}\)</span> melyre <span class="math inline">\([Uf_P] = F_2(p)\)</span></li>
+</ul>
+<p>Jelölés magyarázat:</p>
+<p>Ha adott egy <span class="math inline">\(Q : A \rightarrow \mathbb{L}\)</span> állítás, annak az igazsághalmaza: <span class="math inline">\([Q] := \{q \in Q \ | \ Q(a) \ igaz \}\)</span>. Tehát <span class="math inline">\(Ef\)</span> olyan állítás, mely a feladat minden kezdőállapotára igazat ad, illetve az <span class="math inline">\(Uf\)</span> olyan állítás, mely az <span class="math inline">\(F(a)\)</span> állaptokra ad igaz értéket.</p>
+<h3 id="program">Program</h3>
+<p>Egy programot sokféleképpen lehet megadni. (program-gráf, strukogram, automaták, utasítások, pszeudo- vagy programnyelv).</p>
+<p>A program alaptermészete az, hogy különböző végrehajtásokat okoz. Tehát egy program a lehetséges végrehajtásainak összessége. Egy ilyen végrehajtás sorozatos állapot-változásokat idéz elő, ennél fogva leírható egy állapotsorozattal.</p>
+<p>Példa:</p>
+<p><span class="math inline">\(A = (n : [-5, ..., \infty ) )\)</span></p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">    <span class="cf">while</span> n <span class="op">!=</span> <span class="dv">10</span>:
+        n <span class="op">=</span> n <span class="op">+</span> sgn(n)</code></pre></div>
+<p>Ennek a lehetséges végrehajtásai a következők:</p>
+<pre><code>     0: &lt;0,0,0,0,0, ... &gt;               nem terminál
+     4: &lt;4,5,6,7,8,9,10&gt;                terminál
+    10: &lt;10&gt;                            terminál
+    13: &lt;13,14,15,16, ... &gt;             nem terminál
+    -2: &lt;-2,-3,-4,-5, fail &gt;            abortál</code></pre>
+<p>A program lehet <strong>nem-determinisztikus</strong> (nem mindig ugyanazt az állaposorozatot adja a kezdőállapból indítva), lehetnek <strong>segédváltozói</strong>, lehet <strong>véges</strong> vagy <strong>végtelen hosszú</strong>, illetve leállhat <strong>hibás</strong> állapotban vagy speciálisan <strong>holtpontban</strong>.</p>
+<h4 id="alap-állapottér">Alap-állapottér</h4>
+<p>A program alap-állapottere a <strong>program interfésze</strong>, mellyel a program a környezetével kommunikál (kezdőállapotát a környezet adja, végállapotát a környezet kapja). Illetve ez írja le a program <strong>alap-változóit</strong>, melyek a program működése során végig léteznek.</p>
+<h4 id="fromális-specifikáció">Fromális specifikáció</h4>
+<ul>
+<li>Legyen <span class="math inline">\(A\)</span> az <strong>alap-állapottér</strong> ( <span class="math inline">\(\text{fail} \notin A\)</span> )</li>
+<li>Legyen <span class="math inline">\(\overline{A}\)</span> azon (véges komponensű) állapotterek úniója, melyeknek <span class="math inline">\(A\)</span> altere:</li>
+</ul>
+<p><span class="math display">\[ \overline{A} := \bigcup_{A \leq B} B \]</span></p>
+<ul>
+<li>Jelöljük <span class="math inline">\(H^{**}\)</span>-gal a <span class="math inline">\(H\)</span> elemeiből képzett összes sorozatot (lehet végtelen is).</li>
+<li>Jelöljük <span class="math inline">\(H^{*}\)</span>-gal a <span class="math inline">\(H\)</span> elemeiből képzett összes véges sorozatot.</li>
+</ul>
+<p>Ezek alapján a <span class="math inline">\(A\)</span> feletti programnak hívjuk azt az <span class="math display">\[ S\subseteq A \times (\overline{A} \cup \text{fail} )^{**} \]</span></p>
+<p>relációt, melyre fennállnak a következők:</p>
+<ol style="list-style-type: decimal">
+<li><p><span class="math inline">\(D_S = A\)</span></p>
+a program értelmezési tartománya az alap-állapottér.</li>
+<li><p><span class="math inline">\(\forall a \in A : \forall \alpha \in S(a): \ |a| \geq 1 \land a_1 = a\)</span></p>
+az állapotsorozat legalább egy hosszú és a első állapota mindig az alap-állapottérből való.</li>
+<li><p><span class="math inline">\(\forall \alpha \in R_S : \forall i \ (1 \leq i &lt; |\alpha| ) : \alpha_i \neq \text{fail}\)</span></p>
+csak az utolsó elem lehet <code>fail</code> a végrehajtási állapotsorozatban</li>
+<li><p><span class="math inline">\(\forall \alpha \in R_S : |\alpha| &lt; \infty \longrightarrow \alpha_{|\alpha|} \in A \cup \{\text{fail} \}\)</span></p>
+<p>a véges végrehajtások utolsó állapota vagy a <code>fail</code> vagy alap-állapottérbeli állapot.</p></li>
+</ol>
+<h3 id="megoldás">Megoldás</h3>
+<p>Egy program akkor old meg egy feladatot (a program helyes a feladat szempontjából), ha végrehajtásai a feladat kezdőállapotaiból indulva a feladat megfelelő célállapotaiban állnak meg. Ekkor a feladat állapottere és a program alap-állapottere azonos kell legyen. Ilyenkor a program végrehajtásai között találjuk a feladat kezdőállapotából induló végrehajtásokat, amelyekről azt kell eldönteni, hogy terminálnak-e (hibátlan és véges hosszú) és végállapotuk a feladat által megkívánt valamelyik célállapot lesz-e.</p>
+<h4 id="megoldás-minősített-esetei">Megoldás minősített esetei</h4>
+<ul>
+<li><strong>Parciális helyesség</strong>: Ha a program a feladat kezdőállapotaiból indulva leáll, akkor ezt a feladatnak megfelelő célállapotban teszi. (A leállást nem követeljük meg.) Jelölés: <span class="math inline">\(\{Ef\} S \{Uf\}\)</span> (<span class="math inline">\(S\)</span> minden <span class="math inline">\(Ef\)</span>-beli állapotból induló véges végrehajtása egy <span class="math inline">\(Uf\)</span>-beli állapotba jut)</li>
+<li><strong>Leállás</strong>: A feladat kezdőállapotából indulva leáll a program. (Hány vagy legfeljebb hány lépés múlva következik ez be? Kizárható-e a végtelen vagy a hibás működés, ez utóbbiba beleértve a holtpont helyzet kialakulását is.)</li>
+<li><strong>Teljes helyesség</strong>: A program a feladat kezdőállapotaiból indulva a feladatnak megfelelő célállapotban (hibátlanul) áll le. Jelölés: <span class="math inline">\(\{\{ Ef \}\} S \{\{ Uf \}\}\)</span> (<span class="math inline">\(S\)</span> minden <span class="math inline">\(Ef\)</span>-beli állapotból induló végrehajtása egy <span class="math inline">\(Uf\)</span>-beli állapotba jut.)</li>
+<li><strong>Gyengén teljes helyesség</strong>: Ilyenkor a helyesség-vizsgálat során figyelmen kívül hagyjuk a holtpont kialakulását.</li>
+</ul>
+<h2 id="elemi-programok-és-program-konstrukciók-definíciói">2.Elemi programok és program konstrukciók definíciói <a name="chapter02"></a></h2>
+<h3 id="elemi-programok">Elemi programok</h3>
+<h4 id="üres-program">Üres program</h4>
+<p>Az üres program gyakorlatilag az identitásfüggvény. ( <span class="math inline">\(S := skip\)</span> ) <span class="math display">\[skip(\sigma) = &lt;\sigma&gt;\]</span> (Azaz az üres program egyetlen állapota a kezdőállapot.)</p>
+<h4 id="értékadás">Értékadás</h4>
+Az értékadás megváltoztatja egy változó értékét, így új állapotot idéz elő. (<span class="math inline">\(S := v:=f(v)\)</span>)
+<span class="math display">\[\begin{align}
+    (v:=f(v))(\sigma) &amp; = &lt;\sigma, \sigma&#39;&gt;
+                        \\ &amp;\text{ahol} \quad \sigma&#39; \in f(\sigma) \quad \text{ha } \sigma \in D_f
+                        \\ &amp;\text{és} \quad \sigma&#39; \in \text{fail} \quad \text{ha } \sigma \notin D_f
+\end{align}\]</span>
+<h3 id="program-konstrukciók">Program konstrukciók</h3>
+<h4 id="szekvencia">Szekvencia</h4>
+<p>A szekvenciával két program összefűzését érhetjük el.</p>
+<p>Legyen <span class="math inline">\(S_1\)</span> és <span class="math inline">\(S_2\)</span> közös állapotterű (<span class="math inline">\(A\)</span>) programok.</p>
+<span class="math display">\[\begin{align}
+(S_1;S_2)(\sigma) &amp; = \{ \alpha \ | \ \alpha \in S_1(\sigma)\cap \overline{A}^{\infty} \} \\
+                    &amp; \cup \{ \alpha \ | \ \alpha \in S_1(\sigma) \text{ és } |\alpha| &lt; \infty \text{ és } \alpha_{|\alpha|} = \text{fail} \} \\
+                    &amp; \cup \{ \alpha \otimes \beta \ | \ \alpha \in S_1(\sigma) \cap \overline{A}^{\star} \text{ és } \beta \in S_2(\alpha_{|\alpha|}) \} \\
+\end{align}\]</span>
+<p>Tehát:</p>
+<ol style="list-style-type: decimal">
+<li>Ha az <span class="math inline">\(S_1\)</span> nem terminál, akkor a szekvencia is csak a végtelen hosszú <span class="math inline">\(S_1\)</span> végrehatás lesz.</li>
+<li>Ha az <span class="math inline">\(S_1\)</span> abortál, akkor a szekvencia is csak az abortált <span class="math inline">\(S_1\)</span> végrehajtás lesz.</li>
+<li>Ha az <span class="math inline">\(S_1\)</span> hiba nélkül áll le, akkor ahhoz az állapotsorozathoz fűzzük hozzá az <span class="math inline">\(S_2\)</span> végrehajtását az <span class="math inline">\(S_1\)</span> utolsó állapotából. (a csatlakozásnál a duplikátumokat redukáljuk)</li>
+</ol>
+<h4 id="elágazás">Elágazás</h4>
+<p>Az elágazással feltételek alapján változtathatjuk a sorozatot.</p>
+<p>Legyenek <span class="math inline">\(S_1 , ... , S_n\)</span> programok és <span class="math inline">\(\pi_1 , ... , \pi_n\)</span> feltételek, amelyeknek közös alap-állapottere az <span class="math inline">\(A\)</span>.</p>
+<span class="math display">\[\begin{align}
+(\text{if } \pi_1 \rightarrow S_1 , ... , \pi_n \rightarrow S_n \text{ fi} )(\sigma) &amp; = \\
+\bigcup_{\substack{i=1 \\ \sigma \in D_{\pi_i} \land \pi_i(\sigma)}}^n S_i(\sigma) \ &amp; \cup \ \begin{cases} &lt;\sigma, \text{fail}&gt; \quad \text{ha } &amp; \exists i \in [1..n]: \sigma \notin D_{\pi_i} \ \lor\\
+                                                                                                                                                   &amp; \lor \ \forall i \in [1..n] : \sigma \in D_{\pi_i} \land \lnot\pi_i(\sigma)
+                                                                                                                                                   \\
+                                                                                                                                                   \emptyset \text{ különben}\end{cases}
+\end{align}\]</span>
+<p>Tehát:</p>
+<ol style="list-style-type: decimal">
+<li>Minden olyan <span class="math inline">\(S_i\)</span> végrehajtás úniója ahol <span class="math inline">\(\sigma\)</span> megfelel a <span class="math inline">\(\pi_i\)</span> feltételnek</li>
+<li>Ha van egy olyan feltétel, ahol a <span class="math inline">\(\sigma\)</span> nincs benne a feltétel értelmezési tartományában, vagy a <span class="math inline">\(\sigma\)</span> egyik feltételnek sem tesz eleget, akkor a végrehajtás abortál.</li>
+</ol>
+<h4 id="ciklus">Ciklus</h4>
+<p>A ciklussal ismétlődő sorozatokat állíthatunk elő.</p>
+<p>Legyen <span class="math inline">\(S_0\)</span> program és <span class="math inline">\(\pi\)</span> feltétel, amelyeknek közös alap-állapottere az <span class="math inline">\(A\)</span>.</p>
+<span class="math display">\[\begin{align}
+(\text{while } \pi \text{ do } S_0 \text{ od})(\sigma) =
+\begin{cases}
+    (S_0 ; \text{while } \pi \text{ do } S_0 \text{ od})(\sigma) \quad &amp; \text{ha } \sigma \in D_\pi \land \pi(\sigma) \\
+    &lt;\sigma&gt; \quad &amp; \text{ha } \sigma \in D_\pi \land \lnot\pi(\sigma) \\
+    &lt;\sigma, \text{fail}&gt; \quad &amp; \text{ha } \sigma \notin D_\pi
+\end{cases}
+\end{align}\]</span>
+<p>Tehát:</p>
+<ol style="list-style-type: decimal">
+<li>Amíg <span class="math inline">\(\pi\)</span> teljesül, addig szekvenciálisan összefűzzük az <span class="math inline">\(S_0\)</span>-t a &quot;rekurzívan&quot; hívott ciklussal</li>
+<li>Ha nem teljesül a feltétel, akkor gyakorlatilag egy <code>skip</code>-et hajtunk végre</li>
+<li>Ha a <span class="math inline">\(\sigma\)</span> nincs benne a <span class="math inline">\(\pi\)</span> értelmezési tartományában, akkor a program abortál</li>
+</ol>
+<h4 id="atomi-utasítás">Atomi utasítás</h4>
+<p>Atomi utasításnak párhuzamos/konkurens programok esetén tulajdonítunk fontos szerepet. Az atomi utasítás nem tartalmazhat sem ciklust, sem várakozó utasítást. Ekkor az utasítást egyszerre, megszakítás nélkül kell végrehajtani.</p>
+<p><span class="math display">\[ [S](\sigma) = S(\sigma)\]</span></p>
+<p>Elsőre furának tűnhet, de szemantikai értelemben valóban nincs különbség.</p>
+<h4 id="várakozó-utasítás">Várakozó utasítás</h4>
+<p>A várakozó utasítás párhuzamos/konkurens programok esetén szinkronizációra használható.</p>
+<p><span class="math display">\[(\text{await }\beta\text{ then } S \text{ ta})(\sigma) =
+\begin{cases}
+&lt;\sigma, \text{fail}&gt; \quad &amp; \text{ ha } \sigma \notin D_\beta \\
+S(\sigma) \quad &amp; \text{ ha } \sigma \in D_\beta \land \beta(\sigma)\\
+(\text{await }\beta\text{ then } S \text{ ta})(\sigma) \quad &amp; \text{ ha } \sigma \in D_\beta \land \lnot\beta(\sigma)
+\end{cases}\]</span></p>
+<p>A haramdik esetben nem párhuzamos program esetén nincs, ami megváltoztassa a <span class="math inline">\(\sigma\)</span> értékét, így ez holtpontot okozhat. A várakozó utasítás esetén a <span class="math inline">\(\beta\)</span> kiétékelése és az <span class="math inline">\(S\)</span> program atomi műveletként hajtódik végre. Az <span class="math inline">\(S\)</span> nem tartalmaz sem ciklust, sem várakozó utasítást.</p>
+<h4 id="párhuzamos-blokk">Párhuzamos blokk</h4>
+<p>A párhuzamos blokkokkal leírhatjuk, hogy melyik programrészek futhatnak párhuzamosan.</p>
+<p>Legyen <span class="math inline">\(S_1, ... , S_n\)</span> a párhuzamosan végrehajtott program ún. programágai. Az ütemező ezek közül választhat egyet végrehajtásra.</p>
+<p>Amennyiben az ütemező az <span class="math inline">\(i\)</span>-edig ágnak adja a vezérlést:</p>
+<span class="math display">\[\begin{align}
+(\text{parbegin } &amp; S_1 \lVert ... \lVert S_i \lVert ... \lVert S_n \text{ parend})(\sigma) = \\
+&amp; \begin{cases}
+    (\text{parbegin } S_1 \lVert ... \lVert S_{i-1} \lVert S_{i+1} \lVert ... \lVert S_n \text{ parend})(\sigma) &amp; \quad \text{ha } S_i = \text{skip}\\
+    (u;\text{parbegin } S_1 \lVert ... \lVert S_{i-1} \lVert T_{i} \lVert S_{i+1} \lVert ... \lVert S_n \text{ parend})(\sigma) &amp; \quad \text{ha } \text{skip} \neq S_i = u;T_i \\
+\end{cases}
+\end{align}\]</span>
+<h2 id="nem-determinisztikus-strukturált-programok-formális-verifikációja">3.Nem-determinisztikus strukturált programok formális verifikációja <a name="chapter03"></a></h2>
+<h3 id="a-helyesség-vizsgálati-módszerek-menete">A helyesség-vizsgálati módszerek menete</h3>
+<p>A strukturált programok helyesség bizonyításának lényege, hogy belássuk, a program megoldja az adott feladatot. Hoare egy olyan deduktív módszert javasolt, mely:</p>
+<ul>
+<li>az elemi programok esetében közvetlen választ ad a fenti kérdésre</li>
+<li>összetett programok esetén pedig visszavezeti a helyesség belátását az összetétel komponens programjainak vizsgálatára. (a komponens programok számára kijelöl egy-egy feladatot. Ha a komponens programok egyenként megoldják ezeket a feladatokat, akkor azokból konstruált program megoldja az eredeti feladatot.)</li>
+</ul>
+<h3 id="nevezetes-programszerkezetek-helyességének-szabályai">Nevezetes programszerkezetek helyességének szabályai</h3>
+<p>Jelöljük egy feladat specifikációját <span class="math inline">\((A, Q, R)\)</span>, ahol <span class="math inline">\(A\)</span> az alap-állapottér, a <span class="math inline">\(Q\)</span> az előfeltétel, <span class="math inline">\(R\)</span> az utófeltétel.</p>
+<h4 id="üres-program-1">Üres program</h4>
+<ul>
+<li>Az üres program megoldja az <span class="math inline">\((A, R, R)\)</span> specifikációjú feladatot.</li>
+</ul>
+<p><span class="math display">\[\{\{R\}\} \text{ skip } \{\{R\}\}\]</span></p>
+<ul>
+<li>Az üres program akkor oldja meg az <span class="math inline">\((A, Q, R)\)</span> specifikációjú feladatot, ha <span class="math inline">\(Q \Rightarrow R\)</span></li>
+</ul>
+<p><span class="math display">\[\frac{Q \Rightarrow R}{\{\{Q\}\} \text{ skip } \{\{R\}\}}\]</span></p>
+<h4 id="értékadás-1">Értékadás</h4>
+<ul>
+<li>A <span class="math inline">\(v:=f(v)\)</span> értékadás az <span class="math inline">\((A, v\in D_f \land \forall e \in f(v) : R^{v \leftarrow e}, R)\)</span> specifikációjú feladatot oldja meg.</li>
+</ul>
+<p><span class="math display">\[\{\{ v\in D_f \land \forall e \in f(v) : R^{v \leftarrow e} \}\} \ v:=f(v) \ \{\{R\}\}\]</span></p>
+<p>Ez a következtetés talán némi magyarázatra szorul. A gondolat az egész mögött az, hogy végezzük el az utófeltételben a helyettesítést és az így kapott állítás lesz az előfeltétele az értékadásnak.</p>
+<p>Nezzünk erre egy példát. Tegyük fel, hogy az értékadás: <span class="math inline">\(x:=5\)</span>, illetve az utófeltétel: <span class="math inline">\(R \ := \ 0&lt;x&lt;y\)</span></p>
+<p>Ekkor <span class="math inline">\(R^{x\leftarrow 5} = 0&lt;5&lt;y = 5&lt;y\)</span> az előfeltétel, hiszen annak, hogy a program lefutása után <span class="math inline">\(0&lt;x&lt;y\)</span> fennáljon egyedül az a feltétele, hogy <span class="math inline">\(5&lt;y\)</span>, mivel az <span class="math inline">\(x\)</span>-et a program meghatározza. A definíció ezt még megszorítja azzal, hogy:</p>
+<ol style="list-style-type: decimal">
+<li>a <span class="math inline">\(v\)</span> természetesen <span class="math inline">\(f\)</span> értelmezési tartományában kell legyen</li>
+<li><span class="math inline">\(f\)</span>-nek esetleg több állapota is lehet melyet <span class="math inline">\(v\)</span>-ből képez, így az összes lehetséges állítás konjukcióját kell venni.</li>
+</ol>
+<ul>
+<li>A <span class="math inline">\(v:=f(v)\)</span> értékadás akkor oldja meg az <span class="math inline">\((A, Q, R)\)</span> specifikációjú feladatot, ha <span class="math inline">\(Q \Rightarrow v\in D_f \land \forall e \in f(v) : R^{v \leftarrow e}\)</span></li>
+</ul>
+<p><span class="math display">\[ \frac{Q \Rightarrow v\in D_f \land \forall e \in f(v) : R^{v \leftarrow e}}{\{\{ Q \}\} \ v:=f(v) \ \{\{R\}\}} \]</span></p>
+<p><em>Megjegyzés: speciális esetekben egyszerűsödhet az előfeltétel. Ha <span class="math inline">\(D_f = A\)</span>, akkor a <span class="math inline">\(v\in D_f\)</span> feltétel elhagyható, ha pedig az értékadás determinisztikus, akkor a <span class="math inline">\(\forall e \in f(v):R^{v\leftarrow e}\)</span> helyett elég <span class="math inline">\(R^{v\leftarrow f(v)}\)</span>-t írni.</em></p>
+<h4 id="szekvencia-1">Szekvencia</h4>
+<p>Legyen <span class="math inline">\(S_1\)</span> és <span class="math inline">\(S_2\)</span> programok szekvenciája az <span class="math inline">\(A\)</span> alap-állapottéren az <span class="math inline">\((S_1;S_2)\)</span>.</p>
+<p>Ha <span class="math inline">\(S_1\)</span> az <span class="math inline">\((A, Q, Q&#39;)\)</span> feladatot és <span class="math inline">\(S_2\)</span> az <span class="math inline">\((A, Q&#39;, R)\)</span> feladatot oldja meg, akkor a szekvencia megoldja az <span class="math inline">\((A, Q, R)\)</span> feladatot.</p>
+<p><span class="math display">\[\frac{ \{\{Q\}\} \ S_1 \ \{\{Q&#39;\}\} \ \land \ \{\{Q&#39;\}\} \ S_2 \ \{\{R\}\} }{ \{\{Q\}\} \ S_1;S_2 \ \{\{R\}\} }\]</span></p>
+<h4 id="elágazás-1">Elágazás</h4>
+<p>Legyen az <span class="math inline">\(S_1 , ... , S_n\)</span> programokból és a <span class="math inline">\(\pi_1 , … , \pi_n : A \rightarrow \mathbb{L}\)</span> feltételekből álló elágazás az <span class="math inline">\(A\)</span> alap-állapottéren az <span class="math inline">\(\text{if } \pi_1\rightarrow S_1 , ... , \pi_n \rightarrow S_n \text{ fi}\)</span></p>
+<p>Ha minden <span class="math inline">\(Q\)</span>-beli állapotra minden elágazás feltétel értelmes, és legalább az egyik teljesül is, továbbá minden <span class="math inline">\(S_i\)</span> programág megoldja az <span class="math inline">\((A, Q\land\pi_i, R)\)</span> feladatot, akkor az elágazás megoldja az <span class="math inline">\((A, Q, R)\)</span> feladatot.</p>
+<p><span class="math display">\[ \frac{
+    \substack{  Q\subseteq D_{\pi_1} \cap ... \cap D_{\pi_n} \\
+                Q \Rightarrow \pi_1 \lor ... \lor \pi_n \\
+                \forall i \in[1..n] : \ \{\{Q\land\pi_i\}\} \ S_i \ \{\{R\}\}
+                }
+        }{ \{\{ Q \}\} \ \text{if } \pi_1\rightarrow S_1 , ... ,  \pi_n \rightarrow S_n \text{ fi} \ \{\{R\}\} }\]</span></p>
+<h4 id="ciklus-1">Ciklus</h4>
+<p>Tekintsük a <span class="math inline">\(\text{while } \pi \text{ do } S_0 \text{ od}\)</span> ciklust az <span class="math inline">\(A\)</span> alap-állapottéren, ahol <span class="math inline">\(S_0\)</span> program a ciklusmag, a <span class="math inline">\(\pi: A \rightarrow \mathbb{L}\)</span> a ciklusfeltétel. Továbbá legyen az ún. <em>invariáns állítás</em> egy <span class="math inline">\(I : A \rightarrow \mathbb{L}\)</span> logikai függvény.</p>
+<p>Ha:</p>
+<ol style="list-style-type: decimal">
+<li>Minden <span class="math inline">\(Q\)</span>-beli állapot egyben <span class="math inline">\(I\)</span>-beli (azaz <span class="math inline">\([Q] \subseteq [I]\)</span>, másként: <span class="math inline">\(Q\Rightarrow I\)</span>)</li>
+<li>Az <span class="math inline">\(I\)</span>-beli állapotokra értelmes az <span class="math inline">\(\pi\)</span></li>
+<li>A <span class="math inline">\(\pi\)</span>-t nem kielégítő (<span class="math inline">\(I\)</span>-beli) állapotok <span class="math inline">\(R\)</span>-beliek. (Magyarul a ciklusból kilépve igaz lesz <span class="math inline">\(R\)</span>)</li>
+<li>Továbbá az <span class="math inline">\(S_0\)</span> megoldja az <span class="math inline">\((A,I\land\pi, I)\)</span> feladatot. (tehát a ciklumag megőrzi az invariánst)</li>
+</ol>
+<p>Akkor a ciklus parciális értelemben megoldja az <span class="math inline">\((A,Q,R)\)</span> feladatot.</p>
+<span class="math display">\[\begin{align}
+&amp; Q\Rightarrow I \\
+&amp; I \subseteq D_\pi \\
+&amp; I \land \lnot\pi \Rightarrow R \\
+&amp; \{I\land\pi\} \ S_0 \ \{I\} \\
+\cline{1-2}
+&amp; \{Q\} \ \text{while } \pi \text{ do } S_0 \text{ od} \ \{R\}
+\end{align}\]</span>
+<p>A teljes helyességhez szükségünk van arra, hogy a ciklus leálljon. Ehhez be kell vezetnünk egy ún. <em>variáns függvényt</em>, vagy <em>termináló függvényt</em>: <span class="math inline">\(t : A \rightarrow W\)</span>, ahol <span class="math inline">\(W\)</span>-n létezik egy <span class="math inline">\(&lt; \ \subseteq W \times W\)</span> rendezési reláció. Emellett <span class="math inline">\(W_&lt; \subseteq W\)</span> egy jólrendezett halmaz, azaz teljesen rendezett (bármely két elem összehasonlítható), és bármely (nemüres) részhalmazának van minimuma. A legtöbb esetben <span class="math inline">\(\mathbb{N} = W_&lt; \subseteq W = \mathbb{Z}\)</span> választással szoktunk éllni.</p>
+<p><em>Megyjegyzés: a definíció bonyolultságát az indokolja, hogy a ciklus után a <span class="math inline">\(t\)</span> értéke eggyel kisebb, mint a <span class="math inline">\(W_&lt;\)</span> minimuma, tehát a <span class="math inline">\(t\)</span> értelmezési tartománya bővebb kell legyen, mint <span class="math inline">\(W_&lt;\)</span>.</em></p>
+<p>A parciális helyességen túl tehát azt kell még biztosítani, hogy <span class="math inline">\(S_0\)</span> mellett a <span class="math inline">\(t\)</span> szigorúan monoton csökkenő, azaz bármely <span class="math inline">\(a\in[I\land\pi]\)</span> állapotból az <span class="math inline">\(S_0\)</span> olyan <span class="math inline">\(b\in A\)</span> állapotba jut, melyre <span class="math inline">\(t(b) &lt; t(a)\)</span>. Amennyiben ez teljesül, akkor a ciklus megoldja az <span class="math inline">\((A, Q, R)\)</span> feladatot.</p>
+<span class="math display">\[\begin{align}
+&amp; Q\Rightarrow I  \\
+&amp; I \subseteq D_\pi \\
+&amp; I \land \lnot\pi \Rightarrow R \\
+&amp; I \land \pi \Rightarrow t \in W_&lt; \\
+&amp; \forall c_0 \in W : \{\{ I\land\pi\land t = c_0 \}\} \ S_0 \ \{\{ I \land \ t&lt;c_0 \}\} \\
+\cline{1-2}
+&amp; \{\{Q\}\} \ \text{while } \pi \text{ do } S_0 \text{ od} \ \{\{ R \}\}
+\end{align}\]</span>
+<h2 id="párhozamos-programok-formális-verifikációja">4.Párhozamos programok formális verifikációja <a name="chapter04"></a></h2>
+<h3 id="a-helyesség-vizsgálati-módszerek-menete-1">A helyesség-vizsgálati módszerek menete</h3>
+<p>A párhuzamos programok helyesség-vizsgálatánál hasonlóan járunk el, mint nem párhuzamos estben. A gyengén teljes helyesség vizsgálatához ez elegendő is. A teljes helyességhez a holtpont-mentességet is vizsgálni kell majd.</p>
+<h3 id="nevezetes-programszerkezetek-helyességének-szabályai-1">Nevezetes programszerkezetek helyességének szabályai</h3>
+<h4 id="atomi-utasítás-1">Atomi utasítás</h4>
+<p>Ahogy már korábban láttuk, az atomi utasítás szemantikája: <span class="math inline">\([S](\sigma) = S(\sigma)\)</span>.</p>
+<p>Emiatt a szemantikából közvetlenül adódik a helyesség:</p>
+<p><span class="math display">\[ \frac{ \{\{Q\}\} \ S \ \{\{R\}\} }{ \{\{Q\}\} \ [S] \ \{\{R\}\} } \]</span></p>
+<p><em>Megjegyzés: A interferencia-mentesség és holtpont-mentesség jelen esetben biztosítva van, mivel az <span class="math inline">\(S\)</span> atomi végrehajtású.</em></p>
+<h4 id="várakozó-utasítás-1">Várakozó utasítás</h4>
+<p>A várakozó utasítás (<span class="math inline">\(\text{await }\beta\text{ then } S \text{ ta}\)</span>) szemantikájánál láttuk, hogy 3 eset lehetséges:</p>
+<ol style="list-style-type: decimal">
+<li>ha <span class="math inline">\(\sigma \notin D_\beta\)</span>, akkor abortál</li>
+<li>ha nem teljesül a feltétel, akkor nincs változásokat</li>
+<li>ha <span class="math inline">\(\sigma \in D_\beta\)</span> és <span class="math inline">\(\beta(\sigma)\)</span> igaz, akkor végrehajtjuk az <span class="math inline">\(S\)</span>-et.</li>
+</ol>
+<p>A helyesség kapcsán csak a harmadik pont érdekes, ami meg közvetlenül adódik.</p>
+<p><span class="math display">\[ \frac{ \{\{Q \land \beta \}\} \ S \ \{\{ R \}\} }{ \{\{Q\}\} \ \text{await }\beta\text{ then } S \text{ ta} \ \{\{R\}\} }\]</span></p>
+<p><em>Megjegyzés: A interferencia-mentesség és holtpont-mentesség jelen esetben biztosítva van, mivel <span class="math inline">\(\beta\)</span> kiértékelése és <span class="math inline">\(S\)</span> is atomi végrehajtású.</em></p>
+<h4 id="párhuzamos-blokk-1">Párhuzamos blokk</h4>
+<p>A párhuzamos blokk esetében azt tudjuk mondani, hogy ha <span class="math inline">\(S_1, ... , S_n\)</span> interferencia-mentesek és a belőük képzett párhuzamos blokk holtpont-mentes, akkor:</p>
+<span class="math display">\[\begin{align}
+&amp; \{\{Q_1\}\} \ S_1 \{\{R_n\}\}, ... ,  \{\{Q_n\}\} \ S_n \{\{R_n\}\} \\
+&amp; Q \Rightarrow Q_1 \land ... \land Q_n \\
+&amp; R_1 \land ... \land R_n \Rightarrow R\\
+\cline{1-2}
+&amp; \{\{Q\}\} \ \text{parbegin } S_1 \lVert ... \lVert S_n \text{ parend} \ \{\{R\}\}
+\end{align}\]</span>
+<h2 id="az-interferencia-mentesség-és-a-holtpont-mentesség-vizsgálata">5.Az interferencia-mentesség és a holtpont-mentesség vizsgálata <a name="chapter05"></a></h2>
+<h3 id="interferencia-mentesség">Interferencia-mentesség</h3>
+<h4 id="annotáció">Annotáció</h4>
+<p>Az <span class="math inline">\(S\)</span> program <strong>segédállításokkal</strong> és <span class="math inline">\(S\)</span> változóit nem értintő <strong>extra műveletekkel</strong> kiegészített változatát az <span class="math inline">\(S\)</span> program annotációjának nevezzük és <span class="math inline">\(S^*\)</span>-gal jelöljük. <span class="math display">\[
+    \frac{ \{\{Q\}\} \ S^* \ \{\{R\}\} }{ \{\{Q\}\} \ S \ \{\{R\}\} }
+\]</span></p>
+<h4 id="parciális-helyességi-tételek-interferencia-mentessége">Parciális helyességi tételek interferencia-mentessége</h4>
+<p><strong>kritikus utasítás</strong>: Értékadás, vagy értékadást is tartalmazó atomi művelet.</p>
+<p>Egy <span class="math inline">\(u\)</span> kritikus utasítás nem interferál a <span class="math inline">\(\{Q\} \ S^* \ \{R\}\)</span> parciális helyességi tétellel, ha:</p>
+<ol style="list-style-type: decimal">
+<li><span class="math inline">\(u\)</span> nem sérti meg <span class="math inline">\(R\)</span>-t, azaz <span class="math inline">\(\{R\land \text{pre}_u \} \ u \ \{R\}\)</span></li>
+<li><span class="math inline">\(u\)</span> nem sérti meg az <span class="math inline">\(S^*\)</span>-beli egyik utasítás előfeltételét (<span class="math inline">\(\text{pre}_s\)</span>) sem, azaz <span class="math inline">\(\{\text{pre}_s \land \text{pre}_u \} \ u \ \{\text{pre}_s\}\)</span> (az egyik <span class="math inline">\(\text{pre}_s\)</span> éppen <span class="math inline">\(Q\)</span> lesz.)</li>
+</ol>
+<p>Ezek alapján a <span class="math inline">\(\{Q_k\} \ S_k^* \ \{R_k\} \ k\in [1..n]\)</span> parciális helyességi tételek interferencia-mentesek, ha <span class="math inline">\(\forall i,j \in [1..n]: i\neq j\)</span> folyamatpárra az <span class="math inline">\(S_i^*\)</span>-nak egy kritikus utasítása sem interferál a <span class="math inline">\(\{Q_j\} \ S_j^* \ \{R_j\}\)</span> parciális helyességi tétellel.</p>
+<h4 id="gyengén-teljes-helyességi-tételek-interferencia-mentessége">Gyengén teljes helyességi tételek interferencia-mentessége</h4>
+<p>A parciális helyességi tételből kiindulva meg tudjuk határozni a gyengén teljes helyességi tételek interferencia-mentességét.</p>
+<p>Tehát a fentiekhez hasonlóan, egy <span class="math inline">\(u\)</span> kritikus utasítás nem interferál a <span class="math inline">\(\{\{Q\}\} \ S^* \ \{\{R\}\}\)</span> gyengén teljes helyességi tétellel, ha:</p>
+<ol style="list-style-type: decimal">
+<li>nem interferál a <span class="math inline">\(\{Q\} \ S^* \ \{R\}\)</span> parciális helyességi tétellel</li>
+<li>és minden <span class="math inline">\(S^*\)</span>-beli ciklus összes <span class="math inline">\(s\)</span> utasítására: <span class="math inline">\(\{ t = c_0 \land \text{pre}_s \land \text{pre}_u \} \ u \ \{t \leq c_0 \}\)</span></li>
+</ol>
+<p>Illetve hasonlóan a <span class="math inline">\(\{\{Q_k\}\} \ S_k^* \ \{\{R_k\}\} \ k\in [1..n]\)</span> gyengén teljes helyességi tételek interferencia-mentesek, ha <span class="math inline">\(\forall i,j \in [1..n]: i\neq j\)</span> folyamatpárra az <span class="math inline">\(S_i^*\)</span>-nak egy kritikus utasítása sem interferál a <span class="math inline">\(\{\{Q_j\}\} \ S_j^* \ \{\{R_j\}\}\)</span> gyengén teljes helyességi tétellel.</p>
+<h3 id="holtpont-mentesség">Holtpont-mentesség</h3>
+<p><strong>Blokkolt állapot</strong>: Egy párhuzamos program valamelyik folyamata blokkolt állapotba kerül, ha van benne egy várakozó utasítás, melynek előfeltétele <span class="math inline">\(Q\)</span> és fennáll a <span class="math inline">\(Q \land \lnot \beta\)</span>.</p>
+<p><strong>Holtpont-állapot</strong>: Egy párhuzamos program holtpont állapotban van, ha legalább egy folyamata blokkolt, míg a többi vagy befejeződött, vagy azok is blokkoltak.</p>
+<p><strong>Holtpont-mentesség</strong>: Egy program egy állításra nézve holtpont-mentes, ha nincs olyan állapot, mely kielégíti az állítást viszont abból indítva a program holtpont-állapotba jut.</p>
+<h4 id="általános-párhuzamos-program">Általános párhuzamos program</h4>
+<p>Az <span class="math inline">\(S\)</span> párhuzamos program szerkezetének legfelső szintjén szekvenciálisan követik egymást (tetszőleges sorrendben) párhuzamos blokkok (<span class="math inline">\(S_k\)</span>) és várakozó utasítások (<span class="math inline">\(w_j\)</span>). Ezen felül a párhuzamos blokkok komponensei <span class="math inline">\(S_l^{(k)}\)</span> is ugyanilyen szerkezetűek.</p>
+<div class="figure">
+<img src="img/altalanos_parhuzamos_program.png" alt="Általános párhuzamos program" />
+<p class="caption">Általános párhuzamos program</p>
+</div>
+<h4 id="owicki-gries-holtpont-mentességi-kritérium">Owicki-Gries holtpont-mentességi kritérium</h4>
+<p>Egy program akkor várakozik, ha:</p>
+<ul>
+<li>vagy valamelyik await utasításnál várakozik (<span class="math inline">\(\text{pre}(w_j)\land\lnot\beta_j\)</span>)</li>
+<li>vagy valamelyik parbegin-parend blokkban várakozik. (<span class="math inline">\(D&#39;(S_k)\)</span>)</li>
+</ul>
+<p><span class="math display">\[D(S) = \Big( \bigvee_{j=1}^n (\text{pre}(w_j)\land\lnot\beta_j)\Big) \lor \Big(\bigvee_{k=1}^m D&#39;(S_k)\Big) \]</span></p>
+<p>Egy program a parbegin-parend blokkban akkor várakozik, vagy van legalább egy várakozó ága, miközben a többi végetért, vagy azok is várakoznak.</p>
+<p><span class="math display">\[ D&#39;(S_k) = \Big(\bigvee_{i=1}^l D(S_i^{(k)})\Big) \land \Big( \bigwedge_{i=1}^l (\text{post}(S_i^{(k)}) \lor D(S_i^{(k)}))\Big)\]</span></p>
+<p>Ha <span class="math inline">\(D(S)\)</span> hamis, akkor az <span class="math inline">\(S\)</span> program holtpont-mentes.</p>
+<h2 id="a-kölcsönös-kizárás-és-megvalósítása">6.A kölcsönös kizárás és megvalósítása <a name="chapter06"></a></h2>
+<p><strong>Kritikus szakasz</strong>: Az interferencia vizsgálat szempontjából kritikusak egy folyamat azon utasításokból álló szakaszai (utasítás-szekvenciái) amelyek más párhuzamosan futó folyamatokkal közösen használnak egy erőforrást. Az ilyen kritikus szakaszoknak a működését az interferencia mentesség érdekében össze kell hangolni.</p>
+<h3 id="kölcsönös-kizárás">Kölcsönös kizárás</h3>
+<p>A kölcsönös kizárás egy adott erőforrás (erőforrás csoport) párhuzamos programbeli használatának egy lehetséges módja. Ennek során amíg egy folyamat egy adott közös erőforrás kritikus szakaszában van, addig a többi folyamat ugyanezen erőforrás kritikus szakaszában nem tartózkodhat: valami mást csinál vagy a kritikus szakaszba történő belépésre várakozik.</p>
+<div class="figure">
+<img src="img/kolcsonos_kizaras.png" alt="Kölcsönös kizárás" />
+<p class="caption">Kölcsönös kizárás</p>
+</div>
+<h3 id="kölcsönös-kizárás-megvalósítása">Kölcsönös kizárás megvalósítása</h3>
+<p>A kölcsönös kizárás megvalósításához a kritikus szakaszokat különleges belépő és kilépő szakaszokkal egészítjük ki, amelyek diszjunktak a folyamat többi részétől:</p>
+<p><span class="math display">\[\big(\text{var}(\text{BK}_i) \cup \text{var}(\text{KK}_i) \big) \cap \big(\text{var}(\text{NK}_i) \cup \text{var}(\text{KS}_i) \big) = \emptyset\]</span></p>
+<div class="figure">
+<img src="img/kolcsonos_kizaras_megvalositasa.png" alt="Kölcsönös kizárás megvalósítása" />
+<p class="caption">Kölcsönös kizárás megvalósítása</p>
+</div>
+<p>A kölcsönös kizárás akkor teljesül, ha:</p>
+<ul>
+<li>az <span class="math inline">\(\{\text{Ef}_i\} \ S_i^* \ \{\text{Uf}_i\}\)</span> annotációk interferencia-mentesek.</li>
+<li>és minden <span class="math inline">\(i,j\in [1..n]: i\neq j\)</span>-re fennáll, hogy <span class="math inline">\(\text{pre}_{\text{KS}_i} \land \text{pre}_{\text{KS}_j} \equiv \downarrow\)</span></li>
+</ul>
+<h2 id="további-források">7.További források <a name="references"></a></h2>
+<ul>
+<li>Előadás diasor</li>
+</ul>
+</body>
+</html>

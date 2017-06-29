@@ -1,0 +1,450 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #0000ff; } /* Keyword */
+code > span.ch { color: #008080; } /* Char */
+code > span.st { color: #008080; } /* String */
+code > span.co { color: #008000; } /* Comment */
+code > span.ot { color: #ff4000; } /* Other */
+code > span.al { color: #ff0000; } /* Alert */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #008000; font-weight: bold; } /* Warning */
+code > span.cn { } /* Constant */
+code > span.sc { color: #008080; } /* SpecialChar */
+code > span.vs { color: #008080; } /* VerbatimString */
+code > span.ss { color: #008080; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { } /* Variable */
+code > span.cf { color: #0000ff; } /* ControlFlow */
+code > span.op { } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #ff4000; } /* Preprocessor */
+code > span.do { color: #008000; } /* Documentation */
+code > span.an { color: #008000; } /* Annotation */
+code > span.cv { color: #008000; } /* CommentVar */
+code > span.at { } /* Attribute */
+code > span.in { color: #008000; } /* Information */
+  </style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="s2-03-a-szerződésalapú-programtervezés">S2-03 A szerződésalapú programtervezés</h1>
+<h2 id="tartalom">Tartalom</h2>
+<ol style="list-style-type: decimal">
+<li><a href="#chapter01">A szerződésalapú programtervezés és -megvalósítás módszere, célja, szerepe</a></li>
+<li><a href="#chapter02">Szerződések leírását támogató nyelvi eszközök az Eiffel nyelvben</a></li>
+<li><a href="#chapter03">A szerződések formális jelentése Hoare-hármasokkal</a></li>
+<li><a href="#chapter04">A szerződések és a típusrendszer viszonya</a></li>
+<li><a href="#chapter05">Szerződések és objektum-orientáltság: öröklődés és felüldefiniálás</a></li>
+<li><a href="#chapter06">Üres referenciák</a></li>
+<li><a href="#chapter07">Kivételek</a></li>
+<li><a href="#references">További források</a></li>
+</ol>
+<h2 id="a-szerződésalapú-programtervezés-és--megvalósítás-módszere-célja-szerepe">1.A szerződésalapú programtervezés és -megvalósítás módszere, célja, szerepe <a name="chapter01"></a></h2>
+<h3 id="a-szerződésalapú-programtervezés-módszere">A szerződésalapú programtervezés módszere</h3>
+<p>A szerződésalapú programtervezés (Design by Contract, DbC) Bertrand Meyer nevéhez fűződik és a 80-as évek közepén alakult ki. A módszer három megközelítésen alapszik: a formális verifikáció, formális specifikáció, és a Hoare-hármasok.</p>
+<p>Az elképzelés lényege, hogy a rendszer komponensek közötti együttműködésének elősegítéséhez a résztvevők kölcsönösen kötelezettségeket vállalnak, melyek segítségével biztosítva lesznek a haszonról. Ez a megközelítés nem meglepő módon az üzleti élettel hozható párhuzamba, ahol a felek az előbb említetteknek megfelelően szerződéseket kötnek.</p>
+<p>Példa:</p>
+<ul>
+<li>A <em>kereskedő</em> terméket ad (kötelezettség), és feltételezi, hogy a <em>vásárló</em> fizetett érte (haszon)</li>
+<li>A <em>vásárló</em> fizet a termékért (kötelezettség), és feltételezi, hogy a <em>kereskedő</em> terméket biztosít (haszon)</li>
+<li>Mindkét résztvevő eleget tesz olyan egyéb megkötéseknek, mint például a jogi szabályok betartása</li>
+</ul>
+<p>A fenti példának megfelelően egy Objektum-orientált programban egy osztály egy szolgáltatásának három kérdésre kell választ adnia:</p>
+<ul>
+<li>Mik az eljárás megfelelő működéséhez szükséges megkötések - <strong>előfeltétel</strong></li>
+<li>Milyen eredményt garantál az eljárás (az előfeltételben megszabottak alapján) - <strong>utófeltétel</strong></li>
+<li>Milyen állapotot tart meg az eljárás (amit feltételezünk az eljárás előtt és garantálunk az után) - <strong>invariáns</strong></li>
+</ul>
+<h3 id="a-szerződésalapú-megvalósítás-módszere">A szerződésalapú megvalósítás módszere</h3>
+<p>Sok programozási nyelv ad támogatást a DbC-hez hasonló technikához az <code>assert</code>-ek segítségével. A szerződésalapú programtervezés szerint azonban a szoftver megfelelőségéhez alapvető, hogy ezek a szerződések a tervezés szerves részét képezzék. (A gyakorlatban ez azt jelenti, hogy az <code>assert</code>-ek kerülnek először megírásra.) A szerződéseket egyébként meg lehet fogalmazni comment segítségével, alá lehet támasztani tesztekkel (vagy mindkettő), ha a programnyelv nem ad más támogatást.</p>
+<p>Nyelvek melyek natívan támogatják a szerződésalapú programtervezést: <em>Eiffel</em>, <em>Ada 2012</em>, <em>Clojure</em>, stb.</p>
+<p>Nyelvek melyekhez létezik third-party könyvtár: <em>Java</em>, <em>C#</em>, <em>C</em>, <em>C++</em>, <em>Ada</em>, <em>JavaScript</em>, <em>PHP</em>, <em>Python</em>, <em>Ruby</em>, <em>Groovy</em>, stb.</p>
+<p>Ahogy az előbb már láthattuk a szerződések a legtöbb programozási nyelvben <code>assert</code>-ek segítségével fogalmazható meg. Azonban ha a program komponensei nem sértik meg a szerződéseket (bug-mentesek), ezek az <code>assert</code>-ek nem fognak hibát jelezni. Mivel ezek az ellenőrzések nagy hatással lehetnek a teljesítményre, így csak <em>debug</em> módban szokták őket bekapcsolni, <em>release</em> módban ezek a fordítás során törlésre kerülnek.</p>
+<p>A szerződésalapú programtervezés szerint a szerződések megszegése kritikus hiba kell legyen. Ez annyit tesz, hogy a programnak hibát kell jeleznie, ha olyan dolgok történik, ami a szerződések szerint nem megengedett. Így tehát a hívó fél felelőssége lesz, hogy megfelelően működjön a program. Ezzel a szemlélettel tehát az <code>assert</code>-ek használata egy megfelelő megoldás lehet. Némileg ellentétes felfogás a defenzív programozás, ahol a szolgáltatónak kell felkészülnie a különböző nem megengedett esetekre és aszerint eldönteni, hogy mi történjen.</p>
+<h3 id="a-szerződésalapú-program-célja-szerepe">A szerződésalapú program célja, szerepe</h3>
+<p>A szerződésalapú programtervezés elsődleges célja, hogy bug-mentes OO programokat tudjunk készíteni, de több előnnyel is jár a használata:</p>
+<ul>
+<li>Az objektum-orientált megközelítés (vagy általánosabban a szoftverfejlesztés) megértését segíti elő</li>
+<li>Szisztematikus megközelítést ad bug-mentes Objektum-orientált rendszerek építéséhez</li>
+<li>A debuggoláshoz, teszteléshez (vagy általánosabban a quality assurance-hez) nyújt hatékony keretrendszert</li>
+<li>Szoftverkomponensek dokumentálására ad módszert.</li>
+<li>Az öröklődési mechanizmus megértését és kezelését segíti elő</li>
+<li>Az abnormális esetek kezelésére ad technikát, ami biztonságos és hatékony nyelvi konstrukció a kivételkezelésre.</li>
+</ul>
+<h2 id="szerződések-leírását-támogató-nyelvi-eszközök-az-eiffel-nyelvben">2.Szerződések leírását támogató nyelvi eszközök az Eiffel nyelvben <a name="chapter02"></a></h2>
+<h4 id="előfeltétel-utófeltétel">Előfeltétel, utófeltétel</h4>
+<p>A szerződésalapú programtervezésben talán a legfontosabb szerepet a metódusok elő- és utófeltételei kapják. Az Eiffel nyelvben ezeket külön szintaktikus elemekkel (blokkokkal) lehet kifejezni. (Eiffelben mind az attribútumokat, mind a metódusokat <em>feature</em>-öknek nevezzük) Egy feature (metódus) a követekzőképp néz ki:</p>
+<div class="sourceCode"><pre class="sourceCode eiffel"><code class="sourceCode eiffel">feature_name(...): C <span class="kw">is</span> <span class="co">-- zárójelben a paraméterek,</span>
+                        <span class="co">-- majd a visszatérési érték típusa</span>
+    <span class="ot">require</span>
+        <span class="co">-- előfeltétel</span>
+    <span class="kw">local</span>
+        <span class="co">-- lokális változók</span>
+    <span class="kw">do</span>
+        <span class="co">-- implementáció</span>
+    <span class="ot">ensure</span>
+        <span class="co">-- utófeltétel</span>
+    <span class="kw">end</span></code></pre></div>
+<p>Az elő- és utófeltételek minden sorában egy logikai kifejezést kell írni, melyeket akár fel is cimkézhetünk:</p>
+<div class="sourceCode"><pre class="sourceCode eiffel"><code class="sourceCode eiffel">     put (x: ELEMENT; key: STRING) <span class="kw">is</span>
+                     <span class="co">-- Insert x so that it will be retrievable through key.</span>
+             <span class="ot">require</span>
+                     container_is_not_full: count &lt;= capacity
+                     key_is_not_empty: <span class="kw">not</span> key.empty
+             ...</code></pre></div>
+<p>A fenti példában láthatjuk, hogy egy gyűjtemény <code>put</code> feature-éhez megfogalmaztunk egy <code>container_is_not_full</code> előfeltételt, mely azt mondja ki, hogy a gyűjtemény nem lehet tele a berakás esetén, illetve egy <code>key_is_not_empty</code> előfeltételt, miszerint a kulcs nem lehet az üres sztring.</p>
+<p>Az utófeltétel vizsgálata esetén már olyan vizsgálatokat is végezhetünk, melyekben a múltbéli állapotra hivatkozunk. Erre az <code>old</code> kulcscszót használjuk:</p>
+<div class="sourceCode"><pre class="sourceCode eiffel"><code class="sourceCode eiffel">     put (x: ELEMENT; key: STRING) <span class="kw">is</span>
+                     <span class="co">-- Insert x so that it will be retrievable through key.</span>
+             <span class="ot">require</span>
+                <span class="co">-- precondition</span>
+             <span class="kw">do</span>
+                <span class="co">-- implementation</span>
+             <span class="ot">ensure</span>
+                has (x)
+                item (key) = x
+                count = <span class="kw">old</span> count + <span class="dv">1</span></code></pre></div>
+<p>Láthatjuk, hogy az utófeltételben megfogalmaztuk, hogy a feature meghívása után az elemnek a gyűjteményben kell lennie, méghozzá a kulccsal elérhetőnek kell lennie. Ezen felül az <code>old</code> kulcsszó segítségével ki tudtuk fejezni, hogy az új elemszámnak a régi elemszámnál eggyel nagyobbnak kell lennie.</p>
+<p><em>Megjegyzés: Létezik egy <strong>strip</strong> kulcscszó is, mellyel bonyolultabb utófeltételek esetén azt tudjuk meghatározni, hogy kizárólag a felsorolt attribútumok változhatnak meg.</em></p>
+<h4 id="osztályinvariáns">Osztályinvariáns</h4>
+<p>Ahogy a bevezetőben is olvashattuk, az elő- és utófeltételek mellett az osztályinvarians is fontos szerepet kap a szerződések szempontjából. Ezzel határozzuk meg egy osztály helyes állatpotainak halmazát, melyet ugyanúgy logikai állításokkal tudunk leírni. Az osztály szintaxisa Eiffelben a követekző:</p>
+<div class="sourceCode"><pre class="sourceCode eiffel"><code class="sourceCode eiffel"><span class="kw">class</span> MYCLASS
+<span class="kw">create</span>
+    make <span class="co">-- Konstruktor feature-ök</span>
+<span class="kw">feature</span> {A}
+    <span class="co">-- A osztály számára látható feature-ök</span>
+<span class="kw">feature</span> {B}
+    <span class="co">-- B osztály számára látható feature-ök</span>
+<span class="ot">invariant</span>
+    <span class="co">-- osztályinvariánsok</span>
+<span class="kw">end</span></code></pre></div>
+<p>Az osztályinvariánst pedig egy Stack esetén például a következőképp tudjuk leírni:</p>
+<div class="sourceCode"><pre class="sourceCode eiffel"><code class="sourceCode eiffel"><span class="kw">class</span> STACK[T]
+<span class="kw">creation</span>
+    make
+<span class="kw">feature</span>
+    size: INTEGER
+
+    capacity: INTEGER
+    <span class="kw">do</span>
+        <span class="cn">Result</span> := data.count
+    <span class="ot">ensure</span>
+        <span class="cn">Result</span> &gt; <span class="dv">0</span>
+    <span class="kw">end</span> <span class="co">-- capacity</span>
+
+<span class="kw">feature</span> {}
+
+    data: ARRAY[T]
+
+<span class="ot">invariant</span>
+    data.lower = <span class="dv">1</span>
+    data.upper = capacity
+    <span class="dv">0</span> &lt;= size
+    size &lt;= capacity
+<span class="kw">end</span> <span class="co">-- class STACK</span></code></pre></div>
+<h4 id="ciklusok">Ciklusok</h4>
+<p>Eiffelben a ciklusok is kiemelt figyelmet kapnak, mivel ezeknek is lehet megkötéseket, kiegészítő információkat adni. A nyelv Programozáselméletből ismert <em>ciklus invariáns</em> és <em>variáns függvény</em> kifejezésére ad lehetőséget. Egy ciklus szintaxisa a következő:</p>
+<div class="sourceCode"><pre class="sourceCode eiffel"><code class="sourceCode eiffel"><span class="kw">from</span>
+    <span class="co">-- inicializációs blokkok</span>
+<span class="ot">invariant</span>
+    <span class="co">-- ciklus invariáns</span>
+until
+    <span class="co">-- termiánálási feltétel</span>
+<span class="kw">loop</span>
+    <span class="co">-- ciklusmag</span>
+<span class="ot">variant</span>
+    <span class="co">-- ciklus variáns</span>
+<span class="kw">end</span></code></pre></div>
+<p>A <em>ciklus invariáns</em> egy olyan állítás, melynek a ciklus előtt, majd minden iteráció után igaznak kell lennie.</p>
+<p>A <em>ciklus variáns</em> vagy <em>variáns függvény</em> pedig olyan nemnegatív egész szám, melynek értéke minden iteráció után legalább eggyel csökken. Mivel egy nemnegatív egész szám nem csökkenthető a végtelenségig, illetve mivel kötelező a csökkenés így biztosítva van a terminálás. (Másként: A variáns függvény szigorúan monoton csökkenő, így el fogja érni a nullát.)</p>
+<h4 id="check">Check</h4>
+<p>A <code>check</code> konstrukcióval lehetőségünk nyílik az implicit feltételezések dokumentálására. Szintaxisa a követekző:</p>
+<div class="sourceCode"><pre class="sourceCode eiffel"><code class="sourceCode eiffel"><span class="ot">check</span> Assertion <span class="kw">then</span>
+    <span class="co">-- ...</span>
+<span class="kw">end</span></code></pre></div>
+<p>Olyan esetekben például, mikor egy feature-nek egy előfeltételére nem végzünk explicit ellenőrzést, mert tudjuk, hogy teljesülni fog, akkor ezt jelezhetjük ezzel a blokkal. A <code>check</code> hasonló az <code>if</code>-hez azzal a különbséggel, hogy release módban fordítva törlésre kerül ez az ellenőrzés, illetve mindig igaz kell legyen (nem egy logikai vizsgálat, hanem egy feltétlezés). Debug módban ezen ellenőrzések jelezhetnek nekünk, ha a feltételezés mégsem teljesülne.</p>
+<h4 id="bonyolultabb-logikai-állítások">Bonyolultabb logikai állítások</h4>
+<p>Sok esetben fordul elő, hogy matematikailag, logikailag megfogalmazott fontos állításunk lenne egy viselkedésről, ami azonban nem kiszámolható. Ilyen például az univerzális kvantálás. Erre jó példa a legnagyobb közös osztó számítása:</p>
+<div class="sourceCode"><pre class="sourceCode eiffel"><code class="sourceCode eiffel">lnko( a, b: INTEGER ): INTEGER <span class="kw">is</span>
+    <span class="ot">require</span>    <span class="dv">0</span> &lt; a; <span class="dv">0</span> &lt; b
+    <span class="kw">local</span>
+        tmp: INTEGER
+    <span class="kw">do</span>
+        <span class="kw">from</span>
+            <span class="cn">Result</span> := a
+            tmp := b
+        <span class="ot">invariant</span>
+            <span class="dv">0</span> &lt; <span class="cn">Result</span>; <span class="dv">0</span> &lt; tmp;
+        <span class="ot">variant</span> <span class="cn">Result</span> + tmp
+        until     <span class="cn">Result</span> = tmp
+        <span class="kw">loop</span>
+            <span class="kw">if</span> <span class="cn">Result</span> &gt; tmp
+            <span class="kw">then</span> <span class="cn">Result</span> := <span class="cn">Result</span> - tmp
+            <span class="kw">else</span> tmp := tmp - <span class="cn">Result</span>
+            <span class="kw">end</span>
+        <span class="kw">end</span>
+    <span class="ot">ensure</span>    <span class="cn">Result</span> &gt; <span class="dv">0</span>; a \\ <span class="cn">Result</span> = <span class="dv">0</span>; b \\ <span class="cn">Result</span> = <span class="dv">0</span>;
+        <span class="co">-- for all n: (a \\ n = 0 and b \\ n = 0) implies n &lt;= Result</span>
+    <span class="kw">end</span> <span class="co">-- lnko</span></code></pre></div>
+<p>Az <em>lnko</em>-nak egy fontos tulajdonsága, hogy az a legnagyobb a két szám közös osztói közül, azaz:</p>
+<p><span class="math display">\[ \forall n: a \equiv 0 \land b \equiv 0 \pmod{n} \Rightarrow n \leq Result \]</span></p>
+<p>Ezt azonban kiszámolni nem lehet, az ilyenfajta állításokat kommentekben szokták megfogalmazni.</p>
+<h2 id="a-szerződések-formális-jelentése-hoare-hármasokkal">3.A szerződések formális jelentése Hoare-hármasokkal <a name="chapter03"></a></h2>
+<p>A Hoare-hármasok felépítése a következőképp néz ki:</p>
+<pre><code>{P} S {Q}</code></pre>
+<p>Ahol <strong>P</strong> és <strong>Q</strong> logikai állítások (<strong>P</strong> - előfeltétel, <strong>Q</strong> - utófeltétel), míg <strong>S</strong> utasítások sorozata. A leírás jelentése pedig:</p>
+<p><em>Amennyiben <strong>P</strong> igaz <strong>S</strong> lefutása előtt és <strong>S</strong> terminál, akkor <strong>Q</strong> igaz lesz <strong>S</strong> lefutása után.</em></p>
+<p>Láthatjuk, hogy a terminálás nem garantált, ezt másfajta bizonyítással érhetjük el.</p>
+<h4 id="szerződések">Szerződések</h4>
+<p>Az eddig látott feature elő- és utófeltételek természetes módon leírhatók tehát Hoare-hármasok segítségével. Tekintsük a követekző négyzetgyök függvényt:</p>
+<div class="sourceCode"><pre class="sourceCode eiffel"><code class="sourceCode eiffel">     sqrt (x: REAL) : REAL <span class="kw">is</span>
+             <span class="ot">require</span>
+                 x &gt;= <span class="dv">0</span>
+             <span class="kw">do</span>
+                <span class="co">-- implementation</span>
+             <span class="ot">ensure</span>
+                <span class="cn">Result</span> &gt;= <span class="dv">0</span></code></pre></div>
+<p>Hoare-hármasokkal felírva a szerződés:</p>
+<pre><code>{ x &gt;= 0 } Result := sqrt(x) { Result &gt;= 0 }</code></pre>
+<h4 id="ciklusok-1">Ciklusok</h4>
+<p>Ciklusok esetén sok állítást fogalmazhatunk meg, mint például a <em>ciklus invariáns</em> vagy a <em>variáns függvény</em>. A követekző Hoare-hármasok igazak egy ciklusra:</p>
+<ol style="list-style-type: decimal">
+<li><span class="math inline">\(\{REQ\} \ INIT \ \{INV\}\)</span></li>
+<li><span class="math inline">\(\{ REQ \} \ INIT \ \{ VAR \geq 0 \}\)</span></li>
+<li><span class="math inline">\(\{INV \land \lnot EXIT\} \ BODY \ \{INV\}\)</span></li>
+<li><span class="math inline">\(\{INV \land \lnot EXIT \land VAR = v\} \ BODY \ \{0 \leq VAR &lt; v \}\)</span></li>
+</ol>
+<p>Ahol:</p>
+<ul>
+<li><code>REQ</code> - a ciklus előfeltétele (milyen feltételek mellett hatjható végre a ciklus)</li>
+<li><code>INIT</code> - a ciklus inicializációs blokkja</li>
+<li><code>INV</code> - ciklusinvariáns</li>
+<li><code>EXIT</code> - kilépési feltétel</li>
+<li><code>VAR</code> - variáns függvény</li>
+</ul>
+<p>A jelentések pedig a követekzők:</p>
+<ol style="list-style-type: decimal">
+<li>A ciklus előfeltétele mellett az inicializációt végrehatjva a ciklusinvariáns igazzá válik</li>
+<li>A ciklus előfeltétele mellett az inicializációt végrehatjva a variáns függvény értéke nemnegatív</li>
+<li>A ciklus megőrzi a ciklusinvariánst (ha igaz az invariáns és nem kell kilépni, akkor a ciklusmag végrehajtása után is igaz lesz az invariáns.)</li>
+<li>A variáns függvény értéke csökken (az invaráns mellett, ha nem kell kilépni és a variáns függvény értéke <em>v</em>, akkor a ciklusmag végrehajtása után a variáns függvény értéke <em>v</em>-nél kisebb nemnegatív kell legyen.)</li>
+</ol>
+<h2 id="a-szerződések-és-a-típusrendszer-viszonya">4.A szerződések és a típusrendszer viszonya <a name="chapter04"></a></h2>
+<p>Az Eiffel tisztán Objektum-orientált nyelv, így a típusrendszere is az ilyen nyelvekben megszokott, erősen típusos, típusöröklődést és polimorfizmust támogató.</p>
+<h4 id="kapcsolt-típus-anchored-type">Kapcsolt típus (anchored type)</h4>
+<p>Az öröklődés és polimorfizmus miatt Objektum-orientált nyelveknél sok esetben fordulhat elő az az eset, hogy nem ismerjük az egyes változók dinamikus típusát fordítási időben. Ez az ismeret viszont sok esetben fontos lenne. Gondoljunk csak például arra az esetre, mikor síelő fiúkat és lányokat akarunk elszállásolni, viszont csak az azonos neműeket szeretnénk egy szobába tenni. Ezt a típusokkal tudjuk elérni a követekző módon:</p>
+<div class="sourceCode"><pre class="sourceCode eiffel"><code class="sourceCode eiffel"><span class="kw">class</span> SKIER
+<span class="kw">feature</span>
+    roommate: <span class="kw">like</span> <span class="cn">Current</span>
+
+    share( other: <span class="kw">like</span> roommate ) <span class="kw">is</span>
+    <span class="ot">require</span>
+        other /= Void
+    <span class="kw">do</span>
+        roommate := other
+    <span class="ot">ensure</span>
+        other = roommate
+    <span class="kw">end</span>
+<span class="kw">end</span></code></pre></div>
+<p>Láthatjuk, hogy a <code>roomate</code> attribútum típusa <code>like Current</code> azaz meg kell egyezzen az aktuális típussal (A <code>Current</code> az aktuális objektumot jelöli. Olyan, mint Java-ban a <code>this</code>.). Ez azt jelenti, hogy ha egy <code>GIRL</code> osztályt leszármaztatunk a <code>SKIER</code> osztályból, akkor annak a <code>roomate</code> attribútumoka is <code>GIRL</code> típusú kell legyen. Emellett láthatjuk, hogy a <code>share</code> metódus paramétere <code>like roomate</code> típusú, magyarul csak olyan objektumot adhatunk paraméterként, mely megegyezik a <code>roomate</code> típusával. (<code>GIRL</code> esetén csak <code>GIRL</code> lehet)</p>
+<p><em>Megjegyzés: Létezik kiskapu, van lehetőségünk fiúkat és lányokat egy szobába rakni. Ezt a kiskaput &quot;Polymorphic CAT-call&quot;-nak hívják.</em></p>
+<h4 id="expandált-és-referencia-típusok">Expandált és referencia típusok</h4>
+<p>Eiffelben lehetőségünk van meghatározni, hogy egy típus érték vagy referencia típus legyen. Alapvetően referencia típusúak az osztályaink, de az <code>expanded</code> kulcsszóval érték típusúvá alakíthatjuk őket:</p>
+<div class="sourceCode"><pre class="sourceCode eiffel"><code class="sourceCode eiffel"><span class="kw">expanded</span> <span class="kw">class</span> PONT
+<span class="kw">feature</span>
+
+    x,y: REAL
+
+    eltol( dx, dy: REAL )
+    <span class="kw">do</span>
+        x := x + dx
+        y := y + dy
+    <span class="kw">end</span> <span class="co">-- eltol</span>
+
+<span class="kw">end</span> <span class="co">--class PONT</span></code></pre></div>
+<p>Ebben az esetben természetesen más nyelvekhez hasonlóan figyelembe kell venni a paraméterátadásokat, értékadásokat, stb., ugyanis ezekben az esetekben a példány másolódik.</p>
+<h4 id="deferred">Deferred</h4>
+<p>Más nyelvekből ismert <em>abstract</em> tulajdonságot megfogalmazhatunk Eiffelben. Erre a <code>deferred</code> kulcsszó használható. Ahogy megszoktuk, amennyiben legalább egy feature <code>deferred</code> egy osztályban, az adott osztály is automatikusan <code>deferred</code> kell legyen. Ezenkívül Eiffelben lehetőségünk van arra, hogy a szerződést megfogalmazzuk és csak az implementációt tegyük <code>deferred</code>-dé:</p>
+<div class="sourceCode"><pre class="sourceCode eiffel"><code class="sourceCode eiffel"><span class="kw">deferred</span> <span class="kw">class</span> VEHICLE <span class="kw">feature</span>
+    dues_paid (year: INTEGER): BOOLEAN <span class="kw">is</span>
+         <span class="kw">do</span> ... <span class="kw">end</span>
+    valid_plate (year: INTEGER): BOOLEAN <span class="kw">is</span>
+         <span class="kw">do</span> ... <span class="kw">end</span>
+    register (year: INTEGER) <span class="kw">is</span>
+            <span class="co">-- Register vehicle for year.</span>
+         <span class="ot">require</span>
+             dues_paid (year)
+         <span class="kw">deferred</span>
+         <span class="ot">ensure</span>
+             valid_plate (year)
+         <span class="kw">end</span>
+<span class="kw">end</span> <span class="co">-- class VEHICLE</span></code></pre></div>
+<p>Attól függetlenül, hogy egy motornak és egy autónak más a regisztrációs eljárása, az elő- és utófeltételeik megegyeznek. Ezeket meghatározhatjuk a jármű szintjén, így a leszármazottakban csak az implementációt kell megírnunk.</p>
+<h2 id="szerződések-és-objektum-orientáltság-öröklődés-és-felüldefiniálás">5.Szerződések és objektum-orientáltság: öröklődés és felüldefiniálás <a name="chapter05"></a></h2>
+<h4 id="öröklődési-gráf">Öröklődési gráf</h4>
+<p>Az Eiffel támogatja a többszörös öröklődést, így lehetőség van egy különleges öröklődési gráf kialakítására.</p>
+<div class="figure">
+<img src="img/eiffel_inheritance.png" alt="Eiffel öröklődési gráf" />
+<p class="caption">Eiffel öröklődési gráf</p>
+</div>
+<p>Minden osztály az <code>ANY</code> osztályból származik. A <code>NONE</code> egy fiktív osztály mely minden osztályból öröklődik, mindennek altípusa.</p>
+<h4 id="láthatóságok">Láthatóságok</h4>
+<p>Egy osztály feature-einek láthatóságát (export status) osztály szinten tudjuk korlátozni. Ez azt jelenti, hogy meg tudjuk határozni, hogy egy feature egy konkrét osztály (és annak leszármazottai) számára látható:</p>
+<div class="sourceCode"><pre class="sourceCode eiffel"><code class="sourceCode eiffel"><span class="kw">class</span> MYCLASS
+    ...
+    <span class="kw">feature</span> {A}
+        <span class="co">-- A osztály számára látható feature-ök</span>
+    <span class="kw">feature</span> {B}
+        <span class="co">-- B osztály számára látható feature-ök</span>
+    <span class="kw">feature</span> {ANY}
+        <span class="co">-- Minden osztály számára látható (public)</span>
+    <span class="kw">feature</span> {NONE}
+        <span class="co">-- Senki számára nem látható (private)</span>
+    ...
+<span class="kw">end</span></code></pre></div>
+<h4 id="többszörös-öröklődés-átnevezés">Többszörös öröklődés, átnevezés</h4>
+<p>A több osztályból való öröklés egyik legnagyobb kérdése az ún. <em>diamond inheritance</em>, melyre különböző nyelvek más-más megoldást adnak. Eiffelben sok lehetőség van az ősosztály megörökölt metódusainak kezelésére, hogy el tudjuk kerülni a névütközést.</p>
+<div class="sourceCode"><pre class="sourceCode eiffel"><code class="sourceCode eiffel"><span class="kw">class</span>
+    LINKED_QUEUE [G]
+<span class="kw">inherit</span>
+    QUEUE [G]
+        <span class="kw">undefine</span>
+            is_empty,
+            copy,
+            is_equal
+        <span class="kw">redefine</span>
+            linear_representation,
+            prune_all,
+            extend
+        select
+            item,
+            put
+        <span class="kw">end</span>
+    LINKED_LIST [G]
+        <span class="kw">rename</span>
+            item <span class="kw">as</span> ll_item,
+            remove <span class="kw">as</span> ll_remove,
+            make <span class="kw">as</span> ll_make,
+            remove_left <span class="kw">as</span> remove,
+            put <span class="kw">as</span> ll_put
+        <span class="kw">export</span>
+            {NONE}
+                <span class="kw">all</span>
+            {ANY}
+                writable,
+                extendible,
+                wipe_out,
+                readable
+        <span class="kw">undefine</span>
+            fill,
+            append,
+            prune,
+            readable,
+            writable,
+            prune_all,
+            extend,
+            force,
+            is_inserted
+        <span class="kw">redefine</span>
+            duplicate,
+            linear_representation
+        select
+            remove
+        <span class="kw">end</span></code></pre></div>
+<p>A fenti példában a <code>LINKED_QUEUE</code>-t láthatjuk, ami a <code>LINKED_LIST</code> és a <code>QUEUE</code> osztályokból származik. Az ősosztályok metódusait pedig különféle módon kezeli, melyek a követekzők:</p>
+<ul>
+<li><code>rename</code> - Átnevezhetjük az ősosztály metódusait</li>
+<li><code>export</code> - megváltoztathatjuk az ősosztály metódusának láthatóságát (export státusz)</li>
+<li><code>undefine</code> - <code>deferred</code>-dé teszi a feature-t (névütközés estetén ekkor egy másik implementáció érvényesül</li>
+<li><code>redefine</code> - új implementációt fog kapni a leszármazottban az adott feature.</li>
+<li><code>select</code> - csak különleges esetekben kell használni, melyre az Eiffel language reference külön fejezetet szentel.</li>
+</ul>
+<h4 id="kovariancia-kontravariancia">Kovariancia, kontravariancia</h4>
+<p>Az öröklődés és polimorfizmus talán legnagyobb kérdése a variancia. A variancia két típus helyettesíthetőségét fejezi ki.</p>
+<p>Vezessük be az altípus relációt:</p>
+<pre><code>A :&gt; B</code></pre>
+<p>Ebben az esetben a <em>B</em> típus az <em>A</em>-nak altípusa.</p>
+<p><strong>Kovarianciának</strong> nevezzük, ha az általánosabb típus (<em>A</em>) helyére a speciálisabb típust (<em>B</em>) behelyettesíthetjük.</p>
+<p><strong>Kontravarianciának</strong> nevezzük, ha a speciálisabb típus (<em>B</em>) helyére az általánosabb típust (<em>A</em>) helyettesíthetjük be.</p>
+<p><strong>Invariáns</strong> vagy <strong>Nonvariáns</strong> a reláció, ha a fentiek közül egyik sem mondható.</p>
+<p>A fent említett tulajdonságok kontextustól függőek. A legfontosabb felhasználási területe ezeknek a tulajdonságoknak az öröklődés során a metódusok specializációja. Egy metódust akkor tudunk típushelyesen specializálni, ha a paraméterei <em>kontravariánsak</em> az ősosztály metódusának paramétereivel, míg a visszatérési típusa <em>kovariáns</em> a ősosztály metódusának visszatérési típusával.</p>
+<p>Nézzük meg erre a követekző példát:</p>
+<p>Tegyük fel, hogy <code>CREATURE :&gt; ANIMAL :&gt; MONKEY</code> és <code>FOOD :&gt; FRUIT :&gt; BANANA</code>, illetve létezik egy osztályunk:</p>
+<div class="sourceCode"><pre class="sourceCode eiffel"><code class="sourceCode eiffel"><span class="kw">class</span> ANIMAL_FEEDER 
+<span class="kw">create</span>
+    make
+<span class="kw">feature</span> {ANY}
+    feed(a : ANIMAL) : FRUIT
+    <span class="kw">do</span> 
+        <span class="co">-- implementation</span>
+    <span class="kw">end</span>
+<span class="kw">end</span></code></pre></div>
+<p>Ha létre akarjuk hozni a <code>MY_FEEDER</code> osztályt és specializálni szeretnénk a <code>feed</code> metódust, akkor a paramétere lehet továbbra is <code>ANIMAL</code> típusú, vagy <code>CREATURE</code>, de <code>MONKEY</code> semmiképp. Ugyanis azon a helyen, ahol kicseréljük az <code>ANIMAL_FEEDER</code> példányt, az azt használók nem feltétlenül csak <code>MONKEY</code> típusú paramétereket adhatnak át. Hasonlóképpen a visszatérési érték csak <code>FRUIT</code> és <code>BANANA</code> lehet. Az <code>ANIMAL_FEEDER</code>-t használók <code>FRUIT</code> típust vagy annak altípusait várják értékül.</p>
+<h5 id="szerződések-1">Szerződések</h5>
+<p>Ahogy a metódusok paramétereire és visszatérési értékére, a szerződésekre is érvényes a variancia. A feature-ök előfeltételeit lazítani lehet, míg az utófeltételeit megszorítani. Erre a <code>require else</code> és <code>ensure then</code> kulcsszavakat lehet használni. A <code>require else</code> esetén az újonnan megfogalmazott előfeltétel <em>vagy</em> kapcsolatban fog állni az eredetivel. Az <code>ensure then</code> esetén az utófeltétel szigorodik, <em>és</em> kapcsolatban fog állni az eredeti utófeltétellel.</p>
+<h5 id="osztályinvariáns-1">Osztályinvariáns</h5>
+<p>Az öröklődés során Eiffelben a leszármazottak megőrzik az ősök osztályinvariansait. Így a leszármazott invariánsa a leszármazottban megfogalmazott invariáns és ősei invariánsának konjunkciója lesz (össze és-elődnek).</p>
+<h2 id="üres-referenciák">6.Üres referenciák <a name="chapter06"></a></h2>
+<p>Referencia típusok esetén a nullreferencia kérdése, illetve a nullable típusok természetesen Eiffelben is felmerülnek. A nullreferencia Eiffelben <code>Void</code> névre hallgat. A nullable vagy non-nullable tulajdonságok egy változó típusának meghatározásánál kapnak szerepet. A nullable Eiffelben <code>detachable</code>, míg a non-nullable <code>attached</code> kulcsszavakkal fejezhető ki.</p>
+<div class="sourceCode"><pre class="sourceCode eiffel"><code class="sourceCode eiffel">    my_attached_string: STRING
+    my_detachable_string: detachable STRING
+
+            ...
+
+        my_attached_string := my_detachable_string    <span class="co">-- Invalid</span>
+        my_detachable_string := my_attached_string    <span class="co">-- Valid</span></code></pre></div>
+<p>A fenti példában láthatjuk, hogy milyen módon feleltehetők meg egymásnak az <code>attached</code> és <code>detachable</code> változók, illetve, hogy alapvetően minden változó <code>attached</code>.</p>
+<h2 id="kivételek">7.Kivételek <a name="chapter07"></a></h2>
+<p>Eiffelben a kivételek eltérnek a más nyelvekben megszokottaktól. Semmiképpen nem részei a control-flownak, tényleg csak speciális esetekben léphetnek fel:</p>
+<ul>
+<li>valamelyik fél nem tesz eleget egy szerződésnek.</li>
+<li>valamilyen hardware, operációs rendszer, stb. probléma (például memory overflow, stb.)</li>
+<li>a le nem kezelt kivételek egy szinttel feljebb lépnek a hívási láncon</li>
+</ul>
+<p>A metódusok definíciójánál meg lehet fogalmazni egy <code>rescue</code> klózt, mely kivétel fellépésénél fut le. Ebben a klózban hozhatjuk újra az invariánsnak megfelelő állapotba a példányunkat. Ezek kívül lehetőségünk van a <code>retry</code> kulcsszóval az adott metódust újra próbálni. A <code>rescue</code> blokk lefutása után a metódus vagy sikerrel lefut, vagy kivételt vált ki az őt hívó rutinban.</p>
+<p>Egy példa a kivételkezelésre és a <code>rescue</code> használatára:</p>
+<div class="sourceCode"><pre class="sourceCode eiffel"><code class="sourceCode eiffel">attempt_transmission (message: STRING) <span class="kw">is</span>
+        <span class="co">-- Try to transmit message, at most 50 times.</span>
+        <span class="co">-- Set successful accordingly.</span>
+    <span class="kw">local</span>
+        failures: INTEGER
+    <span class="kw">do</span>
+        <span class="kw">if</span> failures &lt; <span class="dv">50</span> <span class="kw">then</span>
+            transmit (message); successful := true
+        <span class="kw">else</span>
+            successful := false
+        <span class="kw">end</span>
+    <span class="kw">rescue</span>
+        failures := failures + <span class="dv">1</span>
+        <span class="kw">retry</span>
+    <span class="kw">end</span></code></pre></div>
+<h2 id="további-források">8.További források <a name="references"></a></h2>
+<ul>
+<li>http://kto.web.elte.hu/hu/oktatas/eiffel/anyagok/eloadasok/</li>
+<li>https://en.wikipedia.org/wiki/Design_by_contract</li>
+<li>https://www.eiffel.com/values/design-by-contract/introduction/</li>
+<li>http://se.ethz.ch/~meyer/publications/computer/contract.pdf</li>
+<li>http://www.cse.yorku.ca/~eiffel/ISE/doc/html/manuals/language/intro/deferred.maker.html</li>
+<li>https://archive.eiffel.com/doc/online/eiffel50/intro/language/invitation-06.html</li>
+<li>https://www.eiffel.org/doc/eiffel/An%20Eiffel%20Tutorial%20%28ET%29</li>
+<li>http://nyelvek.inf.elte.hu/leirasok/Eiffel/index.php</li>
+<li>https://www.eiffel.org/doc/eiffel/Void-safety%3A%20Background%2C%20definition%2C%20and%20tools</li>
+<li>https://www.eiffel.org/doc/solutions/Inheritance#The_Inheritance_Part_of_Classes_in_Eiffel</li>
+<li>http://www.cse.yorku.ca/~eiffel/ISE/doc/html/manuals/language/intro/exceptions.maker.html</li>
+</ul>
+</body>
+</html>

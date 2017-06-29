@@ -1,0 +1,666 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h1 id="s1-05-projektirányítás-az-informatikában">S1-05 Projektirányítás az informatikában</h1>
+<h2 id="tartalom">Tartalom</h2>
+<ol style="list-style-type: decimal">
+<li><a href="#chapter01">Informatikai projektek specialitásai és típusai</a></li>
+<li><a href="#chapter02">A projekt politikai, gazdasági és jogi környezete</a></li>
+<li><a href="#chapter03">Vállalati szintű tervezés, vállalatok életciklusai</a></li>
+<li><a href="#chapter04">Projekt szervezet felépítése</a></li>
+<li><a href="#chapter05">A projekt életciklusa</a></li>
+<li><a href="#chapter06">Projekttervezés</a>
+<ul>
+<li><a href="#section06_01">feladat és szervezet lebontási struktúra</a></li>
+<li><a href="#section06_02">időelemzés</a></li>
+<li><a href="#section06_03">kritikus út meghatározása</a></li>
+<li><a href="#section06_04">erőforrás-ütemezés</a></li>
+<li><a href="#section06_05">költségvetés hozzárendelése</a></li>
+<li><a href="#section06_06">kritikus lánc módszer</a></li>
+</ul></li>
+<li><a href="#chapter07">A projektet kísérő folyamatok</a></li>
+<li><a href="#chapter08">Projektirányítási módszertanok</a></li>
+<li><a href="#chapter09">Projektirányítás emberi vonatkozásai</a></li>
+<li><a href="#references">További források</a></li>
+</ol>
+<h2 id="informatikai-projektek-specialitásai-és-típusai">1.Informatikai projektek specialitásai és típusai <a name="chapter01"></a></h2>
+<h3 id="alapfogalmak">Alapfogalmak</h3>
+<p><strong>Projekt</strong>:</p>
+<ul>
+<li><em>def. 1</em>: A projekt a kitűzött CÉL érdekében kölcsönösen egymásra ható tevékenységek csoportja, mely magába foglal idő-, költség-, erőforrás-, terjedelem-, és minőségtényezőket.</li>
+<li><em>def. 2</em>: Egy projekt egyedi folyamatcsoportok összessége, melyek összehangolt és felügyelt tevékenységeket jelentenek kezdési és befejezési dátumokkal a projektcélok megvalósítása érdekében.</li>
+</ul>
+<h3 id="informatikai-projektek-specialitásai">Informatikai projektek specialitásai</h3>
+<p>Az informatikai projektek első, és legfontosabb jellemzője, hogy <strong>önmagában nincs informatikai projekt</strong>. Egy informatikai projekt a legtöbb esetben valamilyen köztes lépés, egy nagyobb projekt része. Ezen felül egy informatikai projekt specialitásai a következők:</p>
+<ul>
+<li>Sok projektszereplő</li>
+<li>Sok szakismeret</li>
+<li>A termék megfoghatatlan, változó és bonyolult</li>
+<li>A fejlesztési folyamat nehezen szabványosítható</li>
+<li>Bonyolult, sokrétű vevőkapcsolat</li>
+<li>Nagy kockázat, egyediség</li>
+<li>Nagy függés a felhasználói oldal vállalati kultúrájától</li>
+</ul>
+<h3 id="informatikai-projektek-típusai">Informatikai projektek típusai</h3>
+<ul>
+<li>Szoftver(termék) fejlesztési projekt</li>
+<li>Alkalmazásfejlesztési projekt</li>
+<li>Alkalmazásintegrációs projekt</li>
+<li>Rendszerintegrációs projekt</li>
+<li>Bevezetési projekt</li>
+<li>Infrastruktúra fejlesztési projekt</li>
+<li>&quot;Tanulmánykészítési&quot; projekt (előkészítés, felmérés, bevizsgálás)</li>
+<li>Tesztelési projekt</li>
+</ul>
+<p><strong>DE</strong> leginkább ezeknek a keverékeiből áll össze egy informatikai projekt</p>
+<h2 id="a-projekt-politikai-gazdasági-és-jogi-környezete">2.A projekt politikai, gazdasági és jogi környezete <a name="chapter02"></a></h2>
+<h3 id="politikai-környezet">Politikai környezet</h3>
+<p>A vállalatokra közvetett hatással van a politikai környezet amelyben a vállalat él.</p>
+<p>A politikai környezet tényezői:</p>
+<ul>
+<li>politikai stabilitás</li>
+<li>a politika beleszól a gazdaságba</li>
+<li>a politika döntéshozatal helyszínei (parlament, kormány, önkormányzat)</li>
+<li>a hatalmi ágak és azok együttműködése. A vállalat számára nem mindegy, hogy a konzervatív, liberális vagy szocialista irányelvek dominálnak</li>
+</ul>
+<h3 id="gazdasági-környezet">Gazdasági környezet:</h3>
+<ul>
+<li>már közvetlenül befolyásolja a vállalat életét.</li>
+<li>világgazdasági helyzet, haza gazdasági helyzet, gazdasági növekedés, infláció, beruházási kedv, koncepció</li>
+<li>az informatikai ipar érzékeny a gazdasági helyzetre, mert ha nem megy a gazdaság, akkor a gazdálkodó szervek rendszerint az informatikai kiadásokon kezdenek el takarékoskodni</li>
+<li>a munkanélküliség rossz, de rövid távon a vállalatok hasznot húzhatnak belőle, mert könnyebb munkaerőt találni</li>
+</ul>
+<p>Gazdasági szempontból egy vállalatot a SWOT (Strengths-Weaknesses-Opportunities-Threats) analízis segítségével lehet elemezni. Ennek négy eleme:</p>
+<ul>
+<li><p>Erősségek (strengths): Pozitív belső vállalati tényezők, amik a vállalkozás előnyei és fejleszthetjük</p>
+<p>(pl. jó termék, projekt struktúra, üzleti kapcsolatok, technológiai ismeret, stb.)</p></li>
+<li><p>Gyengesége(weaknesses): Negatív belső vállalati tényezők, amik a vállalkozás hátrányai és javíthatunk rajta</p>
+<p>(pl. kevés erőforrás, nem ismert a vállalat, kevés projektvezető, stb.)</p></li>
+<li><p>Lehetőségek (opportunities): Pozitív külső politikai- vagy gazdasági tényezők, amiket nem tudunk befolyásolni, de kihasználhatjuk előnyként</p>
+<p>(pl. erős hazai/nemzetközi piaci pozíció, jó kapcsolatok, EU-s csatlakozás, stb.)</p></li>
+<li><p>Veszélyek (threats): Negatív külső politikai- vagy gazdasági tényezők, amiket nem tudunk befolyásolni, de fel kell készülnünk rájuk</p>
+<p>(pl. csökkenő gazdasági növekedés, erős konkurencia, hazai viszonylatban drága, kormányzati kiadások csökkentése, stb.)</p></li>
+</ul>
+<h3 id="a-jogi-környezet">A jogi környezet:</h3>
+<ul>
+<li>egy-egy jogszabályhoz való alkalmazkodáshoz időre van szüksége a szervezeteknek</li>
+</ul>
+<h2 id="vállalati-szintű-tervezés-vállalatok-életciklusai">3.Vállalati szintű tervezés, vállalatok életciklusai <a name="chapter03"></a></h2>
+<p>A vállalati szintű tervezés egyik legfontosabb kérdése a szervezeti felépítés. Ezek a szervezetek lehetnek formálisak, melyek tulajdonosi és/vagy vezetői döntések alapján jönnek létre. Illetve lehetnek informálisak, melyek spontán emberi kapcsolatok alapján jönnek létre. Egy vállalat életében mindkét fajta szervezet fontos, és érdemes mind a kettőre egyaránt odafigyelni.</p>
+<h3 id="szervezetek-fajtái">Szervezetek fajtái:</h3>
+<ul>
+<li><p>Egyszerű szervezet</p>
+<div class="figure">
+<img src="img/egyszeru_szervezet.png" alt="Egyszerű szervezet" width="350" />
+<p class="caption">Egyszerű szervezet</p>
+</div>
+<p><em>Előnyök</em>: gyors döntés, rugalmasság, csapatmunka, kreativitás</p>
+<p><em>Hátrányok</em>: bizonyos mértéken túl nem működőképes, szervezetlenség, kiszolgáltattság az egyszemélyi vezetőnek</p></li>
+<li><p>Funkcionális szervezet</p>
+<div class="figure">
+<img src="img/funkcionalis_szervezet.png" alt="Funkcionális szervezet" width="350" />
+<p class="caption">Funkcionális szervezet</p>
+</div>
+<p><em>Előnyök</em>: Szakértelem öszpontosítása, egyéni fejlődési lehetőség</p>
+<p><em>Hátrányok</em>: Nincs projekttulajdonos, gyenge kommunikáció, rugalmatlan, gyenge erőforrás koordináció</p></li>
+<li><p>Projekt csapat</p>
+<div class="figure">
+<img src="img/projekt_csapat.png" alt="Projekt csapat" width="350" />
+<p class="caption">Projekt csapat</p>
+</div>
+<p><em>Előnyök</em>: Széles projektvezetői hatáskör, széles szakértelmű csapat, egyértelmű erőforrás hozzárendelés</p>
+<p><em>Hátrányok</em>: Szakértelem öszpontosítása elvész, csapatok közötti interaktivitás hiánya</p></li>
+</ul>
+<p>A funkcionális szervezet és projekt csapat felépítésű szervezetek között léteznek még ún. mátrix felépítések, melyek egyfajta átmenetet képeznek a kettő között. A megfelelő szervezeti modell kiválasztásának szempontjai közé tartozik a <em>az előfordulás gyakorisága</em>, azaz mennyire rutinszerű, gyakori a feladat, illetve a <em>projekt mérete</em>.</p>
+<div class="figure">
+<img src="img/szervezet_valasztas.png" alt="A megfelelő szervezeti modell választásának szempontjai" width="350" />
+<p class="caption">A megfelelő szervezeti modell választásának szempontjai</p>
+</div>
+<h3 id="vállalatok-életútja">Vállalatok életútja</h3>
+<p>A vállalatok életútja több lépcsőből áll, melyeket az ember életútjainak állomásaihoz lehet hasonlítani.</p>
+<div class="figure">
+<img src="img/vallalatok_eletciklusai.png" alt="Vállalatok életciklusai" />
+<p class="caption">Vállalatok életciklusai</p>
+</div>
+<p>A különböző életciklusokban a vállalatoknak más-más célkitűzései vannak.</p>
+<ul>
+<li>Udvarlás - Szükségletek kielégítése</li>
+<li>Csecsemőkor - Készpénz</li>
+<li>&quot;Gyerünk-gyerünk&quot; - Értékesítés, és piaci részesedés</li>
+<li>Serdülőkor - Profit</li>
+<li>Férfikor - Értékesítés és profit</li>
+<li>Megállapodás - Status quo megőrzése</li>
+<li>Arisztokrácia - ROI (Return On Investment)</li>
+<li>Korai bürokrácia - Egyéni túlélés</li>
+<li>Bürokrácia - Külső és belső vállalatpolitika</li>
+<li>Halál - Csodák</li>
+</ul>
+<h2 id="projekt-szervezet-felépítése">4.Projekt szervezet felépítése <a name="chapter04"></a></h2>
+<p>A projektek szervezete nagyban függ a projekt méretétől, így méret szerint csoportosítjuk őket.</p>
+<h3 id="kis-projekt-szervezete">Kis projekt szervezete</h3>
+<p><strong>Méret</strong>: 3-5 fő</p>
+<p>Az ilyen méretű projekteknél nincs szükség egy teljes projektvezetői pozícióra, így erre kétféle modell létezik:</p>
+<ol style="list-style-type: decimal">
+<li>A projektvezető egy személyben technikai vezető is, sőt tervezhet, fejleszthet is.</li>
+<li>Egy adminisztratív projektvezetőhöz több kisebb projekt is tartozik. (Ebben az esetben valóban csak adminisztratív munkát végez)</li>
+</ol>
+<h3 id="közepes-projekt-szervezete">Közepes projekt szervezete</h3>
+<p><strong>Méret</strong>: 5-20 fő</p>
+<p>Ennél a méretnél már általában külön munkatárs kell a projektvezető és a technikai vezető szerepekhez, a legtöbb esetben már teljes-munkaidős projektvezető szükséges. Megkezdődik a további strukturálás (részcsapatok vezetővel, pl: fejlesztők, tervezők, részprojekt, stb.)</p>
+<div class="figure">
+<img src="img/kozepes_projekt1.png" alt="Példa közepes projekt felépítésre 1" width="400" />
+<p class="caption">Példa közepes projekt felépítésre 1</p>
+</div>
+<div class="figure">
+<img src="img/kozepes_projekt2.png" alt="Példa közepes projekt felépítésre 2" width="400" />
+<p class="caption">Példa közepes projekt felépítésre 2</p>
+</div>
+<h3 id="nagy-projekt-szervezete">Nagy projekt szervezete</h3>
+<p><strong>Méret</strong>: 20+ fő</p>
+<p>Ilyenkor már megjelennek a szervezeti egységeket koordináló irodák, bizottságok (projekt felügyelő bizottság, projektiroda), megjelennek további vezetési szintek. Sok esetben már nem elég egy teljes-munkaidős pozíció a feladatkörök ellátására, asszisztensi pozíciók is megjelennek.</p>
+<div class="figure">
+<img src="img/nagy_projekt.png" alt="A nagy projekt szervezet" width="500" />
+<p class="caption">A nagy projekt szervezet</p>
+</div>
+<h2 id="a-projekt-életciklusa">5.A projekt életciklusa <a name="chapter05"></a></h2>
+<p>A projekt életciklusát hat fázisra lehet osztani:</p>
+<ol style="list-style-type: decimal">
+<li>Projekt előkészítés</li>
+<li>Projektindítás</li>
+<li>Projekttervezés</li>
+<li>Projekt követés</li>
+<li>Projektzárás</li>
+<li>Projekt utóélete</li>
+</ol>
+<h3 id="projekt-előkészítés">Projekt előkészítés</h3>
+<p>A projekt előkészítése az <strong>ajánlattétellel</strong> kezdődik. Ekkor dől el, hogy az ügyfél elfogadja-e az ajánlatot, és ekkor került a projektvezető kijelölésre. Ezek után a <strong>Projekt definíciós dokumentum</strong> (Projektterv) készül el, mely egy élő dokumentum. Többek közt a projekt célja, a feladatok meghatározása, a szerepek, az időkeretek, stb lesznek benne meghatározva.</p>
+<h3 id="projektindítás">Projektindítás</h3>
+<p>A projektet egy projektindítő gyűléssel (Kick-off meeting) szokták kezdeni, mely alatt a résztvevők megismerik a projekt hátterét, célját, hierarchiáját, infrastruktúráját. Továbbá a felelősségi körökről, fontosabb eljárásokról is esik szó.</p>
+<h3 id="projekttervezés">Projekttervezés</h3>
+<p>A projekttervezés alá minden olyan tervezési folyamat esik, ami a projekt működéséhez szükséges. Ilyenek például az időelemzés, erőforrás-ütemezés, stb.</p>
+<h3 id="projekt-követés">Projekt követés</h3>
+<p>A projekt követés a tervezés és a projektzárás közötti időtartam alatt a projekt megfigyelése. Ekkor fut a tényleges projekt és készül a termék. Ebben a szakaszban információgyűjtés, adatösszeítés és elemzés (pl.: állapotjelentés, teljesítmény mérés, stb.) után különböző cselekvések hajtódnak végre annak érdekében, hogy a projekt sikeresen záródjon.</p>
+<h3 id="projektzárás">Projektzárás</h3>
+<p>Egy projekt kétféleképpen érhet véget:</p>
+<ul>
+<li>vagy teljesült a projekt cél</li>
+<li>vagy a cél teljesülése előtt különböző okokból:
+<ul>
+<li>üzleti okokból</li>
+<li>műszaki okokból</li>
+<li>terjedelem jelentős megváltozása miatt</li>
+<li>időzítési okokból</li>
+<li>költségvetési okokból</li>
+<li>minőségi okokból</li>
+<li>politikai okokból</li>
+<li>emberi okokból</li>
+</ul></li>
+</ul>
+<p>Egy projekt zárása után rendszerint keletkezik egy projektzáró dokumentum. Ennek a tartalma többek közt: a projekt adatai, lezárást követő teendők, projekt értékelése, stb.</p>
+<h3 id="projekt-utóélete">Projekt utóélete</h3>
+<p>A projekt a projektzárással még nem mér véget teljesen. A projekt lezárása után még alábbi tevékenységek folyhatnak:</p>
+<ul>
+<li>Üzemeltetés</li>
+<li>Garanciális hibajavítás</li>
+<li>Karbantartás</li>
+<li>Támogató ügyeleti és készenléti tevékenység</li>
+<li>Követés (pl.: törvényi változások, kompatibilitás stb.)</li>
+<li>Továbbfejlesztés</li>
+</ul>
+<h2 id="projekttervezés-1">6.Projekttervezés <a name="chapter06"></a></h2>
+<h3 id="feladat-és-szervezet-lebontási-struktúra">Feladat és szervezet lebontási struktúra <a name="section06_01"></a></h3>
+<p>A projekttervezés egyik fő célja, hogy meghatározzuk:</p>
+<ul>
+<li><strong>MIT</strong> kell csinálni?</li>
+<li><strong>KI</strong> fogja megcsinálni?</li>
+</ul>
+<p>Illetve az egyes feladatokat:</p>
+<ul>
+<li><strong>HOGYAN</strong> csináljuk meg?</li>
+<li><strong>MIKOR</strong> csináljuk meg?</li>
+<li>Milyen <strong>KÖLTSÉGGEL</strong> csináljuk meg?</li>
+</ul>
+<p>Az első két kérdésre a válaszhoz a szervezet lebontási struktúrára (OBS - Organizational Breakdown Structure), illetve feladat lebontási struktúrát (WBS - Work Breakdown Structure) van szükség.</p>
+<p>Ezek után az OBS-t és WBS-t összevetve kiadhatjuk a feladatokat és meghatározhatjuk az felelősségeket.</p>
+<div class="figure">
+<img src="img/OBS_WBS.png" alt="A felelősségek hozzárendelése OBS és WBS alapján" width="450" />
+<p class="caption">A felelősségek hozzárendelése OBS és WBS alapján</p>
+</div>
+<p>A felelősségek ábrázolásának egy hatékony eszköze a RACI (Responsible, Accountable, Consulted, Informed) mátrix.</p>
+<div class="figure">
+<img src="img/RACI.png" alt="RACI mátrix" width="350" />
+<p class="caption">RACI mátrix</p>
+</div>
+<h3 id="időelemzés">Időelemzés <a name="section06_02"></a></h3>
+<p>Az időelemzés célja, hogy meghatározzuk a projek sikerességéhez szükséges időt, megállapítsuk a határidőt. Ehhez egy eszköz az irányított hálók használata, melyben a csomópontok közötti élek az összefüggéseket jelentik. Ezek az összefüggések lehetnek <em>követési kapcsolatokra</em> vonatkozóak (pl. <em>&quot;B csak akkor kezdődhet el, ha A befejeződött&quot;</em>), időre vontakozóak (pl.: X feladat nem fejeződhet be később, mint <code>&lt;Dátum&gt;</code> ).</p>
+<h3 id="kritikus-út-meghatározása">Kritikus út meghatározása <a name="section06_03"></a></h3>
+<p><strong>Kritikus út</strong>: azon tevékenységek sorozata, amely a projekt átfutási idejét meghatározza.</p>
+<p><strong>Időjáték</strong>: egy tevékenységet mennyivel lehet késleltetni anélkül, hogy bármely közvetlenül őt követő másik tevékenység legkorábbi kezdése késést szenvedne.</p>
+<h4 id="időterv">Időterv</h4>
+<p>Az időterv a fentiekben leírtaknak megfelelő háló. Segítéségével meghatározhatjuk az <em>időjátékot</em> és a <em>Kritikus utat</em>. Egy tevékenységet a következőképp ábrázolhatunk az időtervben:</p>
+<div class="figure">
+<img src="img/idoterv_tevekenyseg.png" alt="Tevékenység ábrázolása" width="350" />
+<p class="caption">Tevékenység ábrázolása</p>
+</div>
+<div class="figure">
+<img src="img/idoterv1.png" alt="Időterv kiindulás" width="350" />
+<p class="caption">Időterv kiindulás</p>
+</div>
+<p>Az időterv értékeinek meghatározásához először előrefelé haladva meghatározzuk a tevékenységek legkorábbi kezdéseit (ES - early start), és befejezéseit (EF - early finish) az időtartam (DU - duration) segítségével.</p>
+<div class="figure">
+<img src="img/idoterv2.png" alt="Időterv előre haladva" width="350" />
+<p class="caption">Időterv előre haladva</p>
+</div>
+<p>Majd visszafele haladva a legkésőbbi kezdéseket (LS - late start) és befejezéseket (LF - late finish) és teljes időjátékot (TF - total float) határozzuk meg.</p>
+<div class="figure">
+<img src="img/idoterv3.png" alt="Időterv visszafele haladva" width="350" />
+<p class="caption">Időterv visszafele haladva</p>
+</div>
+<p>A kritikus útat azok a tevékenységek határozzák meg, melyek teljes időjátéka nulla.</p>
+<div class="figure">
+<img src="img/idoterv4.png" alt="Kritikus út meghatározás" width="350" />
+<p class="caption">Kritikus út meghatározás</p>
+</div>
+<h3 id="erőforrás-ütemezés">Erőforrás-ütemezés <a name="section06_04"></a></h3>
+<p>A projekttervezés másik fontos lépése az erőforrás-ütemezés. Ezzel a módszerrel lehetőség nyílik az erőforrás-túlterhelés enyhítésére, megszűntetésére. Az erőforrás-túlterhelés megoldására többféle lehetősg létezik:</p>
+<ul>
+<li>az időjáték kihasználásával a nem kritikus tevékenységeket időben eltolva.</li>
+<li>további erőforrás bevonásával</li>
+<li>erőforrás átcsoportosításával</li>
+<li>túlórával</li>
+<li>határidő eltolással</li>
+</ul>
+<p>Nagyjából preferncia is ilyen sorrendű, emiatt <strong>nem megoldás az, ha nem veszünk róla tudomást</strong>, mert a végén csak az utolsó lehetősg marad.</p>
+<h3 id="költségvetés-hozzárendelése">Költségvetés hozzárendelése <a name="section06_05"></a></h3>
+<p>A projekttervezés alatt a költségek megtervezése is rendkívül fontos, melynek elemei a következők:</p>
+<ul>
+<li>Áru költség</li>
+<li>Alvállalkozói költség</li>
+<li>Élőmunka költség
+<ul>
+<li>saját</li>
+<li>alvállalkozói T&amp;M</li>
+</ul></li>
+<li>Egyéb
+<ul>
+<li>utazás</li>
+<li>oktaktás</li>
+<li>helyiség bérlet</li>
+<li>kommunikációs költség</li>
+<li>reprezentáció</li>
+</ul></li>
+</ul>
+<p><strong>Élőmunka-költség</strong>: Munkaerő időegységnyi költsége szorozva a felhasznált időegységek számával. (Eltérhet a projekttervtől, mert a rövid szabad időszakok nem használhatók ki teljesen)</p>
+<h3 id="kritikus-lánc-módszer">Kritikus lánc módszer <a name="section06_06"></a></h3>
+<p>A kritikus lánc módszer középpontjában a projektterv bizonytalanságai és a nehezen megkapható erőforrások állnak.</p>
+<p>A kritikus lánc hasonló a kritikus úthoz, de az erőforrások is figyelembe vannak véve:</p>
+<ul>
+<li>kritikus lánc: leghosszabb út, ahol a kritikus erőforrásokat használjuk</li>
+<li>lényege: nehezen megkapható erőforrások minél jobban ki legyenek használva</li>
+<li>biztonsági puffer: tartalék idő a kritikus erőforrások előtt</li>
+</ul>
+<div class="figure">
+<img src="img/kritikus_lanc.png" alt="Kritikus lánc módszer példa" width="350" />
+<p class="caption">Kritikus lánc módszer példa</p>
+</div>
+<h2 id="a-projektet-kísérő-folyamatok">7.A projektet kísérő folyamatok <a name="chapter07"></a></h2>
+<h3 id="követelménykezelés">Követelménykezelés</h3>
+<p>A követelménykezelés azt határozza meg, hogy a projekt mit hoz létre, illetve mekkora a projekt terjedelme. Ezt a követelményspecifikációban rögzítik. A követelményspecifikáció egy élő dokumentum, mely egyre finomodik az ajánlatkéréstől a követelményelemzési fázis befejezéséig. (Ajánlatkérés - Ajánlatadás - Szerződéskötés - Követelményelemzés) A követelményspecifikáció ezután már csak a változáskezelés révén.</p>
+<p>A jó követelményspecifikáció SMART:</p>
+<ul>
+<li>Specific - egyértelmű</li>
+<li>Measurable - mérhető</li>
+<li>Achievable - megvalósítható</li>
+<li>Relevant - tömör, lényegre törő, ellentmondásmentes</li>
+<li>Testable - tesztelhető</li>
+</ul>
+<p>A követelmények priorizálására egy jó módszer a MoSCoW szabály:</p>
+<ul>
+<li>Must have - nélkülözhetelen</li>
+<li>Should have - fontos</li>
+<li>Could have - lehetne, rövidtávon nélkülözhető</li>
+<li>Would like to have - nélkülözhető, de szeretnénk</li>
+</ul>
+<p>A követelmények különböző fajtái:</p>
+<ul>
+<li>stratégiai</li>
+<li>funkcionális</li>
+<li>technikai, technológiai</li>
+<li>teljesítmény</li>
+<li>más rendszerrel kapcsolatos</li>
+<li>minőségi</li>
+<li>logisztikai, végrehajtási</li>
+<li>teszt</li>
+</ul>
+<h3 id="változáskezelés">Változáskezelés</h3>
+<p>A változáskezelés nem létezik követelménykezelés és konfigurációkezelés nélkül. A követelménykezelés kell, hogy tudjunk mihez viszonyítani, míg a konfigurációkezelés ahhoz kell, hogy követni tudjuk min változtattunk eddig.</p>
+<p>A változáskezelésnek több célja van:</p>
+<ul>
+<li>az érintett felek jóváhagyásának megszerzése</li>
+<li>a módosítások hatásának felmérése, vizsgálata</li>
+<li>változtatási igények, módosítások dokumentálása</li>
+</ul>
+<p><strong>Fontos: a hiba és problémakezelés nem változáskezelés</strong></p>
+<h3 id="kockázatkezelés">Kockázatkezelés</h3>
+<p><strong>kockázat</strong>: annak a valószínűsége, hogy előre nem látható esemény következik be.</p>
+<p>Kockázat fajtái:</p>
+<ul>
+<li>műszaki, technológiai, módszertani</li>
+<li>pénzügyi</li>
+<li>kereskedelmi</li>
+<li>erőforrás</li>
+<li>vállalati</li>
+<li>szervezeti</li>
+</ul>
+<p>De az IT projekek 5 kulcskockázata:</p>
+<ul>
+<li>feladat méretének növekedése</li>
+<li>hiba az eredeti becslésben</li>
+<li>résztvevő (kulcs) munkatárs távozása</li>
+<li>érdekelt felek közötti egyetértés felborulása</li>
+<li>termelékenység szórása</li>
+</ul>
+<p>A kockázatoknak számtalan oka lehet, pl.: pontatlan becslés, új technológia, kommunikációs probléma, nem tisztázott felelősség, stb.</p>
+<p>A kockázatok súlyosságát jellemzőik alapján tudjuk meghatározni:</p>
+<ul>
+<li>bekövetkezési valószínűség</li>
+<li>potenciális kár</li>
+<li>bekövetkezés várható időpontja</li>
+</ul>
+<p>Ezek alapján egy kockázati mátrixot lehet definiálni és meghatázni, hogy milyen esetben mi a teendő.</p>
+<div class="figure">
+<img src="img/risk_matrix.png" alt="Kockázati mátrix" width="350" />
+<p class="caption">Kockázati mátrix</p>
+</div>
+<h2 id="projektirányítási-módszertanok">8.Projektirányítási módszertanok <a name="chapter08"></a></h2>
+<p>A projektirányítási módszertanok a feladatok megoldásának, elvégzésének, kifejlesztésének módját adják meg, és ehhez előírásokat, ajánlásokat nyújtanak.</p>
+<h3 id="prince-2">PRINCE 2</h3>
+<p>A PRINCE (PRojects IN Controlled Environments) egy folyamatorientált módszer a hatékony projektmenedzsmenthez. A PRINCE 2 az Egyesült Királyságban a kormány által de facto sztenderdként alkalmazott módszer.</p>
+<h3 id="pmbok">PMBOK</h3>
+<p>A PMBOK (Project Management Body of Knowledge) teljes gyűjteménye a folyamatok, legjobb technikáknak, terminológiáknak, és szabályoknak, melyek a projektmenedzsment iparban sztenderdként elfogadottak.</p>
+<h3 id="cmm-cmmi">CMM, CMMI</h3>
+<p>A CMMI (Capability Maturity Model Integration) a legjobb technikákat gyűjti össze annak érdekében, hogy teljesítménybeli növekedést lehessen elérni bármilyen szervezet esetén.</p>
+<h2 id="projektirányítás-emberi-vonatkozásai">9.Projektirányítás emberi vonatkozásai <a name="chapter09"></a></h2>
+<h3 id="nemzeti-és-vállalati-kultúra">Nemzeti és vállalati kultúra</h3>
+<h4 id="nemzeti-kultúra">Nemzeti kultúra</h4>
+<p>Geert Hofstede szerint a kulturális különbségeket 4+1 különböző dimenzióban lehet megfogalmazni:</p>
+<ul>
+<li>Hatalmi távolsági index (PDI)</li>
+<li>A bizonytalanság elkerülésére való hajlamot jelző index (UAI)</li>
+<li>Individuaizmus - Kollektivizmus (IDV)</li>
+<li>Férfiasság - Nőiesség (MAS)</li>
+<li>(Időorientáció) (LTO)</li>
+</ul>
+<p>Az alábbi táblázatban láthatunk néhány példát ezekre az értékekre:</p>
+<div class="figure">
+<img src="img/nemzeti_kultura.png" alt="Nemezeti kultúra példa" width="350" />
+<p class="caption">Nemezeti kultúra példa</p>
+</div>
+<h4 id="vállalati-kultúra">Vállalati kultúra</h4>
+<p>A vállalati kultúrának több megjelenési módja van, melyek között szerepel: vállalat története, küldetése, vezetés stílusa, munkatársak viszonya, stb.</p>
+<p>Hofstede szerint a nemzetekre meghatározott dimenziók vállalatokra korlátozottan alkalmazhatóak, ezért más dimenziókat azonosított:</p>
+<ul>
+<li><p>folyamat orientáció - eredmény orientáció</p>
+(kockázat kerülés, korlátozott erőfeszítések - ismeretlen helyzetek, maximuot nyújtják, kihívások)</li>
+<li><p>munka orientáció - ember orientáció</p>
+(mukatársak boldogsága, döntéscsoportok - nyomás, egyéni döntéshozatal)</li>
+<li><p>parókiális - professzionális (helyi - kompozita)</p>
+(szociális, családi háttér, vállalati normák + magánélet - csak a szakmai kompetencia, munkatársak előre gondolkodnak)</li>
+<li><p>nyitott - zárt</p>
+(nyitottak az újakra, beilleszkedés - zárkózottság, titkolózás , több év is kellhet a beilleszkedéshez)</li>
+<li><p>szoros irányítású - laza irányítású</p>
+(költségtudatosság, szigorú időkorlátok - költség nem érdekes, lazább időkorlátok, gyakori tréfálkozások)</li>
+<li><p>normatív - pragmatikus</p>
+<p>(Szabályvezérelt, eljárások fontosabbak az eredménynél, üzleti etika, becsület - Piacvezérelt, hangsúly a vevő igényein van)</p></li>
+</ul>
+<h3 id="projektek-érintettjei-és-azok-kapcsolatatai">Projektek érintettjei és azok kapcsolatatai</h3>
+<p>Projekttel kapcsolatos érdekcsoportok:</p>
+<ul>
+<li>Vállakozó (végrehajtó) szervezeten belüli
+<ul>
+<li>Tulajdonosok</li>
+<li>Felső vezetők</li>
+<li>Kereskedők</li>
+<li>Projekt vezetése</li>
+<li>Projekt tagok</li>
+<li>Alvállalkozók</li>
+</ul></li>
+<li>Megrendelő szervezeten belüli
+<ul>
+<li>Tulajdonosok</li>
+<li>Felső vezetők</li>
+<li>Felhasználók</li>
+<li>Projekt vezetése</li>
+<li>Projekt tagok</li>
+</ul></li>
+</ul>
+<p>Kapcsolat az érdekcsoportok és a projekt között:</p>
+<div class="figure">
+<img src="img/eredekcsoport_kapcsolatok.png" alt="Kapcsolat az érdekcsoportok és a projekt között" width="350" />
+<p class="caption">Kapcsolat az érdekcsoportok és a projekt között</p>
+</div>
+<p>A szoftverfejelsztési projekt kritikus kapcsolatcsoportjai:</p>
+<ul>
+<li>Ügyfél - vállalkozó</li>
+<li>Felsővezetés - projektvezetés</li>
+<li>Projektvezető - projekttagok</li>
+<li>Projekt vezetői</li>
+<li>Projekttagok</li>
+</ul>
+<h3 id="ügyféllel-való-együttműködés">Ügyféllel való együttműködés</h3>
+<p>Az ügyfél-vállalkozó kapcsolatot különböző fázisokra tudjuk bontani.</p>
+<table>
+<colgroup>
+<col width="31%" />
+<col width="29%" />
+<col width="39%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Fázis</th>
+<th>Ügyfél szerepe</th>
+<th>A kapcsolat hangulata</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Előkészítés</td>
+<td>Feladat meghatározás, tárgyalás</td>
+<td>bizalmatlan, aszimmetria</td>
+</tr>
+<tr class="even">
+<td>Szerződéskötés</td>
+<td>aláírás</td>
+<td>bizalmatlan, aztán felszabadult</td>
+</tr>
+<tr class="odd">
+<td>Követelményelemzés</td>
+<td>interjú, visszacsatolás</td>
+<td>egy oldalon állnak, ügyfél kibeszélheti magát</td>
+</tr>
+<tr class="even">
+<td>Tervezés</td>
+<td>kérdésekre válasz, terve elfogadás</td>
+<td>első megtorpanás (ügyfél fél az ismeretlentől)</td>
+</tr>
+<tr class="odd">
+<td>Programozás, tesztelés, dokumetnálás</td>
+<td>válasz kisebb kérdésekre</td>
+<td>béke (vihar előtti csend)</td>
+</tr>
+<tr class="even">
+<td>Átadás</td>
+<td>átvétel</td>
+<td>egymás idegeinek őrlése</td>
+</tr>
+<tr class="odd">
+<td>Bevezetés</td>
+<td>rendszer használatba vétele</td>
+<td>viták kora</td>
+</tr>
+<tr class="even">
+<td>Garanciális időszak</td>
+<td>Használat, néha panasz</td>
+<td>összecsiszolódás (vállalkozó kevésbé motivált)</td>
+</tr>
+<tr class="odd">
+<td>Karbantartási időszak</td>
+<td>Használat, ritkább panasz</td>
+<td>belefáradnak egymásba</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="személyiségi-modellek">Személyiségi modellek</h3>
+<p>A személyiségi modellek megpróbálják bizonyos személyiségi jegyek alapján csoportosítani az embereket. Segítenek a csapat tagjainak kiválasztásában, motiválásában, a megfelelő kommunikáció kialakításában. Óvatosan kell azonban kezelni, nem szabad embereket beskatulyázni, illetve vigyázni kell, mert az ilyen kategóriák önbeteljesítő tulajdonsággal bírhatnak (egy egyén elhiszi, hogy valamelyik kategória tagja és valóban olyanná válik)</p>
+<p>Többféle ilyen modell van, ezekből kettőt sorolunk fel.</p>
+<h4 id="myers-biggs-type-indicator-mbti">Myers-Biggs Type Indicator (MBTI)</h4>
+<p>Négyféle dimenzió mentén megy a jellemzés:</p>
+<ol style="list-style-type: decimal">
+<li><p>Extrovertált (E) - Introvertált (I):</p>
+Az energia forrása és iránya: I: belső koncentrációból E: külső kapcsolatokból</li>
+<li><p>Érzékelő (S) - Intuitív (N)</p>
+Információ megszerzésének módja: S: empirikus, érzékelt N: jó minták, absztrakció</li>
+<li><p>Gondolkodó (T) - Érző (F)</p>
+Az információ feldolgozása T: személytelen logika szerint F: személyes értékek szerint</li>
+<li><p>Követő (J) - Rögtönző (P)</p>
+<p>A feldolgozott információ feldolgozása J: Mindent megszervez, tervek szerint cselekszik P: Improvizáció, alternatívák keresése</p></li>
+</ol>
+<h4 id="the-insights-framework">The Insights Framework</h4>
+<p>Az embereket négy szín alapján négy csoportba osztja.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Szín</th>
+<th>Tulajdonság</th>
+<th>Alapvető hozzáállás</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Kék</td>
+<td>előítélet mentes, objektív</td>
+<td>Csináljuk jól!</td>
+</tr>
+<tr class="even">
+<td>Zöld</td>
+<td>csendes, nyugodt, megnyugtató</td>
+<td>Csináljuk harmonikusan!</td>
+</tr>
+<tr class="odd">
+<td>Sárga</td>
+<td>derűs, lelkesedő, talpraesett</td>
+<td>Csináljuk együt!</td>
+</tr>
+<tr class="even">
+<td>Vörös</td>
+<td>pozitív, megerősítő, merész,magabiztos</td>
+<td>Csináljuk most!</td>
+</tr>
+</tbody>
+</table>
+<h3 id="csapatszerepek">Csapatszerepek</h3>
+<p>A csapatszerepeket Dr. Meredith Belbin modellje alapján vizsgáljuk. Töbféle csapatszerepet definiált, melyeket a személyiségi jegyek alapján kategorizált. Három fő csoportot alkotott, egyenként három alcsoporttal.</p>
+<ul>
+<li>Feladatközpontú szerep
+<ul>
+<li>Formáló: szerepek, határok, felelősségi körök kialakítása</li>
+<li>Megvalósító: tervek, ötletek kipróbálása, megvalósítása,</li>
+<li>Befejező: végrehajtási hibáktól való védelem, célok, határidők, mulasztások</li>
+</ul></li>
+<li>Emberközpontú szerep
+<ul>
+<li>Koordinátor: csoport céljai, delegáció, döntéshozatal</li>
+<li>Csapatmunkás: diplomatikus, csapat tagok közötti interakció, csapatszellem</li>
+<li>Lehetőségfelkutató: csoporton kívüli lehetőségek, ötletek, fejlemények</li>
+</ul></li>
+<li>Szellemi szerep
+<ul>
+<li>Ötletadó: Új ötletek, konstruktív, innovatív,</li>
+<li>Megfigyelő értékelő: problémaelemzés, helyzet, lehetőség, ötlet értékelés</li>
+<li>Specialista: speciális szakértelem, csak bizonyos témák, néha hasznos, de akkor nagyon</li>
+</ul></li>
+</ul>
+<h3 id="vezetési-szerepek-stílusok">Vezetési szerepek, stílusok</h3>
+<p>A vezetési stílusokat Robert Blake és Jane Mouton elmélete alapján egy kétdimenziós rácson ábrázolva lehet jellemezni, melynek dimenziói:</p>
+<ul>
+<li>figyelem az emberekre</li>
+<li>figyelem a termelésre</li>
+</ul>
+<p>Ezek alapján pedig 5 fajta csoprotot lehet alkotni, ahogy az ábrán is látható:</p>
+<div class="figure">
+<img src="img/vezetesi_szerepek.png" alt="Vezetési szerepek" width="350" />
+<p class="caption">Vezetési szerepek</p>
+</div>
+<ul>
+<li><p>1/1 - elszegényedett</p>
+lehetetlen hatékony termlés, az emberek lusták, minimumot teszi meg, főnök mőgé bújik</li>
+<li><p>1/9 - klubmenedszer</p>
+barátság a lényeg, a termelés mellékes, barátságos légkör, emberi szükségletek</li>
+<li><p>9/1 - zsarnok</p>
+az emberek gépek, a legtöbbet kell kihozni belőlük, munka elvégzése az erőforrás árán is</li>
+<li><p>5/5 - középutas</p>
+első a termelés, de a hangulat is fontos, folyamatos engyensúlyozás, mindkettőt éppen az elvárásoknak megfelelően, könnyen kiég</li>
+<li><p>9/9 - csapat menedzser</p>
+<p>hatékony munka előfeltétele a az emberi harmónia, bizalom, tiszteleten alapuló kapcsolat</p></li>
+</ul>
+<p>Tanulság:</p>
+<ul>
+<li>Egyik sem recept mindenre (válsághelyzet vs. 9/9)</li>
+<li>Nem csak az emberi tényzező fontos</li>
+<li>Nem csak a mérhető tényező fontos</li>
+</ul>
+<h3 id="ösztönzés-ösztönzési-elméletek">Ösztönzés, ösztönzési elméletek</h3>
+<p>Az ösztönzésre meglehetősen sok elmélet és modell létezik. Az ösztönzés folyamata, egy folytonos, körkörös folyamat a <em>kelégítetlen igény</em>, a <em>valamilyen célra irányuló tevékenység</em>, és az <em>igény kielégítése</em> között.</p>
+<p>Elton Mayo fogalmazta meg, hogy az embereknek a pénzen és a munkafeltételen kívül más igényeik is vannak, mint például az <em>elismerés</em>, a <em>valahova tartozás</em>, illetve a csoport is nagy hatással bír.</p>
+<p>Abraham Marslow sorrendet állított fel az egyéb szükségletek között:</p>
+<ol style="list-style-type: decimal">
+<li>élettani igény</li>
+<li>biztonsági igény</li>
+<li>&quot;tartozni valahova&quot; igény</li>
+<li>megbecsülés iránti igény</li>
+<li>önmegvalósítás igénye</li>
+</ol>
+<p>Frederick Herzberg ezeket a tényezőket két csoportra osztotta:</p>
+<ul>
+<li>Ösztönző tényezők: jelenlétük szükséges az elégedett munkavégzéshez</li>
+<li>Egészségügyi (higéniai) tényezők: ezek hiánya elégedetlenséghez vezet</li>
+</ul>
+<p>Ezt az alábbi ábrán láthajuk:</p>
+<div class="figure">
+<img src="img/fredeick_herzberg.png" alt="Frederick Herzberg piramisa" width="350" />
+<p class="caption">Frederick Herzberg piramisa</p>
+</div>
+<p>Douglas McGregor két kisarkított elméletet alkotott meg:</p>
+<ul>
+<li>X elmélet:
+<ul>
+<li>az emberek nem szeretik, kerülik a munkát</li>
+<li>kényszeríteni, fenyegetni kell az embereket</li>
+<li>az emberek nem szeretik a felelősséget</li>
+<li>az embereknek nincsenek ambícióik</li>
+</ul></li>
+<li>Y elmélet:
+<ul>
+<li>fizikai, szellemi erőfeszítés ugyanolyan munka közben, mint játék közben</li>
+<li>az emberek önuralmat gyakorolnak, ha elfogadjék a szervezet céljait</li>
+<li>az emberek elvállalják a felelősséget</li>
+<li>az emberek öteltesek, alkotó szelleműek</li>
+</ul></li>
+</ul>
+<h2 id="további-források">10.További források <a name="references"></a></h2>
+<ul>
+<li>Előadás diasor</li>
+<li>https://www.prince2.com/eur/prince2-methodology</li>
+<li>https://www.wrike.com/project-management-guide/faq/what-is-pmbok-in-project-management/</li>
+<li>http://cmmiinstitute.com/capability-maturity-model-integration</li>
+</ul>
+</body>
+</html>

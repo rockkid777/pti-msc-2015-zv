@@ -1,0 +1,603 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="s01-9-szoftverfejlesztés-minőségi-aspektusai">S01-9 Szoftverfejlesztés minőségi aspektusai</h1>
+<h2 id="tartalom">Tartalom</h2>
+<ol style="list-style-type: decimal">
+<li><a href="#chapter01">A szoftverminőség komplex kérdésköre, termék és folyamat alapú megközelítés.</a></li>
+<li><a href="#chapter02">A szoftverfejlesztés és a tesztelés kapcsolata, V modell, agilitás.</a></li>
+<li><a href="#chapter03">A tesztelés szintjei.</a></li>
+<li><a href="#chapter04">A tesztelés életciklusa.</a></li>
+<li><a href="#chapter05">Teszttervezési technikák.</a></li>
+<li><a href="#chapter06">Specifikáció alapú: ekvivalencia-osztályozás, határérték elemzés, döntési táblák, állapotgépek, használati eset tesztelés; struktúra alapú: utasítás és döntési lefedettség.</a></li>
+<li><a href="#chapter07">Review technikák, statikus tesztelés.</a></li>
+<li><a href="#chapter08">A tesztelés dokumentálása.</a></li>
+<li><a href="#chapter09">Teszteszközök.</a></li>
+</ol>
+<hr />
+<h2 id="a-szoftverminőség-komplex-kérdésköre-termék-és-folyamat-alapú-megközelítés.">1. A szoftverminőség komplex kérdésköre, termék és folyamat alapú megközelítés. <a name="chapter01"></a></h2>
+<ul>
+<li>A projekt célja, hogy a megrendelői igényeknek megfelelő specifikációt, valamint az ennek megfelelő szoftvert elkészítse</li>
+<li>verifikáció: a termék megfelel a specifikációnak</li>
+<li>validáció: a termék megfelel a megrendelő igényeinek</li>
+<li>emberi hiba a szoftverfejlesztés életciklusában bárhol okozhat problémát, ezért szigorú tesztelésre van szükség, hogy biztosítsuk a szoftver minőségi elvárásait, megfeleljünk az ipari szabványoknak, stb.</li>
+<li>egy észlelt hibát nem biztos, hogy azonnal javítani kell: súlyosság és kritikusság alapján kell dönteni</li>
+</ul>
+<p>Az, hogy milyen a minőségi szoftver attól függ, hogy kit kérdezünk meg. pl.:</p>
+<ul>
+<li>megrendelő: költséghatékony</li>
+<li>felhasználó: könnyű használni, segíti a munkát</li>
+<li>fejlesztő: könnyű fejleszteni/karbantartani</li>
+<li>fejlesztés menedzsment: profitot termel</li>
+</ul>
+<p>Két fő megközelítése van a szoftverminőségnek: termék és folyamat alapú megközelítés.</p>
+<h3 id="folyamat-alapú-megközelítés">1.1 Folyamat alapú megközelítés</h3>
+<ul>
+<li>annak biztosítása, hogy minden köztes termék egy fejlesztési folyamatban jó minőségű legyen, kielégítse a belső ügyfelek igényeit akiknek a következő lépést kell végrehajtaniuk</li>
+<li>továbbá, hogy a fejlesztési folyamat során használt technológiák, módszerek és eszközök ellenőrzés alatt álljanak, illetve, hogy fejlődjenek</li>
+<li>sok szervezeti keretrendszer van amelyek használatával növelhetjük a folyamatok minőségét, pl.:
+<ul>
+<li>SPICE</li>
+<li>Plan-Do-Check-Act</li>
+</ul></li>
+</ul>
+<h3 id="termék-alapú-megközelítés">1.2 Termék alapú megközelítés</h3>
+<ul>
+<li>a termék magába foglalja a futtatható programokat, a forráskódot, az architektúrát tartalmazó dokumentumokat stb.</li>
+<li>ezek alapján a felhasználók csoportja sokkal tágabb</li>
+<li>az ISO/IEC 9126 szabványban rögzítették a minőségi karakterisztikákat, amelyek al-karakterisztikákra, az al-karakterisztikák pedig attribútumokra oszlanak fel</li>
+<li>a szabványban csak a karakterisztikák és az al-karakterisztikák vannak meghatározva, az attribútumok nem, mert azok termékenként változhatnak</li>
+<li>az attribútumok már ellenőrizhető és mérhető entitások</li>
+<li>a szabvány egy keretet biztosít a termék minőségi modelljének meghatározásához, a szervezetek feladata a saját modell pontos meghatározása</li>
+<li>az ISO/IEC 9126 szabványt leváltotta a ISO/IEC 25010:2011 szabvány, amely a következő ábrán látható</li>
+</ul>
+<div class="figure">
+<img src="img/iso_software_quality.jpg" alt="ISO/IEC 25010:2011" />
+<p class="caption">ISO/IEC 25010:2011</p>
+</div>
+
+<h2 id="a-szoftverfejlesztés-és-a-tesztelés-kapcsolata-v-modell-agilitás.">2. A szoftverfejlesztés és a tesztelés kapcsolata, V modell, agilitás. <a name="chapter02"></a></h2>
+<ul>
+<li>a tesztelés önmagában nem létezik, a tesztelési tevékenységek szorosan a fejlesztési tevékenységekhez kapcsolódnak</li>
+<li>a különböző fejlesztési életciklus modellekhez más és más tesztelés megközelítés szükséges</li>
+<li>a tesztelés célja, hogy megállapítsa a termék tejesíti-e a követelményeket, illetve, hogy megfelel-e a projekt céljainak</li>
+<li>a tesztelés felelős bárhol az életciklusban elkövetett hibák megtalálásáért</li>
+<li>minél később találunk meg egy hibát az életciklusban, annál költségesebb lesz annak javítása</li>
+</ul>
+<h3 id="v-modell">2.1 V-modell</h3>
+<ul>
+<li>a vízesés modell egy kiterjesztése</li>
+<li>a vízesés modellben a tesztelés csak a projekt késői fázisában lett végrehajtva, így a hibák későn derültek ki</li>
+<li>a V-modell útmutatást nyújt ahhoz, hogy a tesztelést a lehető legkorábban el kell kezdeni az életciklusban</li>
+<li>azt is mutatja, hogy a tesztelés nem csak végrehajtás alapú tevékenység</li>
+<li>ezeket a tevékenységeket a fejlesztéssel párhuzamosan kell elvégezni, és a tesztelőknek együtt kell működniük a fejlesztőkkel, üzleti-elemzőkkel</li>
+<li>a teszttervezés korai elkezdésével gyakran megtalálhatóak a hibák a tesztelési alapdokumentumokban</li>
+<li>jó gyakorlat ha már ezen dokumentumok review-olása során bevonják a tesztelőket</li>
+<li>minőségre és megbízhatóságra fókuszál</li>
+</ul>
+<div class="figure">
+<img src="img/v_model.png" alt="V-modell" />
+<p class="caption">V-modell</p>
+</div>
+
+<h3 id="agilitás">2.2 Agilitás</h3>
+<ul>
+<li>körkörös szoftverfejlesztési modellek csoportja</li>
+<li>iteratívan és inkerementálisan készül el a szoftver
+<ul>
+<li>iteratívan: a fejlesztési cikluson sokszor gyorsan áthaladunk, ismételjük azt</li>
+<li>inkrementális: az iterációk során apránként bővítjük a rendszer funkcionalitását</li>
+</ul></li>
+<li>a gyorsaságra fókuszál</li>
+<li>Alapelvek:
+<ul>
+<li>az egyének és a kommunikáció a folyamatok és az eszközök helyett - egy helyen dolgozás, pair-programming</li>
+<li>működő szoftver az átfogó dokumentáció helyett</li>
+<li>együttműködés a megrendelővel a szerződés egyeztetés helyett - a megrendelő képviselője a csapat tagja</li>
+<li>válasz a változásokra a terv szigorú követése helyett</li>
+</ul></li>
+<li>tesztelés:
+<ul>
+<li>komponens teszt a komponens implementációja előtt, a futtatások automatizálása (TDD - Test Driven Development)</li>
+<li>integrációs teszt a modul integrálása előtt</li>
+<li>átvételi teszt a feature elkezdése előtt</li>
+</ul></li>
+<li>mindig a lehető legegyszerűbb megoldás alkalmazása</li>
+<li>több metodológiája és framework-je is van, például Scrum, Kanban, XP (Extreme Programmin), RUP, stb.</li>
+</ul>
+<h2 id="a-tesztelés-szintjei.">3. A tesztelés szintjei. <a name="chapter03"></a></h2>
+<h3 id="egységtesztelés-unit-testing">3.1 Egységtesztelés (Unit testing)</h3>
+<ul>
+<li>önállóan tesztelhető szoftverrészek (osztályok, modulok, függvények) tesztelése</li>
+<li>a rendszer többi részétől függetlenül végzendő</li>
+<li>általában a fejlesztő készíti el ezeket a teszteket</li>
+<li>célja: az adott programrész megfelel a specifikációnak</li>
+<li>funkcionális és nem funkcionális tulajdonságok tesztelésére, illetve strukturális tesztelésre is használatos</li>
+<li>stub-ok és driver-ek segítségével szimuláljuk az interfészt a komponensek között
+<ul>
+<li>stub
+<ul>
+<li>&quot;dummy komponens&quot;</li>
+<li>tesztadatot szolgál, helyettesíti a tesztelendő komponens hiányzó függőségeit</li>
+<li>a tesztelendő szoftverkomponensből kerül hívásra</li>
+</ul></li>
+<li>driver
+<ul>
+<li>&quot;intelligens stub&quot;</li>
+<li>programozható, &quot;meghajtja&quot; a tesztelendő komponenst <em>(benne is van a nevében, &quot;driver&quot;)</em></li>
+<li>a tesztelendő szoftverkomponenst hívja</li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="integrációs-tesztelés-integration-testing">3.2 Integrációs tesztelés (Integration testing)</h3>
+<ul>
+<li>célja: az integrált egységek közötti interfészekben és kölcsönhatásokban lévő hibák megtalálása</li>
+<li>két típusa van:
+<ul>
+<li>komponensintegrációs</li>
+<li>rendszer integrációs</li>
+</ul></li>
+</ul>
+<h3 id="rendszertesztelés-system-testing">3.3 Rendszertesztelés (System testing)</h3>
+<ul>
+<li>a rendszer egészének működését vizsgálja</li>
+<li>pl.: használati eseten alapuló, operációs-rendszer erőforrásaival való kölcsönhatáson alapuló</li>
+<li>ellenőrzi, hogy az (átadás előtt álló) rendszer megfelel-e a specifikációnak
+<ul>
+<li>verifikáció része</li>
+</ul></li>
+</ul>
+<h3 id="átvételi-tesztelés-acceptance-testing">3.4 Átvételi tesztelés (Acceptance testing)</h3>
+<ul>
+<li>a megrendelő által a végterméken végzett feketedoboz teszt</li>
+<li>célja, hogy eldöntse, megfelel-e a végtermék a megfogalmazott elvárásoknak, valamint hogy növelje a rendszerrel szemben érzett bizalmat
+<ul>
+<li>validáció része</li>
+</ul></li>
+<li>nagyobb rendszereknél két szintű:
+<ul>
+<li>alfa teszt: potenciális felhasználók által, vagy egy független tesztelő csapat által a fejlesztői oldalon, de a fejlesztési környezeten kívül</li>
+<li>béta teszt: potenciális vagy meglévő felhasználók által, külső helyszínen, a fejlesztők bevonása nélkül</li>
+</ul></li>
+</ul>
+<h2 id="a-tesztelés-életciklusa">4. A tesztelés életciklusa <a name="chapter04"></a></h2>
+<ul>
+<li>a tesztelés inkább folyamat, mint egyszeri tevékenység</li>
+<li>a tesztelést úgy kell kezelni, mint egy külön projektet</li>
+<li>a folyamat a szoftver specifikálásakor kezdődik</li>
+<li>a tevékenységek logikailag egymás után következnek, de ezek mégis átfedik egymást</li>
+</ul>
+<h3 id="tervezés-és-irányítás">4.1 Tervezés és irányítás</h3>
+<ul>
+<li>a tesztelés céljainak kitűzése</li>
+<li>szükséges erőforrások meghatározása</li>
+<li>teszttervezési technikák megválasztása</li>
+<li>tesztlefedettség és kilépési feltételek meghatározása</li>
+<li>elemzési és tervezési feladatok ütemezése</li>
+<li>elkészítés, futtatás és kiértékelés ütemezése</li>
+</ul>
+<h3 id="elemzés-és-műszaki-tervezés">4.2 Elemzés és műszaki tervezés</h3>
+<ul>
+<li>a tesztelés általános céljait kézzelfogható tesztelési feltételekké és műszaki tervekké fordítjuk</li>
+<li>tesztbázis: dokumentumok, melyeken a tesztesetek alapulnak</li>
+<li>tesztkörnyezet és teszteszközök meghatározása</li>
+</ul>
+<h3 id="megvalósítás-és-végrehajtás">4.3 Megvalósítás és végrehajtás</h3>
+<ul>
+<li>tesztesetek kialakítása, tesztkészlet létrehozása</li>
+<li>tesztesetek végrehajtása, tesztnapló készítése</li>
+</ul>
+<h3 id="kilépési-feltételek-értékelése-és-jelentés-készítése">4.4 Kilépési feltételek értékelése és jelentés készítése</h3>
+<ul>
+<li>ellenőrzés, hogy az eredmények megfelelnek-e a kilépési kritériumoknak</li>
+<li>kritériumok többfélék lehetnek (lefedettség, átlagos válaszidő, stb.)</li>
+<li>döntés, hogy szükség van-e további tesztelésre, vagy a kilépési kritériumok módosítására</li>
+<li>tesztösszefoglaló készítése</li>
+</ul>
+<h3 id="teszt-lezárása">4.5 Teszt lezárása</h3>
+<ul>
+<li>ellenőrzés, hogy a terveknek megfelelően mindent átadtunk</li>
+<li>rendszerátvételi dokumentum készítés</li>
+<li>testware lezárása és archiválása</li>
+<li>testware átadása a karbantartó szervezetnek</li>
+<li>tanulságok elemzése, hogy hatékonyabbá tegyük a későbbi teszteléseket</li>
+</ul>
+<h2 id="teszttervezési-technikák.">5. Teszttervezési technikák. <a name="chapter05"></a></h2>
+<h3 id="tesztdokumentáció-formalitása">5.1 Tesztdokumentáció formalitása</h3>
+<ul>
+<li>a tesztelést a formalizmus különböző szintjein végezhetjük</li>
+<li>minél formálisabb egy teszt, annál átfogóbb dokumentáció tartozik hozzá</li>
+</ul>
+<h3 id="tesztelési-feltételek-meghatározása">5.2 Tesztelési feltételek meghatározása</h3>
+<ul>
+<li>tesztelési feltétel = amit tesztelni tudunk</li>
+<li>kimerítő tesztelés lehetetlen, ezért a lehetséges tesztelési feltételek egy olyan részhalmazát kell meghatározni, melyekkel jó eséllyel megtalálható a legtöbb hiba</li>
+<li>ezek kiválasztásában segítenek a teszttervezési technikák</li>
+<li>fontos ezek prioritási sorrendje</li>
+</ul>
+<h3 id="tesztesetek-meghatározása">5.3 Tesztesetek meghatározása</h3>
+<ul>
+<li>tesztorákulum: információforrás a rendszer elvárt működéséről</li>
+<li>tesztesetben meghatározni:
+<ul>
+<li>adott bemenetre a várt eredmény</li>
+<li>tesztkörnyezet</li>
+<li>előzetes és utólagos feltételek</li>
+</ul></li>
+</ul>
+<h3 id="teszt-megvalósítása-és-végrehajtása">5.4 Teszt megvalósítása és végrehajtása</h3>
+<ul>
+<li>implementáljuk a teszteket</li>
+<li>ésszerű módon csoportosítjuk őket</li>
+<li>tesztszkript, a tesztelési lépések sorrendjét meghatározzuk</li>
+<li>futtatjuk a tesztszkriptet</li>
+</ul>
+<h3 id="teszttervezési-kategóriák">5.5 Teszttervezési kategóriák</h3>
+<ul>
+<li>specifikáción alapuló (feketedoboz) technikák
+<ul>
+<li>ekvivalencia-osztályozás</li>
+<li>határérték elemzés</li>
+<li>döntési táblák</li>
+<li>állapotgépek</li>
+<li>használati eset tesztelés</li>
+</ul></li>
+<li>struktúra alapú (fehér doboz) technikák
+<ul>
+<li>utasítás</li>
+<li>döntési lefedettség</li>
+</ul></li>
+<li>tapasztalaton alapuló technikák</li>
+<li>hibán alapuló technikák</li>
+</ul>
+<p><strong>Specifikáción alapuló tesztelés:</strong> tesztesetek generálása a szoftver specifikációja alapján</p>
+<p><strong>Struktúra alapú tesztelés:</strong> tesztesetek generálása a struktúra alapján</p>
+<ul>
+<li>Feketedoboz tesztelés (funkcionális tesztelés)
+<ul>
+<li>a belső felépítése a programnak rejtett a tesztelési folyamat elől</li>
+</ul></li>
+<li>Fehér doboz tesztelés (strukturális tesztelés)
+<ul>
+<li>a belső struktúra ismert és az alapján alakítjuk ki a teszteseteket</li>
+</ul></li>
+</ul>
+<p>Az elvárt kimenetet az orákulum segítségével tudhatjuk meg. Az orákulum megmondja, hogy mi az elvárt kimenete az adott programnak. Ez alapján összetudjuk hasonlítani a teszteset aktuális kimenetét az elvárt, orákulum által adott kimenettel és dönteni, hogy jó-e vagy sem. Orákulum használata nem mindig lehetséges.</p>
+<h2 id="specifikáció-alapú-és-struktúra-alapú-tesztelés">6. Specifikáció alapú és struktúra alapú tesztelés <a name="chapter06"></a></h2>
+<h3 id="specifikáció-alapú">6.1 Specifikáció alapú</h3>
+<h4 id="ekvivalencia-osztályozás">6.1.1 Ekvivalencia-osztályozás</h4>
+<ul>
+<li>A tesztelési feltételeket particionáljuk aszerint, hogy melyeket tekintjük azonosnak. Ha egy partíció egy elemére helyesen működik a szoftver, akkor feltételezzük, hogy a többire is.</li>
+<li>pl.: Adatszerkezet üres-e? két ekvivalencia osztály: üres, nem üres</li>
+</ul>
+<h4 id="határérték-elemzés">6.1.2 Határérték-elemzés</h4>
+<ul>
+<li>Ekvivalencia-osztályok határainak tesztelése</li>
+<li>egy ekvivalencia-osztály minimum és maximum értéke a határok:
+<ul>
+<li>érvényes partíció esetén: érvényes határérték</li>
+<li>érvénytelen partíció esetén: érvénytelen határérték</li>
+</ul></li>
+<li>példa: [-100, +100] egészeket tartalmazó partíció
+<ul>
+<li>-101 maximális érvénytelen határértéke a ]<span class="math inline">\(-\infty\)</span>, -101] partíciónak</li>
+<li>-100 minimális érvényes határértéke a [-100, +100] partíciónak</li>
+<li>+100 maximális érvényes határértéke a [-100, +100] partíciónak</li>
+<li>+101 minimális érvénytelen határértéke a [+101, <span class="math inline">\(+\infty\)</span>] partíciónak</li>
+</ul></li>
+<li>kétféle megközelítés:
+<ul>
+<li>2 értékű: kiválasztjuk a minimum és maximum értékét az érvényes partíciónak, illetve a szomszédos érvénytelen partíciók első és utolsó elemét, tehát egy-egy határ ellenőrzéséhez két értéket használunk</li>
+<li>3 értékű: annyi a különbség, hogy a szomszédos érvénytelen partíciók első két, illetve utolsó két elemét használjuk</li>
+</ul></li>
+</ul>
+<h4 id="döntési-tábla">6.1.3 Döntési tábla</h4>
+<ul>
+<li>a bemenetekre megfogalmazott igen/nem feltételeket és a végrehajtás eredményének kapcsolatát mutatja</li>
+<li>kell találnunk egy függvényt, mely a bemenetek kombinációjára megfelelően reagál</li>
+<li>igazságtáblázatot készítünk a feltételek I/H lehetséges kombinációival</li>
+<li>eltávolítjuk azon feltétel kombinációkat amik nem relevánsak, vagy lehetetlenek, illetve az ekvivalensek összevonjuk</li>
+<li>az elvárt működés szerint kitöltjük az eredményeket</li>
+<li>megjelöljük a teszteseteket</li>
+</ul>
+<p>Példa:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Bemenetek</th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Valid felhasználónév</td>
+<td>I</td>
+<td>I</td>
+<td>I</td>
+<td>I</td>
+<td>H</td>
+<td>H</td>
+<td>H</td>
+<td>H</td>
+</tr>
+<tr class="even">
+<td>Valid jelszó</td>
+<td>I</td>
+<td>I</td>
+<td>H</td>
+<td>H</td>
+<td>I</td>
+<td>I</td>
+<td>H</td>
+<td>H</td>
+</tr>
+<tr class="odd">
+<td>Tagja a csoportnak</td>
+<td>I</td>
+<td>H</td>
+<td>I</td>
+<td>H</td>
+<td>I</td>
+<td>H</td>
+<td>I</td>
+<td>H</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th>Bemenetek</th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Valid felhasználónév</td>
+<td>H</td>
+<td>I</td>
+<td>I</td>
+<td>I</td>
+</tr>
+<tr class="even">
+<td>Valid jelszó</td>
+<td>*</td>
+<td>H</td>
+<td>I</td>
+<td>I</td>
+</tr>
+<tr class="odd">
+<td>Tagja a csoportnak</td>
+<td>*</td>
+<td>*</td>
+<td>H</td>
+<td>I</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th>Bemenetek</th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Valid felhasználónév</td>
+<td>H</td>
+<td>I</td>
+<td>I</td>
+<td>I</td>
+</tr>
+<tr class="even">
+<td>Valid jelszó</td>
+<td>*</td>
+<td>H</td>
+<td>I</td>
+<td>I</td>
+</tr>
+<tr class="odd">
+<td>Tagja a csoportnak</td>
+<td>*</td>
+<td>*</td>
+<td>H</td>
+<td>I</td>
+</tr>
+<tr class="even">
+<td><strong>Műveletek</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Sikeres belépés</td>
+<td>H</td>
+<td>H</td>
+<td>I</td>
+<td>I</td>
+</tr>
+<tr class="even">
+<td>Hozzáférés korlátozás</td>
+<td>*</td>
+<td>*</td>
+<td>I</td>
+<td>H</td>
+</tr>
+<tr class="odd">
+<td>Címkék</td>
+<td>A</td>
+<td>B</td>
+<td>C</td>
+<td>D</td>
+</tr>
+</tbody>
+</table>
+<h4 id="állapotgépek">6.1.4 Állapotgépek</h4>
+<ul>
+<li>akkor használjuk, ha a rendszert véges állapotú (lehetőleg kevés) gépezettel leírható</li>
+<li>4 része van
+<ul>
+<li>állapotok</li>
+<li>átmenetek az állapotok között</li>
+<li>események, melyek átmenetet okozhatnak</li>
+<li>tevékenységek, melyeket az átmenetek eredményeként végrehajtjuk</li>
+</ul></li>
+<li>az állapotgép alapján megkonstruálhatjuk a teszteseteket</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>Teszteset</th>
+<th>1</th>
+<th>2</th>
+<th>...</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Kezdőállapot</td>
+<td>start</td>
+<td>wait for pin</td>
+<td>...</td>
+</tr>
+<tr class="even">
+<td>Input</td>
+<td>insert card</td>
+<td>enter pin</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td>Végállapot</td>
+<td>wait for pin</td>
+<td>first try</td>
+<td>...</td>
+</tr>
+</tbody>
+</table>
+<div class="figure">
+<img src="img/state_diagram.jpg" alt="Állapotgép" />
+<p class="caption">Állapotgép</p>
+</div>
+<h4 id="használati-eset">6.1.5 Használati eset</h4>
+<ul>
+<li>a használati eset (Use case) egy táblázat, mely az esetek leírását, lépéseit, elő- és utófeltételeit és kivételes viselkedéseit írja le diagram a rendszer egy adott szereplő általi használatának leírása</li>
+<li>a használati esetek egy magasabb szintű ábrázolása a használati eset diagram</li>
+<li>a tesztesetek fejlesztésének alapjául szolgálnak, főleg rendszer és átvételi teszt szinten</li>
+<li>fő előnye, hogy valós felhasználói folyamatokat, illetve üzleti forgatókönyveket modellez
+<ul>
+<li>folyamatáramlási hibák,</li>
+<li>illetve integrációs hibák felfedésében segít</li>
+</ul></li>
+</ul>
+<h2 id="review-technikák-statikus-tesztelés.">7. Review technikák, statikus tesztelés. <a name="chapter07"></a></h2>
+<h3 id="review-technikák">7.1 Review technikák</h3>
+<ul>
+<li>a felülvizsgálatok formálisak és informálisak lehetnek</li>
+<li>a gyakorlatban az informális felülvizsgálás terjedt el</li>
+<li>Típusai:
+<ul>
+<li>Átvizsgálás: egy dokumentum szerzője lépésenként bemutatja a dokumentumot, hogy információt gyűjtsön és közös álláspontot alakítson ki</li>
+<li>Technikai felülvizsgálat: megbeszélés, ahol egy dokumentum technikai tartalmával kapcsolatos konszenzus elérésére törekednek</li>
+<li>Inspekció: egy dokumentumot a felülvizsgálók alaposan előkészítenek és ellenőrzik a megbeszélés előtt. A hibákat naplózzák, de csak a tárgyalási szakaszban vitatják meg. Cél: termelékenység, eredményesség.</li>
+</ul></li>
+</ul>
+<h3 id="statikus-tesztelés">7.2 Statikus tesztelés</h3>
+<ul>
+<li>a követelményeken, műszaki terven vagy a kódon hajtjuk végre</li>
+<li>cél: hibák megtalálása attól függetlenül, hogy ezek valóban meghibásodást okoznak-e</li>
+<li>leginkább a komponens és integrációs tesztek előtt és a tervezéskor a modellezésnél használják</li>
+<li>tipikus statikus elemzői célok:
+<ul>
+<li>kódolási szabályok betartása</li>
+<li>kódmetrikák (beágyazás mélysége, ciklomatikus komplexitás) vizsgálata</li>
+<li>kódszerkezettel kapcsolatos elemzések (vezérlési folyam, adatfolyam vizsgálat)</li>
+</ul></li>
+<li>előnyei:
+<ul>
+<li>hibák korai detektálása</li>
+<li>automatikusan működik</li>
+<li>hibák megelőzése</li>
+<li>dinamikus tesztelés során nehezen megtalálható programhibák megtalálása</li>
+</ul></li>
+</ul>
+<h2 id="a-tesztelés-dokumentálása.">8. A tesztelés dokumentálása. <a name="chapter08"></a></h2>
+<p><strong>Műszaki tesztterv specifikáció:</strong> Tesztelési feltételek és a követelmények,<br />
+tesztelés megközelítése és magas szintű tesztesetek.</p>
+<p><strong>Teszteset-specifikáció:</strong> Egy tesztelemre vonatkozó a teszteseteket meghatározó dokumentáció (cél, bemenetek, tesztelési tevékenységek, várt eredmények, végrehajtás előfeltételei)</p>
+<p><strong>Teszteljárás specifikáció:</strong> Tesztelés futtatásának tevékenységsorozatát rögzítődokumentum. (tesztszkript néven is ismert)</p>
+<p><strong>Tesztterv (test plan):</strong> A tesztelés hatáskörét, megközelítését, erőforrásait, valamint a tevékenységek tervezett ütemezését tartalmazó dokumentum. Ezen kívül meghatározza a tesztelési elemeket, a tesztelendő funkciókat, feladatokat, a tesztelést végrehajtó személyek függetlenségét, a tesztelési környezetet, a műszaki teszttervezési technikákat, a belépési és kilépési feltételeket, valamint a kockázatokat.</p>
+<p><strong>Tesztnapló:</strong> Tesztvégrehajtáshoz kapcsolódó részletek időrendi rögzítése.</p>
+<p><strong>Tesztösszefoglaló:</strong> A tesztelési tevékenységet és eredményeket tartalmazó dokumentum.</p>
+<p><strong>Tesztelem kiadás jelentés:</strong> Kiadott tesztelemek, kiadás dátuma és ki engedélyezte.</p>
+<p><strong>Tesztincidens jelentés:</strong> Hiba leírása, előfordulás körülményei, reprodukálás, súlyosság, gyakoriság.</p>
+<h2 id="teszteszközök">9. Teszteszközök <a name="chapter09"></a></h2>
+<h3 id="tesztelést-és-tesztirányítást-támogató-eszközök">9.1 Tesztelést és tesztirányítást támogató eszközök</h3>
+<h4 id="tesztmenedzsment-eszközök">Tesztmenedzsment eszközök:</h4>
+<p>Tesztek ütemezése, eredmények naplózása, folyamatkövetés, incidensmenedzsment és tesztjelentések elkészítése</p>
+<h4 id="követelménymenedzsment-eszközök">Követelménymenedzsment eszközök:</h4>
+<p>Követelményeknek, a követelmény jellemzőinek (pl. prioritás, tudásgazda) rögzítése és magyarázó jegyzetek készítése.</p>
+<h4 id="incidenskezelő-eszközök">Incidenskezelő eszközök:</h4>
+<p>Megkönnyíti az incidensek felismerését és állapotainak nyomon követését.</p>
+<h4 id="konfigurációkezelő-eszközök">Konfigurációkezelő eszközök:</h4>
+<p>Támogatja a konfigurációs elemek meghatározását és ellenőrzését, ezek változásainak ill. verziók státuszainak nyomon követését, valamint felügyeli a konfiguráció elemeit tartalmazó alapverziók kiadását.</p>
+<h3 id="statikus-tesztelést-segítő-eszközök">9.2 Statikus tesztelést segítő eszközök</h3>
+<h4 id="felülvizsgálatokat-segítő-eszközök">Felülvizsgálatokat segítő eszközök:</h4>
+<p>Felülvizsgálat tervezés, a változáskövetés, a felülvizsgálók közti kommunikáció, a közösen végzett felülvizsgálatok támogatása.</p>
+<h4 id="statikuselemző-eszközök">Statikuselemző eszközök:</h4>
+<p>Egy eszköz, ami statikus elemzést hajt végre. Ilyen például a Clang Static Analyzer ami felderítheti például a következő hibákat: nullával osztás, null paraméter, nem inicializált visszatérési érték, stb.</p>
+<h3 id="tesztspecifikálást-támogató-eszközök">9.3 Tesztspecifikálást támogató eszközök</h3>
+<h4 id="teszttervező-eszközök">Teszttervező eszközök:</h4>
+<p>A műszaki teszt tervezési tevékenységet támogató eszköz, amely tesztelési bemeneteket generál egyéb forrásokból pl. case eszközökből, követelménymenedzsment eszközből valamint magából a programkódból.</p>
+<h4 id="tesztadat-előkészítő-eszközök">Tesztadat előkészítő eszközök:</h4>
+<p>Olyan tesztelési eszköz, amellyel a teszteléshez adatokat állíthatunk elő meglévő adatbázisunkból. Az eszköz alkalmas lehet egyéb adatok generálására, adatok manipulálására, valamint szerkesztésére is.</p>
+<h3 id="tesztvégrehajtás-és-naplózás-támogató-eszközök">9.4 Tesztvégrehajtás és naplózás támogató eszközök</h3>
+<h4 id="tesztelés-végrehajtó-eszközök">Tesztelés végrehajtó eszközök:</h4>
+<p>Olyan tesztelési eszköz, amely képes másik szoftvert futtatni egy automatizált szkript (pl. felvétel/lejátszás) segítségével.</p>
+<h4 id="unit-teszt-keretrendszerek">Unit teszt keretrendszerek:</h4>
+<p>Olyan környezetet biztosító keretrendszer, amelyben egy komponens egyaránt tesztelhető különállóan, valamint megfelelő segédprogramokkal. Hibakeresési funkciójával támogatja a szoftverfejlesztők munkáját is.</p>
+<h4 id="teszt-összehasonlító-eszközök">Teszt összehasonlító eszközök:</h4>
+<p>Egy tesztelési eszköz, amellyel a teszt elvárt és aktuális eredményeit automatikusan össze lehet hasonlítani.</p>
+<h4 id="lefedettség-mérő-eszközök">Lefedettség mérő eszközök:</h4>
+<p>Olyan eszköz, amely objektíven méri, hogy mely strukturális elemeket - pl. utasításokat, elágazásokat - hajtja végre a teszt készlet.</p>
+<h4 id="biztonsági-eszközök">Biztonsági eszközök:</h4>
+<p>Eszköz, ami a biztonsági karakterisztikák és sebezhetőségek teszteléséhez nyújt támogatást.</p>
+<h3 id="teljesítményt-és-monitorozást-támogató-eszközök">9.5 Teljesítményt és monitorozást támogató eszközök</h3>
+<h4 id="dinamikus-elemző-eszközök">Dinamikus elemző eszközök:</h4>
+<p>A szoftverkód állapotáról futási időben információt szolgáltató eszköz. Leggyakrabban érvénytelen mutatók, memória foglalások és törlések, ill. a memóriaszivárgások felderítésére használják.</p>
+<h4 id="teljesítmény-tesztelő-eszközök">Teljesítmény tesztelő eszközök:</h4>
+<p>Az eszköz terhelést generál több felhasználó szimulálásával illetve nagy mennyiségű bemenő adat elküldésével. A futás során kiválasztott tranzakciók válaszidejét mérik és naplózzák, amelyekből teljesítményjelentés készül, diagramokkal, pl. a terhelés és válaszidők aránya.</p>
+<h4 id="stressz-tesztelő-eszközök">Stressz tesztelő eszközök:</h4>
+<p>A rendszert előre elvárt vagy annál nagyobb terheléssel vagy csökkentett erőforrás rendelkezése bocsátásával teszteljük. pl. korlátozott szerver memória hozzáférés.</p>
+<h4 id="monitorozó-eszközök">Monitorozó eszközök:</h4>
+<p>Egy szoftver vagy hardver eszköz, amely párhuzamosan fut a tesztelés alatt lévő komponenssel vagy rendszerrel, ez utóbbiakat felügyeli, elmenti és/vagy elemzi azok viselkedését.</p>
+<h2 id="további-források">További források</h2>
+<ul>
+<li>Előadás anyag</li>
+<li>Korábbi kidolgozások</li>
+<li>ISTQB - Fundamentals of Software Testing</li>
+</ul>
+</body>
+</html>

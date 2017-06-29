@@ -1,0 +1,530 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="s4-03-többszálú-programok-a-java-nyelv-szinkronizációs-eszközei">S4-03 Többszálú programok, a Java nyelv szinkronizációs eszközei</h1>
+<h2 id="tartalom">Tartalom</h2>
+<ol style="list-style-type: decimal">
+<li><a href="#chapter01">Többszálú programok ütemezése</a></li>
+<li><a href="#chapter02">A Java nyelv szinkronizációs eszközei</a></li>
+<li><a href="#chapter03">Jól szinkronizált programok, a happens-before reláció</a></li>
+<li><a href="#chapter04">Data race és race condition fogalma</a></li>
+<li><a href="#chapter05">Konkurrens használatra tervezett adatszerkezetek</a></li>
+<li><a href="#chapter06">Szinkronizáló osztályok</a></li>
+<li><a href="#chapter07">Szálak és feladatok</a></li>
+<li><a href="#chapter08">Félbeszakíthatóság</a></li>
+<li><a href="#chapter09">Haladási problémák (holtpont, kiéheztetés, livelock, priority inversion)</a></li>
+<li><a href="#references">További források</a></li>
+</ol>
+<h2 id="többszálú-programok-ütemezése">1.Többszálú programok ütemezése <a name="chapter01"></a></h2>
+<h3 id="konkurens-programok">Konkurens programok</h3>
+<ul>
+<li>Programok, melyekben több végrehajtási stream hajtódik végre konkurensen. Ezeket az utasítás szekvenciákat hívjuk <em>szálaknak</em>.</li>
+<li>Minden ilyen szál ugyanúgy hajtódik végre, mint egy szekvenciális program
+<ul>
+<li>azzal a különbséggel, hogy a szálak képesek egymással kommunikálni</li>
+<li>rosszul szervezett esetben akár <em>interferálni</em> is.</li>
+</ul></li>
+<li>Többszálú program esetén átfedések lehetségesek a folyamatok életciklusában, a különböző számítások nem kell, hogy ugyanabban az időben történjenek, bár előfordulhat, hogy párhuzamosan futnak le.</li>
+<li><strong>Nem determinisztikus</strong> végrehajtás</li>
+<li>Problémát a megosztott, közösen használt adatokhoz való hozzáférés okozhatja <span class="math inline">\(\Longrightarrow\)</span> indokolt a megfelelő memória kezelés megoldása</li>
+</ul>
+<h3 id="párhuzamos-programok">Párhuzamos programok</h3>
+<ul>
+<li>Programok, melyeknél minden számítás a szó legszorosabb értelmében egyszerre történik
+<ul>
+<li>egy másik processzoron, vagy másik magon, esetleg egy másik gépen.</li>
+</ul></li>
+<li>Párhuzamos programokat lehetetlen egyszálú környezetben futtatni.</li>
+<li>Végrehajtásuk <strong>determinisztikus</strong> és eredményük megegyezik a soros végrehajtással.</li>
+</ul>
+<h3 id="ütemezés">Ütemezés</h3>
+<h4 id="run-to-completion">Run-to-Completion</h4>
+<p>Egy folyamatot addig futtatunk,</p>
+<ul>
+<li>amíg kész nem lesz,</li>
+<li>vagy explicit vissza nem adja a vezérlést az ütemezőnek (<code>yield()</code>).</li>
+</ul>
+<h4 id="pre-emption">Pre-emption</h4>
+<p>Az aktuális szálat az ütemező megszakíthatja, és kontextusváltással egy másik szálat futtathat.</p>
+<h4 id="jvm-implementációtól-függő-időosztás">JVM implementációtól függő időosztás</h4>
+<p>Ekkor a szálak adott időszeleteket kapnak a végrehajtásra és kontextus váltásokat hajt végre köztük a JVM az idő lejártakor, ha a szálak még mindig futtatható állapotban maradtak.</p>
+<ul>
+<li>Minden szálnak kioszt egy minimális időszeletet (quantum), amit az kihasználhat</li>
+<li>ha ez túl kicsi, sok lesz a kontextusváltás, így nagy az ütemező overhead-je</li>
+<li>ha ez túl nagy, az egyes szálak &quot;válaszideje&quot; megnövekszik</li>
+<li>egy szál lemondhat az időszeletének további részéről <code>yield()</code> hívásával</li>
+</ul>
+<h2 id="a-java-nyelv-szinkronizációs-eszközei">2.A Java nyelv szinkronizációs eszközei <a name="chapter02"></a></h2>
+<h3 id="folyamatok-process">Folyamatok (Process)</h3>
+<ul>
+<li>Egy folyamat önálló futtatási környezettel rendelkezik.</li>
+<li>Több folyamat felépíthet egy alkalmazást</li>
+<li>Legtöbb JVM implementáció egy folyamatként fut</li>
+<li>Általában privát, teljes erőforrás halmazzal rendelkezik.</li>
+<li>A folyamatok izoláltam futnak egymástól, és nincs lehetőség közvetlenül egymás erőforrásaihoz hozzáférni.</li>
+</ul>
+<h3 id="szálak-thread">Szálak (Thread)</h3>
+<ul>
+<li>Amolyan &quot;pehelysúlyú folyamatok&quot;.</li>
+<li>Létrehozásuk kevesebb erőforrást igényel, mint a folyamatoké.</li>
+<li>A folyamatokon belül léteznek és minden folyamat rendelkezik legalább egy szállal (<em>main thread</em>).</li>
+<li>A szálak megosztják az erőforrásaikat, beleértve a memóriát is ami a kommunikáció alapját képezi.</li>
+<li>Működhetnek több CPU magon vagy egy magon időosztással (<em>time slicing</em>)</li>
+</ul>
+<h3 id="java.lang.thread">java.lang.Thread</h3>
+<ul>
+<li>Szinkronizációhoz alapul szolgáló eszközünk Java esetén maga a <code>java.lang.Thread</code> osztály.</li>
+</ul>
+<p>Kétféle módszerrel definiálhatunk szálakat Java-ban:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Thread osztályból származtatjuk az osztályunkat.</strong> Ekkor felüldefiniáljuk a <code>Thread</code> osztály <code>run()</code> metódusát. Az osztályunknak lesz egy <code>start()</code> metódusa, amit meghívva elindíthatjuk a <code>run()</code> végrehajtását egy külön szálban.</p>
+<p><code>new HelloThread().start()</code></p></li>
+<li><p><strong>Megvalósítjuk a Runnable interfészt.</strong> Adhatunk <code>Thread</code> konstruktorának egy <code>Runnable</code> interfészt megvalósító osztályt</p>
+<p><code>new Thread(new HelloRunnable()).start()</code></p></li>
+</ol>
+<ul>
+<li>Mindkét esetben a <code>run()</code> metódust kell felüldefiniálni</li>
+<li><p>Elindítani a <code>start()</code> metódussal lehet.</p></li>
+<li>Lehet prioritást rendelni hozzá,</li>
+<li>Futhat háttérszálként (daemon thread),</li>
+<li>Adhatunk neki nevet,</li>
+<li><p>JVM generál hozzá azonosítót (újrahasznosítható).</p></li>
+</ul>
+<h3 id="szálak-életciklusa">Szálak életciklusa</h3>
+<p>Lehetséges ciklusok:</p>
+<ol style="list-style-type: decimal">
+<li>Létrejött (created)</li>
+<li>Futtatható (runnable)</li>
+<li>Futó (running)</li>
+<li>Blokkolt (blocked)</li>
+<li>Végetért (terminated)</li>
+</ol>
+<ul>
+<li><code>start()</code>-al elindított szál futtatható (runnable) állapotba kerül, de ütemező még nem választotta ki.</li>
+<li>Ha az ütemező kiválasztja, futó (running) állapotba kerül, ekkor indul el a végrehajtása.</li>
+<li>Ha egy szál elkezdett futni, akkor addig fut, amíg az alábbiak valamelyike be nem következeik:
+<ul>
+<li><code>Thread.sleep()</code> (blokkolt)</li>
+<li>Lock-ra kezd várni, hogy egy <code>synchronized</code> metódust futtasson (blokkolt)</li>
+<li>I/O-n blokkolódik (blokkolt)</li>
+<li>Explicit visszaadja a vezérlést a <code>yield()</code>-el (futtathatóba kerül)</li>
+<li>terminál, <code>run()</code> elfogy (véget ért)</li>
+</ul></li>
+</ul>
+<div class="figure">
+<img src="img/threadlifecycle.png" alt="Egy szál életciklusa" />
+<p class="caption">Egy szál életciklusa</p>
+</div>
+<h4 id="életciklus-változása">Életciklus változása</h4>
+<ul>
+<li><code>start()</code>: Létrejött <span class="math inline">\(\Longrightarrow\)</span> Futtatható</li>
+<li>ütemező: Futtatható <span class="math inline">\(\Longrightarrow\)</span> Futó</li>
+<li><code>run()</code>: Futó <span class="math inline">\(\Longrightarrow\)</span> Véget ért</li>
+<li><code>yield()</code>: Futó <span class="math inline">\(\Longrightarrow\)</span> Futtatható</li>
+<li><code>sleep()</code>: Futó <span class="math inline">\(\Longrightarrow\)</span> Blokkolt</li>
+<li><code>sleep()</code> vége: Blokkolt <span class="math inline">\(\Longrightarrow\)</span> Futtatható</li>
+<li><code>interrupt()</code>: Blokkolt <span class="math inline">\(\Longrightarrow\)</span> Futtatható</li>
+<li><code>wait()</code>: Futó <span class="math inline">\(\Longrightarrow\)</span> Blokkolt</li>
+<li><code>notify()</code>: Blokkolt <span class="math inline">\(\Longrightarrow\)</span> Futtatható</li>
+<li>blokkoló IO: Futó <span class="math inline">\(\Longrightarrow\)</span> Blokkolt</li>
+</ul>
+<h3 id="szinkronizációs-eszközök">Szinkronizációs eszközök</h3>
+<h4 id="synchronized">Synchronized</h4>
+<ul>
+<li>Kulcsszó, amivel nem csak metódusok és blokkok kölcsönös kizárását valósíthatjuk meg
+<ul>
+<li>hanem a kölcsönös kizárás közben többi szál blokkolását is</li>
+</ul></li>
+</ul>
+<p><strong>Intrinsic lock-olás (Monitor pattern)</strong></p>
+<ul>
+<li>Java-ban minden objektum rendelkezik egy lock-al (hívják monitornak is), melyet szálak lefoglalhatnak és elengedhetnek</li>
+<li>Egy időben csak egy szál foglalhatja az objektum lock-ját</li>
+<li>Addig a többi szál egy várakozási sorban vár amíg a lock fel nem szabadul
+<ul>
+<li>Vezérlésük addig blokkolódik</li>
+</ul></li>
+<li>A lock reentráns: a lock-ot birtokló szál többször egymás után foglalhatja <span class="math inline">\(\Longrightarrow\)</span> nem fogja saját magát blokkolni</li>
+<li>Java-ban egyetlen mód intrinsic lock megszerzésére:
+<ul>
+<li><code>synchronized</code> metódus végrehajtása</li>
+<li><code>synchronized</code> blokkba lépés</li>
+</ul></li>
+</ul>
+<p><strong>Synchronized metódus</strong></p>
+<ul>
+<li>Szál annak az objektum lock-ján zárol, akié maga a <code>synchronized</code> metódus.</li>
+</ul>
+<p><strong>Synchronized blokk</strong></p>
+<ul>
+<li>Természetesen nem csak metódusokra implikálható, szinkronizációs blokkot is hozhatunk létre, melynek belsejében adhatjuk meg azokat az utasításokat melyekre kizárólagos hozzáférést szeretnénk biztosítani.
+<ul>
+<li>Ebben az esetben meg kell adni, hogy melyik objektum lock-ján akarunk szinkronizálni: <code>synchronized(obj) {...}</code>.</li>
+<li>Létjogosultsága leginkább akkor van, ha nem egy objektumban vannak azok az utasítások amelyeken szinkronizálni akarunk vagy ha nem a <code>this</code>-en akarunk lock-olni.</li>
+</ul></li>
+</ul>
+<h4 id="volatile">Volatile</h4>
+<ul>
+<li>Gyenge szinkronizációt biztosító eszköz (gyors, szálbiztos, lock-free hozzáférés).</li>
+<li>Explicit lock nélküli szinkronizációt biztosít, rákényszerítve a fordítót, hogy mindig olvassa ki a volatile változó értékét s így nem fordulhat elő az, hogy elavult (cache-elt) értéket kapjunk.</li>
+<li>Szálak között megosztott volatile változónak mindig az aktuális értékét látjuk minden szálban.</li>
+<li>A <code>volatile</code> változó olvasása/írása szinkronizációs akciót vált ki.</li>
+<li>Azért csak gyenge szinkronizációs eszköz, mert nincs kölcsönös kizárás a változó használatán, csak a láthatóságot biztosítja, atomiságot nem (a synchronized azt is).</li>
+<li>A fordító és runtime nem optimalizálhat rajta, azaz például nem rendezheti át az utasításokat rajtuk.</li>
+<li>Értékét nem szabad kizárólagosan egy szálra cache-elni.</li>
+<li>Nem menthetőek regiszterekbe.</li>
+<li>Használatuk leginkább az állapotjelzőkre, megszakítókra, kiegészítő feladatokra korlátozódik.</li>
+<li>Bármely <code>volatile</code> változó írása <em>happens-before</em> relációban kell legyen az utána következő olvasásaival.</li>
+</ul>
+<h4 id="immutable-módosíthatatlan-objektumok">Immutable (módosíthatatlan) objektumok</h4>
+<ul>
+<li>A módosítathatlan objektumok szinkronizáció nélkül megoszthatóak a szálak között.
+<ul>
+<li>Funkcionális stílusú programozás</li>
+</ul></li>
+<li>Az ilyen objektumok mindig szálbiztosak, mert létrejöttük után nem változik az állapotuk.</li>
+<li>Invariánsaikat a konstruktor határozza meg.</li>
+<li>Egy objektum immutable, ha:
+<ul>
+<li>az állapota létrehozás után nem változtatható meg</li>
+<li>minden mezője <code>final</code> (igazából technikailag nem feltétel)</li>
+<li>biztonságosan jött létre, azaz nem szökött ki a <code>this</code> referencia a konstruálódása során</li>
+<li>opcionálisan maga az osztály is lehet <code>final</code></li>
+</ul></li>
+<li>Gyors allokációja és szinkronizációmentessége lévén gyors teljesítményt nyújt.</li>
+<li>Best practice: ha egy objektum nem immutable, a módosíthatatalan adattagokat akkor is érdemes megjelölni, ezáltal kevesebb lehetséges állapota lesz az objektumnak.</li>
+<li>Java memória modell kimondja: konstruktor befejezésekor a <code>final</code> mezők garantáltan inicializálva lesznek</li>
+</ul>
+<h2 id="jól-szinkronizált-programok-a-happens-before-reláció">3.Jól szinkronizált programok, a happens-before reláció <a name="chapter03"></a></h2>
+<h3 id="atomicitás">Atomicitás</h3>
+<p><em>A</em> és <em>B</em> művelet akkor atomi egymáshoz képest, ha az <em>A</em> műveletet végrehajtó szál szempontjából a <em>B</em> műveletet végrehajtó szál</p>
+<ul>
+<li>vagy teljes egészében végrehajtotta a műveletet</li>
+<li>vagy egyáltalán nem.</li>
+</ul>
+<p>Egy művelet akkor atomi, ha ugyanazon az állapoton végrehajtott művelethez képest atomi, beleértve önmagát is.</p>
+<h3 id="happens-before-reláció">Happens-before reláció</h3>
+<h4 id="laikus-magyarázat">&quot;Laikus&quot; magyarázat</h4>
+<ul>
+<li>Kulcs memóriakonzisztencia hibák elkerülésére</li>
+<li>Ha egy esemény happens-before relációban áll a másikkal <span class="math inline">\(\Longrightarrow\)</span> az első esemény hatása látható a második számára</li>
+</ul>
+<h4 id="definíció">Definíció</h4>
+<p>Ha van <em>x</em> és <em>y</em> műveletünk <span class="math inline">\(\Longrightarrow hb(x, y)\)</span>-al jelöljük hogy <em>x</em> végrehajtása megelőzi <em>y</em> végrehajtását (&quot;<em>x</em> az <em>y</em> előtt történik&quot;, &quot;<em>x</em> happens before <em>y</em>&quot;)</p>
+<h4 id="mit-garantál">Mit garantál?</h4>
+<p>Garantálja, hogy ha két akció, <em>x</em> és <em>y</em> ilyen relációban áll, akkor <em>x</em> eredménye látható <em>y</em> számára.</p>
+<h4 id="formálisabb-definíció">Formálisabb definíció</h4>
+<p>A <em>program order</em> (<em>po</em>) és a <em>synchronizes-with</em> (<em>sw</em>) relációk uniójának tranzitív lezártja</p>
+<p><span class="math display">\[hb = (po \cup sw)^+\]</span></p>
+<p>Ebből tranzitív: ha <span class="math inline">\(hb(a, b)\)</span> és <span class="math inline">\(hb(b, c)\)</span> akkor <span class="math inline">\(hb(a, c)\)</span></p>
+<h4 id="hb-re-vonatkozó-szabályok"><em>hb</em>-re vonatkozó szabályok:</h4>
+<ul>
+<li>Minden esemény egy szálon belül <em>hb</em> relációban áll a többivel ha azok később következnek a program order szerint.</li>
+<li>Minden objektum konstruktorának vége relációban áll az objektum finalizer-ének első utasításával.</li>
+<li>Unlock monitor <em>hb</em> relációban áll ugyanazon monitor lock-jával, amely utána következik</li>
+<li><code>volatile</code> változó írása is <em>hb</em> relációban áll az azt követő olvasásaival</li>
+<li>A szál <code>start()</code> metódusa <em>hb</em> relációban áll minden más eseményével</li>
+<li>Minden esemény egy szálon belül <em>hb</em> relációban áll a többi szál <code>join()</code> általi visszatérésével</li>
+</ul>
+<h3 id="happens-before-konzisztencia">Happens-before konzisztencia</h3>
+<ul>
+<li>Legyen
+<ul>
+<li><em>A</em>: műveletek halmaza</li>
+<li><em>r</em>: olvasások <em>A</em>-ban</li>
+<li><em>w</em>: írási műveletek <em>A</em>-ban</li>
+<li><em>v</em>: változó amit <em>r</em> olvas és <em>w</em> ír</li>
+<li><em>W(r)</em>: írási műveletek, amiket <em>r</em> lát</li>
+</ul></li>
+<li>Happens-before konzisztens <em>A</em> műveletek halmazában minden egyes <em>r</em> olvasás olyan <em>w</em> írást lát <span class="math inline">\(\Longrightarrow\)</span> ami olvasásnak megengedett, hogy happens-before sorrendben lássa</li>
+</ul>
+<p>Nem létezik olyan, hogy</p>
+<ul>
+<li><span class="math inline">\(hb(r, W(r))\)</span> <span class="math inline">\(\Longrightarrow\)</span> olvasások happens-before relációban vannak az írásokkal amiket az olvasások látnak</li>
+<li>van <em>w</em> írás <em>A</em>-ban, amiben
+<ul>
+<li><span class="math inline">\(w.v = r.v\)</span> (<em>w</em> által írt és <em>r</em> által olvasott <em>v</em> változó értéke megegyezik)</li>
+<li><span class="math inline">\(hb(W(r), w)\)</span> (<em>r</em> által látott <em>W(r)</em> írások <em>w</em> előtt vannak)</li>
+<li><span class="math inline">\(hb(w, r)\)</span> (<em>w</em> írás <em>r</em> olvasás előtt történik)</li>
+</ul></li>
+</ul>
+<p>Magyarul:</p>
+<ol style="list-style-type: decimal">
+<li>Minden olvasás látja az azt megelőző írásokat</li>
+<li>Ha írunk egy <em>v</em> változót, azt az olvasó folyamatnak mindenképp látnia kell</li>
+</ol>
+<h4 id="miről-biztosít-a-happens-before-konzisztencia">Miről biztosít a happens-before konzisztencia?</h4>
+<ul>
+<li>Minden olvasás mely egy írás előtt ment végbe, nem láthatja annak az írásnak az eredményét</li>
+<li>Az olvasás akkor sem láthatja az írás eredményét ha épp egy másik írás van folyamatban</li>
+</ul>
+<h3 id="szekvenciális-konzisztenica">Szekvenciális konzisztenica</h3>
+<ul>
+<li>Minden változó olvasás <span class="math inline">\(\Longrightarrow\)</span> az előző írás eredményét látja egy megadott sorrend alapján, függetlenül attól, hogy melyik processzoron történtek a műveletek.</li>
+<li>Tehát minden akció atomi és eredménye minden szál számára azonnal látható.</li>
+</ul>
+<p>Ha az egyes akciók teljes rendezésben vannak, amik konzisztensek a program order-el <span class="math inline">\(\Longrightarrow\)</span> akkor <em>v</em> változó <em>r</em> olvasása esetén, <em>v</em> változó a <em>w</em> által írt értéket tartalmazza, ha:</p>
+<ul>
+<li><em>w</em> írás az <em>r</em> olvasás előtt áll</li>
+<li>nincs más <em>w'</em> írás a <em>w</em> írás és <em>r</em> olvasás között.</li>
+</ul>
+<h3 id="jól-szinkronizált-program">Jól szinkronizált program</h3>
+<ul>
+<li>A program akkor és csak akkor jól szinkronizált, ha minden szekvenciálisan konzisztens végrehajtása data race-mentes.</li>
+<li>A jól szinkronizált programok minden végrehajtása szekvenciálisan konzisztensnek tűnik.</li>
+</ul>
+<h2 id="data-race-és-race-condition-fogalma">4.Data race és race condition fogalma <a name="chapter04"></a></h2>
+<h3 id="interferencia">Interferencia</h3>
+<ul>
+<li><p>Két művelet különböző szálon fut, de ugyanazon az adaton dolgoznak <span class="math inline">\(\Longrightarrow\)</span> &quot;összefésülődnek&quot;</p></li>
+<li><p>Egy-egy művelet több lépésből áll, ezek a lépések pedig összefolynak</p></li>
+</ul>
+<h3 id="read-modify-write">Read-modify-write</h3>
+<ul>
+<li>Egy értéket változóból kiolvas (<em>read</em>), módosítja az értéket (<em>modify</em>), majd visszaírja a változóba (<em>write</em>)</li>
+<li>Nem atomi művelet: a három esemény közötti időben megváltozhat a változó amiből az érték lett kiolvasva.</li>
+<li>Tipikus példája ennek a post-increment (<code>i++</code>)
+<ol style="list-style-type: decimal">
+<li><code>i</code> értékének kiolvasása, másolat készítése az értékből (<em>read</em>)</li>
+<li>magának az érték növelése eggyel (<em>modify</em>)</li>
+<li>érték visszaírása <code>i</code>-be (<em>write</em>)</li>
+</ol></li>
+</ul>
+<h3 id="check-then-act">Check-then-act</h3>
+<ul>
+<li>Egy állapotot megvizsgál (<em>check</em>), majd azalapján cselekszik egy szál (<em>act</em>)</li>
+<li>Nem atomi művelet: a két esemény közötti időben megváltozhat az eredetileg megvizsgált állapot.</li>
+<li>Másik megfogalmazás: Teendő elvégzéséhez (<em>act</em>) olyan megfigyelést (<em>check</em>) vesz alapul, ami valószínűleg elavult adatra épül</li>
+</ul>
+<h3 id="data-race">Data race</h3>
+<ul>
+<li>Akkor következik be, mikor egy változót több szál olvas és legalább egy szál ír, viszont az írások és olvasások között nincs happens-before reláció.</li>
+<li>A jól szinkronizált program data race nélküli.</li>
+<li>Ha nincs data race, minden végrehajtás szekvenciálisan konzisztensnek tűnik</li>
+</ul>
+<h3 id="race-condition">Race condition:</h3>
+<p>Akkor következik be, mikor a számítás helyessége</p>
+<ol style="list-style-type: decimal">
+<li>a relatív időzítésen</li>
+<li>vagy több szál futásidőben történő összesorolásán múlik.</li>
+</ol>
+<p>Magyarul race condition esetén a helyes válasz a szerencsés időzítésen múlik (&quot;szerencsén múlik&quot;).</p>
+<ul>
+<li>Megoldás: például szinkronizálás monitorral.</li>
+</ul>
+<h3 id="mitől-szálbiztos-thread-safe-egy-program">Mitől szálbiztos (thread safe) egy program?</h3>
+<ul>
+<li><em>Read-modify-write</em> és <em>Check-then-act</em> utasítások atomikusan hajtódnak végre</li>
+<li>Nincs data race</li>
+</ul>
+<h2 id="konkurrens-használatra-tervezett-adatszerkezetek">5.Konkurrens használatra tervezett adatszerkezetek <a name="chapter05"></a></h2>
+<h3 id="vector-hashtable"><code>Vector</code>, <code>Hashtable</code></h3>
+<ul>
+<li>Alapból szinkronizált (saját intrinsic lockjával).</li>
+<li>Szinkronizációs burkoló objektumot készítő, intrinsic lock-ot bevezető factory metódusok: <code>Collections.synchronized*</code></li>
+</ul>
+<h4 id="egy-hibaforrás">Egy hibaforrás:</h4>
+<ul>
+<li>Az iterálás során szintén zárolni kell az adatszerkezetet (atomi legyen, hogy közben ne változzon az elemszám), mert a szinkronizált kollekciók iterátorait nem kötelező lock-olni a bejárás közben.</li>
+<li>Így megfelelő zárolás hiányában egyszerű <code>for-each</code> bejárásnál vagy rejtett iterációnál (pl: <code>toString()</code>) nem lesz szálbiztos.</li>
+</ul>
+<h3 id="java.util.concurrent."><code>java.util.concurrent.*</code></h3>
+<ul>
+<li>A szinkronizált kollekciók (<code>Vector</code>, <code>Hashtable</code>) nem eléggé jó teljesítményűek, mivel a műveleteik az egész kollekciót zárolják.</li>
+<li>Ezzel szemben a konkurens kollekciók egyszerre írhatók és olvashatók több szálból.</li>
+<li>Nincs szükség lock-olásra az egész gyűjteményen (nem is ajánlott, mert elveszíti hatékonyságát), elég egy részén (lock striping).</li>
+<li>Atomi <code>putIfAbsent()</code>, <code>remove()</code> és <code>replace()</code> check-than-act típusú műveleteket biztosít.</li>
+<li>A <code>size()</code> illetve <code>isEmpty()</code> eredménye viszont csak approximális.</li>
+</ul>
+<h3 id="copyonwritearraylist-és-copyonwritearrayset"><code>CopyOnWriteArrayList</code> és <code>CopyOnWriteArraySet</code></h3>
+<ul>
+<li>a <code>synchronizedList</code> párhuzamos megfelelője.</li>
+<li>Kiküszöböli a gyűjtemény zárolásának vagy lemásolásának szükségességét bejárás közben.</li>
+<li>A <code>CopyOnWrite</code> gyűjtemények ereje abban rejlik <span class="math inline">\(\Longrightarrow\)</span> hogy a gyűjtemény minden módosításakor másolatot készítenek és tesznek közzé.</li>
+<li>Másolat készítése drága <span class="math inline">\(\Longrightarrow\)</span> akkor hatékony, ha több az olvasás mint az írás</li>
+</ul>
+<h3 id="blockingqueue"><code>BlockingQueue</code></h3>
+<ul>
+<li>Blokkol, ha
+<ul>
+<li>nincs benne kivehető elem (kivételnél),</li>
+<li>vagy tele van (berakásnál).</li>
+</ul></li>
+<li>Van felső határ nélküli változat is, itt a berakás soha nem blokkol.</li>
+<li><code>poll()</code> és <code>offer()</code>: időhöz kötött várakozással blokkoló elem kivétel és berakás.</li>
+</ul>
+<p>Fajtái:</p>
+<ul>
+<li><code>LinkedBlockingQueue</code></li>
+<li><code>ArrayBlockingQueue</code>: igazából tömb típusú</li>
+<li><code>PriorityBlockingQueue</code>: nem FIFO típusú, prioritás számít</li>
+<li><code>SynchronousQueue</code>: igazából nincs eleme, de nem null az átadott érték</li>
+<li><code>BlockingDeque</code>: kétvégű változata</li>
+</ul>
+<h2 id="szinkronizáló-osztályok">6.Szinkronizáló osztályok <a name="chapter06"></a></h2>
+<p>Ezek közé bármi olyan objektum tartozik, ami a szálak vezérlését koordinálja saját állapota alapján.</p>
+<h3 id="latch"><code>Latch</code></h3>
+<ul>
+<li>Feltartja a folyamatokat, amíg elér egy megadott termináló pontot.</li>
+<li>Feltart minden szálat míg el nem éri végállapotát, ezután mindet tovább engedi. A továbbiakban nem változik az állapota.</li>
+<li>Implementáció: például <code>CountdownLatch</code>, mely egy nem negatív értéktől számol vissza (<code>countDown()</code> csökkenti egyel) 0-ig.</li>
+</ul>
+<h3 id="semaphore"><code>Semaphore</code></h3>
+<ul>
+<li>Klasszikus számláló szemafor (lehet bináris is), mely korlátozott számú erőforráshoz vagy korlátozott méretű adatszerkezethez való hozzáférést szabályozhat.</li>
+<li>Konstruktorában adható meg a szálak max. száma, melyek egyidőben bent tartózkodhatnak, <span class="math inline">\(\Longrightarrow\)</span> ez az érték fix egy szemaforra nézve.</li>
+</ul>
+<h3 id="barrier"><code>Barrier</code></h3>
+<ul>
+<li>Egy bizonyos pont elérése után engedi tovább a szálakat (barrier pont).</li>
+<li>Alap implemetációja a <code>CyclicBarrier</code>, mely a konstruktorában megadott számú szálat vár be.</li>
+<li>Nincs végleges termináló állapota, újraindul.</li>
+</ul>
+<h3 id="future"><code>Future</code></h3>
+<ul>
+<li>Interfész, egy aszinkron számítás eredményét reprezentálja.</li>
+<li>Eredményt <code>get()</code>-el kaphatjuk meg, mely addig blokkolódik, míg meg nem kapja az eredményt.</li>
+<li>Állapota lekérdezhető, félbeszakítható.</li>
+<li><code>FutureTask</code> az alap implementációja, egy aszinkron számítást végez.</li>
+<li>Konstruktorába <code>Callable</code> vagy <code>Runnable</code> objektumot kell adni</li>
+<li>Csak a számítás módját adjuk meg vele, a számítás elvégzését legtöbbször egy <code>Executor</code>-ra bízzuk.</li>
+</ul>
+<h2 id="szálak-és-feladatok">7.Szálak és feladatok <a name="chapter07"></a></h2>
+<h4 id="feladatok-task">Feladatok (task)</h4>
+<ul>
+<li>A feladat az elvégzendő munka egy egysége.</li>
+<li>Ezeket konkurrensen hajtjuk végre szálakban.</li>
+<li>Ideális esetben egymástól független az
+<ul>
+<li>állapotuk</li>
+<li>eredményük</li>
+<li>és mellékhatásaik is.</li>
+</ul></li>
+<li>Ha a feladatokat függetlenítjük a szálaktól (nincs explicit összekapcsolás) <span class="math inline">\(\Longrightarrow\)</span> jobb skálázódási tulajdonságot kapunk.</li>
+</ul>
+<p>A feladatok méretének meghatározása kritikus:</p>
+<ul>
+<li>Feladat/szál költséges lehet</li>
+<li>Túl kicsi feladatok: versengés, ütemezési overhead</li>
+<li>Túl nagy feladatok: kismértékű párhuzamosíthatóság</li>
+</ul>
+<p>4 folyamat / 4 feladat esetén a legnagyobb folyamat lesz a mérvadó sebesség terén.</p>
+<h4 id="executor"><code>Executor</code></h4>
+<ul>
+<li>Feladatok beküldése végrehajtásra.</li>
+<li><code>Executor</code> egy szálat több <code>Runnable</code> objektum végrehajtására tud felhasználni. Elosztja a beérkező feladatokat a szálak között.</li>
+<li><code>ExecutorService</code> egy kiterjesztése az <code>Executor</code>-nak. A taszkok beküldésekor (<code>submit()</code>) nem csak <code>Runnable</code>-t, hanem <code>Callable</code>-t is elfogad, ez <code>Future</code>-t tud visszaadni.</li>
+</ul>
+<h2 id="félbeszakíthatóság">8.Félbeszakíthatóság <a name="chapter08"></a></h2>
+<h3 id="szál-félbeszakítása-interrupt">Szál félbeszakítása (<code>interrupt()</code>)</h3>
+<ul>
+<li>Egyfajta üzenetküldés a szál megállításához, melyben közreműködik a kezdeményező, illetve az interruptot kapó szál is.</li>
+<li>Nem állíthat le egy szál egy másik még futásban lévő szálat, de megszakító kérést küldhet neki, amire a futásban lévő szál megáll és átadja a vezérlést.</li>
+<li>Ezt egy kontextusváltás keretében teszi, mely magába foglalja a szál
+<ul>
+<li>stack-jének ürítését,</li>
+<li>processzor regisztereinek ürítését,</li>
+<li>cache ürítését</li>
+<li>és a program counter elmentését. Ezután tölti be a másikét.</li>
+</ul></li>
+<li>Interrupt hívásakor beállítódik egy interrupt flag a szálban, ami lekérdezhető <code>interrupted()</code> és <code>isInterrupted()</code> segítségével.
+<ul>
+<li>Szál ekkor <code>InterruptedException</code>-t dob</li>
+<li>Használható alvó (<code>sleep()</code>) szál felébresztésére is</li>
+<li><code>isInterrupted()</code>: tagmetódus, csak megvizsgálja az interrupt flag-et</li>
+<li><code>interrupted()</code>: statikus metódus, törli az interrupt flag-et lekérdezés után, azaz második lekérdezéskor már <code>false</code> lesz</li>
+</ul></li>
+</ul>
+<h3 id="feladat-félbeszakítása-cancel">Feladat félbeszakítása (<code>cancel()</code>)</h3>
+<ul>
+<li>Egy feladatot egy Future objektum reprezentál</li>
+<li><code>cancel()</code> metódusában megadható, hogy megszakítható legyen-e</li>
+</ul>
+<h3 id="executor-félbeszakítása-shutdown-vagy-shutdownnow">Executor félbeszakítása (<code>shutdown()</code> vagy <code>shutDownNow()</code>)</h3>
+<ul>
+<li>Minden szálnak van egyfajta implicit &quot;tulajdonosa&quot; (legtöbbször aki létrehozta) és a szál leállítását a tulajdonosa kell, hogy elvégezze,</li>
+<li>Ezért minden szálakat kezelő szolgáltatásnak kell legyen valamilyen shutdown mechanizmusa</li>
+<li><code>shutdown()</code> megvárja míg az éppen futó szál befejezi feladatát és ezután állítja le, <code>shutdownNow()</code> meg is szakítja a jelenleg futó szálakat.</li>
+</ul>
+<h2 id="haladási-problémák-holtpont-kiéheztetés-livelock-priority-inversion">9.Haladási problémák (holtpont, kiéheztetés, livelock, priority inversion) <a name="chapter09"></a></h2>
+<h3 id="holtpont">Holtpont</h3>
+<ul>
+<li>Folyamatok egy nem üres halmazát holtpontosnak nevezzük, ha a benne szereplő minden folyamat egy olyan feltétel bekövetkeztére vár (feltétlenül, időkorlát nélkül),
+<ul>
+<li>amely feltétel csak a halmazban lévő más folyamatok továbbhaladása esetén következhet be.</li>
+</ul></li>
+<li>Ha a halmaz minden folyamata arra vár, hogy sikerüljön lekötnie egy erőforrást,
+<ul>
+<li>amit egy, a halmazban lévő folyamat már lekötve tart,</li>
+<li>akkor holtpont alakulhat ki.</li>
+</ul></li>
+</ul>
+<h4 id="holtpont-formális-definíciója">Holtpont formális definíciója</h4>
+<ol style="list-style-type: decimal">
+<li>Tekintsünk egy páros gráfot, amelynek csúcsai a folyamatokat, illetve az erőforrásokat reprezentálják.</li>
+<li><p>Ha a folyamat zárolta azt az erőforrást <span class="math inline">\(\rightarrow\)</span> húzzunk be egy élt egy erőforrásból egy folyamatba</p></li>
+<li><p>Ha a folyamat épp vár az erőforrás megszerzésére <span class="math inline">\(\rightarrow\)</span> húzzunk be egy élt egy folyamatból egy erőforrásba</p></li>
+<li><p>Ha az így készített gráfban kör van <span class="math inline">\(\Longrightarrow\)</span> a körön lévő folyamatok holtpontba került folyamathalmazt adnak.</p></li>
+</ol>
+<h4 id="étkező-filozófusok-példa">Étkező filozófusok példa</h4>
+<p>Ha minden filozófus felveszi a bal villáját <span class="math inline">\(\rightarrow\)</span> majd elkezd várni arra, hogy felvehesse a jobb villát is <span class="math inline">\(\Longrightarrow\)</span> holtpont alakult ki.</p>
+<h3 id="kiéheztetés">Kiéheztetés</h3>
+<ul>
+<li>Egy száltól huzamosabb ideig megtagadják azt az erőforrást, ami a továbbhaladásához szükséges.</li>
+<li>Sok esetben ez maga a végrehajtó egység, tehát egyszerűen nem kerül beütemezésre.</li>
+<li>Ez lehet például
+<ul>
+<li>a nem megfelelő szálprioritások megválasztásának eredménye</li>
+<li>vagy ha egy szál úgy tart egy mások számára szükséges zárat, hogy közben végtelen ciklusba kerül.</li>
+</ul></li>
+</ul>
+<h3 id="livelock">Livelock</h3>
+<ul>
+<li>Szálak nem blokkolódnak, de valódi &quot;haladás&quot; nem történik.</li>
+<li>Olyan műveletet próbálnak végrehajtani, ami mindig sikertelen eredménnyel zárul.</li>
+<li>Például tranzakcionális üzenetsoroknál léphet fel ilyen, ha az üzenetek feldolgozása nem sikerül, és a sikertelen tranzakció esetén az üzenet visszakerül a sor elejére (poison message).</li>
+<li>Esetleg a szálak egymástól függően váltanak állaptotot, de pont úgy, hogy nem tudnak haladni.</li>
+</ul>
+<h3 id="priority-inversion">Priority inversion</h3>
+<ul>
+<li>A fontosabb feladatok elvégzésése érdekében prioritást rendelhetünk a szálakhoz.</li>
+<li>Ha egy magasabb prioritású folyamat futtathatóvá válik, akkor a rendszer késlelteti az alacsonyabb prioritású folyamatok futását.</li>
+<li>Priority inversion: ha egy alacsonyabb prioritású folyamat implicit megelőz egy magasabb prioritású folyamatot</li>
+</ul>
+<h4 id="priority-inversion-formális-definíciója">Priority inversion formális definíciója</h4>
+<p>Legyen</p>
+<ul>
+<li>Két folyamat <em>H</em> és <em>L</em>, amik magas és alacsony prioritásuak</li>
+<li><em>M</em> közepes prioritású folyamat</li>
+<li>Ezek egy megosztott erőforrást akarnak megszerezni kizárólagos használatra, ami legyen <em>R</em>.</li>
+</ul>
+<ol style="list-style-type: decimal">
+<li><p>Ha <em>H</em> próbálja megszerezni <em>R</em>-t miután <em>L</em> megszerezte</p>
+<p><span class="math inline">\(\rightarrow\)</span> <em>H</em> nem futtatható amíg <em>L</em> el nem ereszti.</p></li>
+<li><p>Mivel <em>H</em> nem futtatható</p>
+<p><span class="math inline">\(\rightarrow\)</span> ezért <em>M</em> a legnagyobb prioritású folyamat</p>
+<p><span class="math inline">\(\rightarrow\)</span> ami miatt <em>L</em> késleltetődik és ezért <em>L</em> nem tudja feloldani az erőforrást.</p></li>
+<li><p>Ebben az esetben <span class="math inline">\(\Longrightarrow\)</span> a közepes prioritású <em>M</em> folyamat megakadályozza hogy a magas prioritású <em>H</em> folyamat futhasson.</p></li>
+</ol>
+<h2 id="további-források">10.További források <a name="references"></a></h2>
+<ul>
+<li>Előző kidolgozott záróvizsga tételek</li>
+<li>http://kto.web.elte.hu/hu/oktatas/eak2/</li>
+<li>https://docs.oracle.com/javase/tutorial/essential/concurrency/index.html</li>
+<li>https://docs.oracle.com/javase/specs/jls/se8/html/jls-17.html</li>
+<li>https://en.wikipedia.org/wiki/Java_memory_model</li>
+<li>https://en.wikipedia.org/wiki/Thread_safety</li>
+<li>https://en.wikipedia.org/wiki/Monitor_(synchronization)</li>
+<li>http://brevitaz.com/race-condition-java-concurrency-2/</li>
+<li>https://stackoverflow.com/questions/17853112/in-what-situations-is-the-copyonwritearraylist-suitable</li>
+</ul>
+</body>
+</html>

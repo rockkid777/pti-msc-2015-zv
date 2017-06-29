@@ -1,0 +1,260 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h1 id="s04-2-elosztott-alkalmazások-készítése">S04-2 Elosztott alkalmazások készítése</h1>
+<p>Tartalom</p>
+<ol style="list-style-type: decimal">
+<li>Többrétegű architektúra, elosztott szerveroldal</li>
+<li>Kommunikációs eszközök: távolieljárás-hívás és üzenet alapú infrastruktúra (point-to-point és publish-subscribe modell)</li>
+<li>Névszolgáltatás</li>
+<li>Enterprise JavaBeans komponensmodell, EJB-k fajtái</li>
+<li>Beanek életciklusa</li>
+<li>Dependency injection</li>
+<li>Elosztott és globális tranzakciók</li>
+</ol>
+<hr />
+<h3 id="többrétegű-architektúra">Többrétegű architektúra</h3>
+<ul>
+<li>3-rétegű alkalmazás (fizikailag elkülönülnek):
+<ul>
+<li>kliens (megjelenítés)
+<ul>
+<li>pl. web kliensek, GUI alkalmazások</li>
+</ul></li>
+<li>üzleti logika
+<ul>
+<li>általában EJB segítségével</li>
+</ul></li>
+<li>adat (Enterprise Information System)
+<ul>
+<li>pl. adatbázisok</li>
+</ul></li>
+</ul></li>
+<li>Középső réteg elkülönítésének előnyei:
+<ul>
+<li>egyszerűbb (akár többféle) kliens</li>
+<li>biztonságos, megbízható</li>
+<li>könnyebb karbantartás, fejlesztés</li>
+</ul></li>
+<li>4-rétegű alkalmazásokban megjelenik a web-réteg (kliens és üzleti logika között)
+<ul>
+<li>megjelenítési logika megvalósítása</li>
+<li>még egyszerűbb kliens, skálázhatóság</li>
+</ul></li>
+<li>Az egyes rétegek komponensekből épülnek fel, fajtái: kliens, szerver, web</li>
+<li>Minden komponens egy megfelelő tárolóban fut, és az ezek által nyújtott szolgáltatások (middleware services) megoldást biztosítanak általános problémákra
+<ul>
+<li>Távoli eljáráshívás</li>
+<li>Szálkezelés</li>
+<li>Terheléskiegyenlítés</li>
+<li>Átlátszó hibakezelés</li>
+<li>Perzisztencia</li>
+<li>Tranzakciókezelés</li>
+<li>Objektumok életciklusa</li>
+<li>Aszinkron üzenetkezelés</li>
+<li>Biztonság</li>
+<li>Resource-pooling</li>
+<li>Autentikáció</li>
+<li>Authorizáció</li>
+<li>Caching</li>
+<li>Clustering</li>
+<li>stb.</li>
+</ul></li>
+</ul>
+<h3 id="távolieljárás-hívás">Távolieljárás-hívás</h3>
+<ul>
+<li>Remote Procedure Call
+<ul>
+<li>egy másik gépen található függvény hívása</li>
+<li>a socket kommunikáció szintaxisát fedi el</li>
+<li>az objektumok érték szerint, szerializáció segítségével adódnak át</li>
+<li>a kliensben és a szerverben is egy stub objektum végzi a kommunikációt</li>
+</ul></li>
+<li>Remote Method Invocation (RMI)
+<ul>
+<li>RPC-alapú kommunikáció egy megvalósítása</li>
+<li>JVM-ek közötti kommunikáció</li>
+</ul></li>
+<li>Java Remote Method Protocol (JRMP)
+<ul>
+<li>java.rmi csomagban található RMI megvalósítás (szerializáció, TCP/IP)</li>
+<li>a bejövő hívásokat külön szálon kezeli, ezért a távoli objektumokat érdemes thread-safe módon megvalósítani</li>
+<li>névszolgáltatást biztosít a kommunikációs partnerek megtalálásához</li>
+</ul></li>
+<li>RMI over IIOP
+<ul>
+<li>RMI egy másik megvalósítása (javax.rmi)</li>
+<li>Internet Inter-ORB Protocol használata kommunikációra
+<ul>
+<li>CORBA használja nyelv- és vendorfüggetlen együttműködésre</li>
+</ul></li>
+<li>kevésbé rugalmas, mint a JRMP</li>
+<li>EJB is ezt használja</li>
+</ul></li>
+</ul>
+<h3 id="üzenet-alapú-infrastruktúra">Üzenet alapú infrastruktúra</h3>
+<ul>
+<li>Komponensek közötti kommunikáció</li>
+<li>A küldő és a fogadó nincs közvetlen kapcsolatban → köztes szolgáltató (provider)
+<ul>
+<li>aszinkron üzenetküldés</li>
+<li>akár különböző protokollok használata</li>
+</ul></li>
+<li>Java Message Service (JMS): specifikálja, hogy kommunikálhatnak Java programok</li>
+<li>Point-to-point (P2P)
+<ul>
+<li>két végpont közötti üzenetküldés</li>
+<li>a küldő egy message queue-ra ír, a fogadó ebből veszi ki az üzeneteket</li>
+</ul></li>
+<li>Publish-subscribe
+<ul>
+<li>a fogadók feliratkoznak topicokra, a küldők ezekre publikálnak</li>
+<li>a topicok minden feliratkozónak továbbítják a közzétett üzenetet</li>
+<li>az offline fogadók csak durable subscription esetén kapják meg a kihagyott üzeneteket</li>
+</ul></li>
+</ul>
+<h3 id="névszolgáltatás">Névszolgáltatás</h3>
+<ul>
+<li>Entitások (fájl, számítógép, objektum, stb.) megtalálása név alapján</li>
+<li>Műveletek:
+<ul>
+<li>név rögzítése a szolgáltatásban</li>
+<li>keresés név alapján</li>
+<li>rögzített nevek karbantartása</li>
+</ul></li>
+<li>Pl. DNS, fájlrendszer</li>
+<li>Java Naming and Directory Interface (JNDI)
+<ul>
+<li>egységes interfész név- és könyvtárszolgáltatásokhoz</li>
+<li>nem kell ismernünk a szolgáltatás konkrét megvalósítását</li>
+<li>könyvtárszolgáltatás
+<ul>
+<li>a névszolgáltatás kiegészítése</li>
+<li>attribútumok rendelhetők az entitásokhoz</li>
+</ul></li>
+<li>pl.:<br />
+<code>Context ctx = new InitialContext();</code><br />
+<code>DataSource ds = (DataSource) ctx.lookup(&quot;jdbc/DB&quot;);</code></li>
+</ul></li>
+</ul>
+<h3 id="enterprise-javabeans-komponensmodell">Enterprise JavaBeans komponensmodell</h3>
+<ul>
+<li>Szerveroldali komponensmodell obj.-orientált elosztott alkalmazások készítéséhez</li>
+<li>EJB tulajdonságai:
+<ul>
+<li>üzleti logikát tartalmaz</li>
+<li>az EJB komponensek EJB tárolókban hajtódnak végre (szolgáltatások)</li>
+<li>a tárolóján keresztül férhetünk hozzá egy komponenshez</li>
+<li>a komponensek fordítás után is konfigurálhatók</li>
+</ul></li>
+</ul>
+<h4 id="session-bean">Session Bean</h4>
+<ul>
+<li>a kliens szerveroldali kiterjesztése</li>
+<li>függvényhívásokon keresztül nyújt szolgáltatásokat</li>
+<li>session = hívások sorozata</li>
+<li>a tároló feladata, hogy nyilvántartsa a kliens-bean kapcsolatokat</li>
+<li><code>@Stateless</code>
+<ul>
+<li>a belső állapota kliens-független, a hívások egymástól függetlenek</li>
+<li>nem garantált, hogy a kliens végig ugyan azzal a beannel kommunikál</li>
+<li>életciklus:
+<ul>
+<li>a példányok egy pool-ban tárolódnak (tétlen állapot)</li>
+<li>ha egy kliens hív egy függvényt, akkor egy tetszőleges példány kikerül a poolból, végrehajtja azt, majd visszakerül</li>
+<li>rendszer kivételnél megsemmisül a bean példány</li>
+</ul></li>
+</ul></li>
+<li><code>@Stateful</code>
+<ul>
+<li>minden klienshez tartozik egy bean példány → session függő adatok</li>
+<li>egy bean állapota elmenthető és visszatölthető</li>
+<li>életciklus:
+<ul>
+<li>a kliens kér egy referenciát → hozzátársít a tároló egy beant</li>
+<li>a függvényhívásokat ugyan ez a bean hajtja végre, közben megőrzi az állapotát</li>
+<li>a session a bean eltávolításával ér véget</li>
+<li>kivétel vagy timeout esetén a bean megsemmisül</li>
+</ul></li>
+</ul></li>
+<li><code>@Singleton</code>
+<ul>
+<li>1 példány / alkalmazás / JVM</li>
+<li>lehet állapota</li>
+<li>a kliensek közösen használják → figyelni kell a konkurencia-kezelésre</li>
+<li>életciklus:
+<ul>
+<li><code>@Startup</code>-al annotálva a rendszer indulásakor jön létre (eager)</li>
+<li>a rendszer leállásakor semmisül meg</li>
+<li>rendszer kivétel esetén nem semmisül meg</li>
+</ul></li>
+</ul></li>
+</ul>
+<h4 id="message-driven-bean">Message-Driven Bean</h4>
+<ul>
+<li>aszinkron függvényhívások JMS üzenetek segítségével</li>
+<li><code>void</code> vagy <code>Future</code> visszatérési értékük kell, hogy legyen</li>
+<li>életciklus:
+<ul>
+<li>egy pool-ban tárolódnak a példányok</li>
+<li>két állapota van: nem létező és fogadásra kész</li>
+</ul></li>
+</ul>
+<h3 id="dependency-injection">Dependency injection</h3>
+<ul>
+<li>Inversion of Control
+<ul>
+<li>egy szolgáltatás használatakor elég annak interfészét ismerni</li>
+<li>a tényleges szolgáltatásokat futási időben kapcsoljuk hozzá az alkalmazáshoz</li>
+<li>leggyakoribb megvalósítása: Service Locator (JNDI) és dependency injection</li>
+</ul></li>
+<li>segítségével az egyes modulok könnyen cserélhetők</li>
+<li><code>@EJB</code> annotáció: a tároló fogja beinjektálni az interfész megvalósítását
+<ul>
+<li>A megvalósítás csak EJB lehet, POJO nem</li>
+<li>Nem támogat scope-okat</li>
+<li>pl.: <code>@EJB(lookup=&quot;java:global/ConverterBean!Converter&quot;)</code></li>
+</ul></li>
+</ul>
+<h3 id="elosztott-és-globális-tranzakciók">Elosztott és globális tranzakciók</h3>
+<ul>
+<li>adatbázisok konkurens kezelésekor szükség van szinkronizációra a konzisztens állapot megőrzéséhez</li>
+<li>tranzakció: adat lekérdezések és módosítások egysége</li>
+<li>ACID tulajdonságok
+<ul>
+<li>Atomicitás (Atomicity): vagy teljesen végrehajtódik (commit) vagy semennyire (rollback)</li>
+<li>Konzisztencia (Consistency): konzisztens állapotból konzisztens állapotba vezet</li>
+<li>Izoláció (Isolation): konkurens rendszerben a tranzakciók nem interferálnak</li>
+<li>Tartósság (Durability): sikeres tranzakció eredménye tartós</li>
+</ul></li>
+<li>a tranzakciók kezelése egy köztes szolgáltatás, a transaction manager segítségével történik</li>
+<li>lokális tranzakció
+<ul>
+<li>a transaction manager a resource manager része</li>
+<li>műveletek csak azon az egy erőforráson végezhetők</li>
+</ul></li>
+<li>globális tranzakció
+<ul>
+<li>különálló transaction manager</li>
+<li>egy tranzakción belül több különálló erőforrás is használható</li>
+<li>a fizikailag elosztott erőforrások koordinálása a 2-fázisú commit protokoll segítéségével valósul meg
+<ol style="list-style-type: decimal">
+<li>fázis: minden resource managert megkérdez, hogy commitolhat-e</li>
+<li>fázis: mindegyik
+<ul>
+<li>commitol, ha az össze válasz igen volt</li>
+<li>roll back, különben</li>
+</ul></li>
+</ol></li>
+<li>Java Transaction API segítségével valósítható meg</li>
+</ul></li>
+</ul>
+</body>
+</html>
