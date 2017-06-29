@@ -26,11 +26,13 @@ A kidolgozások az ELTE IK honlapján elérhető [hivatalos tételsor](http://ww
     Szintaxis, jelentés. Az öröklődés definíciója a morfizmus diagram alapján. A Liskov féle értelemben vett szemantikai
     öröklődéssel előállított típus definíciója. Liskov féle szubsztitúciós elv. Liskov féle értelemben vett szemantikai
     öröklődéssel előállított típusra vonatkozó tétel. A tétel elő- utó-feltételes formája.
+    [kidolgozás](s00/2.md)
     3. Formális kontra informális definíciók, a formális szemantika alkalmazási területei, a szemantikamegadási
     módszerek áttekintése. Mesterséges nyelvek konkrét és absztrakt szintaxisa. Statikus és dinamikus szemantika.
     Attribútum-grammatikák és alkalmazásaik. Alapvető imperatív nyelvi elemek strukturális és természetes műveleti,
     illetve leíró szemantikája, hasonlóságok és különbségek. Kompozícionalitás és strukturális indukció. Rekurzív
     függvények és ciklusok leíró szemantikája, fixpont-elmélet.
+    [kidolgozás](s00/3.md)
     4. Absztrakt szintaxisfák, absztrakt kötéses fák, levezetési fák. Szintaxis, típusrendszer, operációs szemantika.
     Típusrendszer és operációs szemantika kapcsolata: haladás és típusmegőrzés tétele. Magasabbrendű függvények, Church
     típusrendszere. Let kifejezések. Szorzat és összeg típusok. Induktív típusok: Bool, természetes számok.
@@ -40,9 +42,11 @@ A kidolgozások az ELTE IK honlapján elérhető [hivatalos tételsor](http://ww
     Projekttervezés: feladat és szervezet lebontási struktúra; időelemzés, kritikus út meghatározása,
     erőforrás-ütemezés, költségvetés hozzárendelése, kritikus lánc módszer. A projektet kísérő folyamatok.
     Projektirányítási módszertanok (Prince, PMBOK CMM és CMMI). Projektirányítás emberi vonatkozásai.
+    [rövidebb kidolgozás](s01/5_short.md), [hosszabb kidolgozás](s01/5_extended.md)
     6. Szoftverfejlesztési modellek (vízesés, spirális, evolúciós, RUP, XP, xUML). Architekturális minták és hatásuk
     a rendszer minőségi jellemzőire. Tervezési minták (GoF, valamint 3 további létrehozási minta). Konkurens minták.
     Antiminták, újratervezési minták.
+    [kidolgozás](s01/6.md)
     7. A szoftverfejlesztési modell fogalma. A komponens és komponens modell fogalma. UML kompozíciós diagram fogalma.
     A szoftverarchitektúrák fogalma, összetevői. A KobrA programfejlesztési modell alapjai. A KobrA modell környezeti
     térképe: vállalati vagy üzleti modell, használati modell, strukturális modell, viselkedési modell. Komponens
@@ -58,6 +62,7 @@ A kidolgozások az ELTE IK honlapján elérhető [hivatalos tételsor](http://ww
     Specifikáció alapú: ekvivalencia-osztályozás, határérték elemzés, döntési táblák, állapotgépek, használati eset
     tesztelés; struktúra alapú: utasítás és döntési lefedettség. Review technikák, statikus tesztelés. A tesztelés
     dokumentálása. Teszteszközök.
+    [kidolgozás](s01/9.md)
 - S2 - Programozási nyelvek
     1. Funkcionális nyelvek alapfogalmai: modell, kiértékelés, listák, curry-zés, magasabbrendű függvények, tisztaság.
     Típusok: algebrai adattípusok, típusosztályok, típuskonstruktorok, kindok. Monadikus programozás. Példák.
