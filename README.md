@@ -65,6 +65,7 @@ A kidolgozások az ELTE IK honlapján elérhető [hivatalos tételsor](http://ww
     2. Memóriakezelés: referencia- és érték-szemantika. Referenciakezelési technikák, Objektumok másolása,
     move-szemantika. Erőforrásbiztos programozás, RAII, destruktor és szemétgyűjtés. Kivételkezelés, kivételbiztos
     programozás. A konkurens programozás alapelemei Javában és C++-ban.
+    [kidolgozás](s02/2.md)
     3. Generikus programozás, típussal való paraméterezés, példányosítás és típustörlés. Absztrakt adatszerkezetek és
     algoritmusok. Konténerek és iterátorok. A C++ standard template könyvtár. Funktorok. Java annotációk. Önelemzés,
     osztálybetöltés. Objektumszerializáció.
