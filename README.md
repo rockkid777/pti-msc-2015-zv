@@ -72,7 +72,7 @@ A kidolgozások az ELTE IK honlapján elérhető [hivatalos tételsor](http://ww
     programozás. A konkurens programozás alapelemei Javában és C++-ban.
     3. Generikus programozás, típussal való paraméterezés, példányosítás és típustörlés. Absztrakt adatszerkezetek és
     algoritmusok. Konténerek és iterátorok. A C++ standard template könyvtár. Funktorok. Java annotációk. Önelemzés,
-    osztálybetöltés. Objektumszerializáció.
+    osztálybetöltés. Objektumszerializáció.[kidolgozás](s02/3.md)
     4. A szerződésalapú programtervezés és -megvalósítás módszere, célja, szerepe. Szerződések leírását támogató nyelvi
     eszközök az Eiffel nyelvben. A szerződések formális jelentése Hoare-hármasokkal. A szerződések és a típusrendszer
     viszonya. Szerződések és objektum-orientáltság: öröklődés és felüldefiniálás. Üres referenciák. Kivételek.
