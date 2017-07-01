@@ -1,0 +1,397 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="s0-04-nyelvek-típusrendszere">S0-04 Nyelvek típusrendszere</h1>
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:0 orderedList:0 -->
+<ul>
+<li><a href="#s0-04-nyelvek-típusrendszere">S0-04 Nyelvek típusrendszere</a>
+<ul>
+<li><a href="#absztrakt-szintaxisfák-absztrakt-kötéses-fák-levezetésiáfk">Absztrakt szintaxisfák, absztrakt kötéses fák, levezetési fák.</a>
+<ul>
+<li><a href="#absztrakt-szintaxisfa">Absztrakt szintaxisfa</a></li>
+<li><a href="#absztrakt-kötési-fák">Absztrakt kötési fák</a></li>
+<li><a href="#levezetési-fák">Levezetési fák</a></li>
+</ul></li>
+<li><a href="#szintaxis-típusrendszer-operációs-szemantika">Szintaxis, típusrendszer, operációs szemantika.</a>
+<ul>
+<li><a href="#szintaxis">Szintaxis</a></li>
+<li><a href="#típusrendszer">Típusrendszer</a></li>
+<li><a href="#operációs-szemantika">Operációs szemantika</a></li>
+</ul></li>
+<li><a href="#típusrendszer-és-operációsszemantika-kapcsolata-haladás-és-típusmegőrzés-tétele">Típusrendszer és operációsszemantika kapcsolata: haladás és típusmegőrzés tétele.</a></li>
+<li><a href="#magasabbrendű-függvények-church-típusrendszere">Magasabbrendű függvények, Church típusrendszere.</a></li>
+<li><a href="#let-kifejezések">Let kifejezések.</a></li>
+<li><a href="#szorzat-és-összeg-típusok">Szorzat és összeg típusok.</a>
+<ul>
+<li><a href="#szorzat-típusok">Szorzat típusok</a>
+<ul>
+<li><a href="#általnos-véges-szorzat-típusok">Általános véges szorzat típusok</a></li>
+</ul></li>
+<li><a href="#összeg-típus">Összeg típus</a>
+<ul>
+<li><a href="#nulláris-és-bináris-összeg">Nulláris és bináris összeg</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#induktív-típusok-bool-terémszetes-számok">Induktív típusok: Bool, természetes számok.</a>
+<ul>
+<li><a href="#induktív-és-koinduktív-típusokról-általában">Induktív és koinduktív típusokról általában</a></li>
+<li><a href="#természetes-számok">Természetes számok</a>
+<ul>
+<li><a href="#szintaxis">Szintaxis</a></li>
+<li><a href="#típusrendszer">Típusrendszer</a></li>
+<li><a href="#operációs-szemantika">Operációs szemantika</a></li>
+</ul></li>
+<li><a href="#bool">Bool</a>
+<ul>
+<li><a href="#szintaxis">Szintaxis</a></li>
+<li><a href="#típusrendszer">Típusrendszer</a></li>
+<li><a href="#példa-műveletek">Példa Műveletek</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#polimorfizmus-system-f-absztrakt-típusok">Polimorfizmus (System F), absztrakt típusok.</a></li>
+<li><a href="#altípus">Altípus.</a></li>
+<li><a href="#felhasznált-irodalom">Felhasznált irodalom</a></li>
+</ul></li>
+</ul>
+<!-- /TOC -->
+<p><strong>Megjegyzés</strong>: A kidolgozásban lévő képletek itt csak szemléltetés és megértés miatt szerepelnek. A tárgy vizsgájára sem kellett ezeket megjegyezni, mivel segéd lapon kint volt. Itt a fogalmakat érdemes megjegyezni és a nyelv konstruálás és szabályrendszer alkotás mikéntjét megérteni.</p>
+<h2 id="absztrakt-szintaxisfák-absztrakt-kötéses-fák-levezetési-fák.">Absztrakt szintaxisfák, absztrakt kötéses fák, levezetési fák.</h2>
+<h3 id="absztrakt-szintaxisfa">Absztrakt szintaxisfa</h3>
+<p>AST -- abstract syntax tree -- olyan fa, melynek a levelein változók vannak, közbenső pontjaikon pedig operátorok. Például a természetes szám kifejezések és az ezekből és összeadásból álló kifejezések AST-it az alábbi definíciókkal adhatjuk meg.</p>
+<p><span class="math display">\[ n,n&#39;, \ldots \in Nat\ ::=\ i\ |\ zero\ |\ suc\ n \]</span> <span class="math display">\[ e,e&#39;, \ldots \in Exp\ ::=\ x\ |\ num\ n\ |\ e\ +\ e&#39; \]</span></p>
+<p>Nat-ot és Exp-et fajtának nevezzük. A Nat fajtájú AST-ket n-el, n'-vel stb. jelöljük. Nat fajtájú AST lehet egy i változó, vagy létre tudjuk hozni a nulláris zero operátorral (aritása ()Nat) vagy az unáris suc operátorral (aritása (Nat)Nat). n egy tetszőleges Nat fajtájú AST-t jelöl, míg i maga egy Nat fajtájú AST, mely egy darab változóból áll.</p>
+<p>Az Exp fajtájú AST-ket e-vel és ennek vesszőzött változataival jelöljük, az Exp fajtájú változókat x-el jelöljük. Exp fajtájú AST-t egy unáris operátorral (num, aritása (Nat)Exp) és egy bináris operátorral (+, aritása (Exp, Exp)Exp) tudunk létrehozni. A num operátorral Nat fajtájú AST-ket tudunk kifejezésekbe beágyazni.</p>
+<p>Minden fajtához változóknak egy külön halmaza tartozik, ezért jelöljük őket különböző betűkkel. A változók halmaza végtelen (mindig tudunk friss változót kapni, olyat, amilyet még sehol nem használtunk) és eldönthető, hogy két változó egyenlő -e. Az előbbi két fajtához tartozó változók halmazát így adhatjuk meg.</p>
+<p><span class="math display">\[ i, i&#39;, i_{1} \ldots \in Var_{Nat} \]</span> <span class="math display">\[ x, x&#39;, x_{1}, y, z, \ldots \in Var_{Exp} \]</span></p>
+<p>A metaváltozókat (n, n', e, e', stb.) megkülönböztetjük a kifejezésekben szereplő változóktól, melyek <span class="math inline">\(Var_{Nat}\)</span>, <span class="math inline">\(Var_{Exp}\)</span> elemei. A metaváltozók a metanyelvünkben használt változók, a metanyelv az a nyelv, amiben ezek a mondatok íródnak.</p>
+<h3 id="absztrakt-kötési-fák">Absztrakt kötési fák</h3>
+<p>Az absztrakt kötéses fák (ABT, abstract binding tree) az AST-khez hasonlók, de változót kötő operátorok is szerepelhetnek benne. Ilyen például a let e in x.e', mely pl. azt fejezheti ki, hogy e'-ben az x előfordulásai e-t jelentenek (ez a let kifejezések egy lehetséges szemantikája, de ebben a fejezetben csak szintaxissal foglalkozunk, emiatt nem igaz, hogy let e in x.x+x = e+e). Azt mondjuk, hogy az x változó kötve van az e' kifejezésben. A let operátor aritását (Exp, Exp.Exp)Exp-el jelöljük, az operátor második paraméterében köt egy Exp fajtájú változót. Pl. let num (suc zero)in x.x+ (num zero+x) kifejezésben a + operátor x paraméterei a kötött x-re vonatkoznak. Ezt a következőképp ábrázolhatjuk. A felfele mutató szaggatott nyilak mutatják, hogy az x változók melyik kötésre mutatnak. A pont után szereplő x + (num zero + x) részkifejezést az x változó hatáskörének nevezzük.</p>
+<p>A kötött változók csak pozíciókra mutatnak, a nevük nem érdekes. Például a let num zero in x.x + x és a let num zero in y.y + y ABT-k megegyeznek (<span class="math inline">\(\alpha\)</span>-konvertálhatónak vagy <span class="math inline">\(\alpha\)</span>-ekvivalensnek szokás őket nevezni). A szabad változókra ez nem igaz, pl. x + x /= y + y. Ha többször ugyanazt a változót kötjük egy ABT-ben, az újabb kötés elfedi az előzőt. Pl. let num zero in x.x + let num (suc x)in x.x+x-ben az x+x-ben levő x-ek a második kötésre (ahol num (suc x)-et adtunk meg) mutat (a num (suc x)-ben levő x viszont az első kötésre mutat).</p>
+<p>Az elfedés megszüntethető a változónevek átnevezésével: let num zero in y.y + let num(suc y) in x.e. Ebben az ABT-ben már hivatkozhatunk az e részfában az x-re is meg a külső y-ra is. Helyettesíteni tudunk ABT-kben is, pl. szeretnénk a következő egyenlőségeket.</p>
+<p>Példa ABT <img src="./img/abt.png" alt="abt" /></p>
+<h3 id="levezetési-fák">Levezetési fák</h3>
+<p>Ítéleteket ABT-kről mondunk. Az ítéletek levezetési szabályokkal vezethetők le. A levezetési szabályok általános formája az alábbi. <span class="math inline">\(J_{1}\)</span>, ..., <span class="math inline">\(J_{n}\)</span>-t feltételeknek, J-t következménynek nevezzük.</p>
+<p><span class="math display">\[ \frac{J_{1} \ldots J_{n}}{J} \]</span></p>
+<h2 id="szintaxis-típusrendszer-operációs-szemantika.">Szintaxis, típusrendszer, operációs szemantika.</h2>
+<p>Ez a rész a &quot;Számok és szövegek&quot; nyelven keresztül fogja szemléltetni az említett fogalmakat.</p>
+<h3 id="szintaxis">Szintaxis</h3>
+<p>A szintaxis két fajtából áll, a típusokból és a kifejezésekből.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">szabály</th>
+<th align="right">megnevezés</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><span class="math display">\[ \tau, \tau&#39;, \ldots\ \in\ T_{y}\ ::=\ int \]</span></td>
+<td align="right">egész számok típusa</td>
+</tr>
+<tr class="even">
+<td align="left">| str</td>
+<td align="right">szövegek típusa</td>
+</tr>
+<tr class="odd">
+<td align="left"><span class="math display">\[ \mid e, e&#39;, \ldots \in Exp\ ::= x \]</span></td>
+<td align="right">változó</td>
+</tr>
+<tr class="even">
+<td align="left">| n</td>
+<td align="right">egész szám beágyazása</td>
+</tr>
+<tr class="odd">
+<td align="left">| &quot;s&quot;</td>
+<td align="right">szöveg beágyazása</td>
+</tr>
+<tr class="even">
+<td align="left">| e+e</td>
+<td align="right">összeadás</td>
+</tr>
+<tr class="odd">
+<td align="left">| e-e</td>
+<td align="right">kivonás</td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math display">\[ \mid e \bullet e \]</span></td>
+<td align="right">összefűzés</td>
+</tr>
+<tr class="odd">
+<td align="left">| |e|</td>
+<td align="right">hossz</td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math display">\[ \mid let\ e\ in x.e&#39; \]</span></td>
+<td align="right">definíció</td>
+</tr>
+</tbody>
+</table>
+<p>A típusok kétfélék lehetnek, <em>int</em> és <em>str</em>, típusváltozókat nem engedélyezünk. A kifejezések mellé írtuk a jelentésüket, általában így gondolunk ezekre a kifejezésekre, hogy ezek számokat, szövegeket reprezentálnak. De fontos, hogy ezek nem tényleges számok, csak azok szintaktikus reprezentációi. A szintaxis csak egy formális dolog, karakterek sorozata (pontosabban egy ABT), jelentését majd a szemantika adja meg.</p>
+<p>Az <em>Exp</em> fajtájú változókat <em>x,y,z</em> és ezek indexelt változatai jelölik.</p>
+<p>Az operátorok aritásai a szintaxis definíciójából leolvashatók, pl. a (jelöletlen) beágyazás operátor aritása (<strong>Z</strong>)<em>Exp</em>, |-| aritása <em>(Exp)Exp</em>, <em>LET</em> aritása <em>(Exp,Exp.Exp)Exp</em>.</p>
+<h3 id="típusrendszer">Típusrendszer</h3>
+<p>A típusrendszer megszorítja a leírható kifejezéseket azzal a céllal, hogy az értelmetlen kifejezéseket kiszűrje. Pl. a |3| kifejezést ki szeretnénk szűrni, mert szeretnénk, hogy a hossz operátort csak szövegekre lehessen alkalmazni. Az, hogy pontosan milyen hibákat szűr ki a típusrendszer, nincs egységesen meghatározva, ez a típusrendszer tervezőjén múlik.</p>
+<p>Hogy a típusrendszert le tudjuk írni, szükségünk van még a környezetek (context) fajtájára. Egy környezet egy változókból és típusokból álló lista. (Analógia: a környezet olyan, mint számítógépben a memória)</p>
+<p><span class="math display">\[ \Gamma,\Gamma&#39;,\ldots \in\ Con ::= \cdot \,|\, \Gamma,x:\tau \]</span></p>
+<p>A célunk a környezettel az, hogy megadja a kifejezésekben levő szabad változók típusait. A típusozási ítélet <span class="math inline">\(\Gamma\ \vdash\ e:\tau\)</span> formájú lesz, ami azt mondja, hogy az <span class="math inline">\(e\)</span> kifejezésnek <span class="math inline">\(\tau\)</span> típusa van, feltéve, hogy a szabad változói típusai a <span class="math inline">\(\Gamma\)</span> által megadottak.</p>
+<p>Emiatt bevezetünk egy megszorítást a környezetekre: egy változó csak egyszer szerepelhet. Először is megadunk egy függvényt, mely kiszámítja a környezet változóit tartalmazó halmazt. <span class="math display">\[ dom(\cdot)\ := \{\} \]</span> <span class="math display">\[ dom(\Gamma,x:\tau)\ := \{x\} \cup \ dom(\Gamma) \]</span> A <span class="math inline">\(\Gamma\)</span> <em>wf</em> ítélet azt fejezi ki, hogy a <span class="math inline">\(\Gamma\)</span> környezet jól formált.</p>
+<p><span class="math display">\[
+  \frac{}{\cdot \ wf}
+\]</span> <span class="math display">\[
+  \frac{\Gamma \ wf \ x \not\in \ dom(\Gamma)}{\Gamma,x:\tau \ wf}
+\]</span></p>
+<p>Bevezetünk egy ítéletet, amely azt mondja, hogy egy változó-típus pár benne van egy környezetben. <span class="math display">\[
+  \frac{\Gamma \ wf x \not\in \ dom(\Gamma)}{(x:\tau) \in \Gamma,x:\tau}
+\]</span> <span class="math display">\[
+  \frac{(x:\tau) \in \Gamma y \not\in \ dom(\Gamma)}{(x:\tau) \in \Gamma,y:\tau&#39;}
+\]</span> Az első szabály azt fejezi ki, hogy ha egy környezet utolsó alkotóeleme <span class="math inline">\(x:\tau\)</span>, akkor ez természetesen szerepel a környezetben. Továbbá, ha egy környezetben <span class="math inline">\(x:\tau\)</span> szerepel, akkor egy <span class="math inline">\(y\)</span> változóval kiegészített környezetben is szerepel.</p>
+<p>A típusrendszerrel <span class="math inline">\(\Gamma \vdash e:\tau\)</span> formájú ítéleteket lehet levezetni, ami azt jelenti, hogy a <span class="math inline">\(\Gamma\)</span> környezetben az <em>e</em> kifejezésnek <span class="math inline">\(\tau\)</span> típusa van. Úgy is gondolhatunk erre, hogy <em>e</em> egy program, melynek típusa <span class="math inline">\(\tau\)</span> és a program paraméterei és azok típusai <span class="math inline">\(\Gamma\)</span>-ban vannak megadva. A levezetési szabályok a következők. (Csak egyetlen szabályt írok itt le a forma kedvéért, többit lásd a jegyzetben.)</p>
+<p><span class="math display">\[
+  \frac{\Gamma \vdash e_1 : int \ \Gamma \vdash e_2 : int}{\Gamma \vdash e_1 + e_2 : int}
+\]</span></p>
+<h3 id="operációs-szemantika">Operációs szemantika</h3>
+<p>A szemantika a szintaxis jelentését adja meg. Ez megtehető valamilyen matematikai struktúrával, ilyenkor minden szintaktikus objektumhoz az adott struktúra valamely elemét rendeljük. Ezt denotációs szemantikának hívják, és nem tárgyaljuk. Az operációs szemantika azt írja le, hogy melyik kifejezéshez melyik másik kifejezést rendeljük, tehát a program hogyan fut.</p>
+<p>Az operációs szemantika megadható átíró rendszerekkel.</p>
+<p>Egy átíró rendszerben <span class="math inline">\(e \longmapsto e&#39;\)</span> alakú ítéleteket tudunk levezetni. Ez azt jelenti, hogy <em>e</em> kifejezés egy lépésben <em>e'</em>-re íródik át.</p>
+<p>Az átírást iterálhatjuk, az iterált átíró rendszert az alábbi szabályokkal adjuk meg. <span class="math display">\[
+  \frac{}{e \longmapsto^* e}
+\]</span> <span class="math display">\[
+  \frac{e \longmapsto e&#39;\ e&#39; \longmapsto^* e&#39;&#39;}{e \longmapsto^* e&#39;&#39;}
+\]</span></p>
+<p>A számok és szövegek nyelv bizonyos kifejezéseit <em>értékeknek</em> nevezzük. Értékek a zárt egész számok és a szövegek lesznek, melyekben a beágyazás operátorokon kívül más operátorok nincsenek. A program futását emiatt <em>kiértékelésnek</em> nevezzük: egy zárt kifejezésből értéket fogunk kapni.</p>
+<p>Először megadjuk a nyelvünk értékeit az <em>e val</em> formájú ítélettel. <span class="math display">\[
+  \frac{}{n\ val}
+\]</span> <span class="math display">\[
+  \frac{}{&quot;s&quot;\ val}
+\]</span></p>
+<p>Az átíró rendszert az alábbi szabályok adják meg. A rövidség kedvéért a bináris operátorokra vonatkozó szabályok egy részét összevontuk. (Szintén csak 1-2 szabályt írok le.) <span class="math display">\[
+  \frac{n_1 + n_2 = n}{n_1 + n_2 \longmapsto n}
+\]</span></p>
+<p><span class="math display">\[
+  \frac{e_1 \longmapsto e_1&#39;}{e_1 \circ e_2 \longmapsto e_1&#39; \circ e_2} \circ \in\{ {+},{-},{\bullet} \}
+\]</span> <span class="math display">\[
+  \frac{e_1 \ val\  e_2 \longmapsto e_2&#39;}{e_1 \circ e_2 \longmapsto e_1 \circ e_2&#39;} \circ \in\{ {+},{-},{\bullet} \}
+\]</span></p>
+<p>A szemantikának két változata van: <em>érték szerinti</em> (by value) és <em>név szerinti</em> (by name) paraméterátadás.</p>
+<p>A szabályok lehetnek utasítás szabályok, ezek adják meg, hogy ha egy operátornak már ki vannak értékelve a paraméterei, hogyan adjuk meg az eredményét. Lehetnek sorrendi szabályok, ezek adják meg, hogy milyen sorrendben történjék a kiértékelés.</p>
+<p>Érték szerinti paraméterátadásnál, mielőtt egy kifejezést hozzákötünk egy változóhoz, azt kiértékeljük. Így maximum egyszer értékelünk ki egy változót. Név szerinti paraméterátadás esetén nem értékeljük ki a kifejezést a kötés előtt, így ahányszor hivatkozunk rá, annyiszor fogjuk kiértékelni. Az érték szerinti paraméterátadás akkor pazarló, ha egyszer sem hivatkozunk a kötésre, a név szerinti akkor, ha több, mint egyszer hivatkozunk. A kettő előnyeit kombinálja az igény szerinti kiértékelés (call by need).</p>
+<h2 id="típusrendszer-és-operációsszemantika-kapcsolata-haladás-és-típusmegőrzés-tétele.">Típusrendszer és operációsszemantika kapcsolata: haladás és típusmegőrzés tétele.</h2>
+<p>A legtöbb programozási nyelv biztonságos, ami azt jelenti, hogy bizonyos hibák nem fordulhatnak elő a program futtatása során. Ezt úgy is nevezik, hogy a nyelv erős típusrendszerrel rendelkezik. A számok és szövegek nyelv esetén ez például azt jelenti, hogy nem fordulhat elő, hogy egy számhoz hozzáadunk egy szöveget, vagy két számot összefűzünk.</p>
+<p>A típusmegőrzés (tárgyredukció, subject reduction, preservation) azt mondja ki, hogy ha egy típusozható kifejezésünk van, és egy átírási lépést végrehajtunk, ugyanazzal a típussal az átírt kifejezés is típusozható. <span class="math inline">\(\cdot \vdash e : \tau\)</span> helyett egyszerűen <span class="math inline">\(e : \tau\)</span>-t írunk.</p>
+<p><strong>Tétel</strong>: Ha e : <span class="math inline">\(\tau\)</span> és <span class="math inline">\(e \longmapsto e&#39;\)</span>, akkor <span class="math inline">\(e&#39;:\tau\)</span>.</p>
+<p>Haladás (progress). Ez a tétel azt fejezi ki, hogy egy zárt, jól típusozott program nem akad el: vagy már ki van értékelve, vagy még egy átírási lépést végre tudunk hajtani.</p>
+<p><strong>Tétel</strong>: Ha <span class="math inline">\(e : \tau\)</span>, akkor vagy <em>e val</em>, vagy létezik olyan <em>e'</em>, hogy <span class="math inline">\(e\longmapsto e&#39;\)</span>.</p>
+<p><strong>Típusinverzió lemma</strong>: <span class="math inline">\(\Gamma \vdash e : \tau\)</span> levezethető. Ekkor, ha <span class="math inline">\(e = e_1 + e_2\)</span>, akkor <span class="math inline">\(\tau = \ int\)</span>, <span class="math inline">\(\Gamma \vdash e_1 : \ int\)</span> és <span class="math inline">\(\Gamma \vdash e_2 : \ int\)</span>. Hasonlóképp az összes többi operátorra.</p>
+<h2 id="magasabbrendű-függvények-church-típusrendszere.">Magasabbrendű függvények, Church típusrendszere.</h2>
+<p>A típusrendszer egyszerűsödik, ha nem szorítjuk meg a függvénytípus értékkészletét és értelmezési tartományát alaptípusokra. A típusok a következők lesznek. <span class="math display">\[
+  \tau, \tau&#39;,\ldots \in \ Ty \ ::= \ str \,|\, \ int \,|\, \tau_1\, \rightarrow \tau_2
+\]</span></p>
+<p>Kifejezések: <span class="math display">\[
+  e,e&#39;,\ldots \in \ Exp \ ::= \ldots \,|\, \lambda^\tau x.e \,|\, e\,e&#39;
+\]</span> A függvénydefiníciót most lambdával írjuk, az alkalmazást egyszerűen egymás mellé írással. A <span class="math inline">\(\lambda\)</span> operátor aritása <em>(Ty, Exp.Exp)Exp</em> (az első paraméterét felső indexbe írjuk), az alkalmazásé <em>(Exp,Exp)Exp</em>.</p>
+<p>A típusrendszer csak abban különbözik az elsőrendű esettől, hogy tetszőleges <span class="math inline">\(\tau\)</span> típusokat engedélyezünk. <span class="math display">\[
+  \frac{\Gamma,x:\tau_1 \vdash e_2 : \tau_2}{\Gamma \vdash \lambda^{ \tau_{1}} x.e_{2} : \tau_1 \rightarrow \tau_2}
+\]</span> <span class="math display">\[
+  \frac{\Gamma \vdash e : \tau_1 \rightarrow \tau_2 \ \Gamma \vdash e_1 : \tau_1}{\Gamma \vdash e\,e_1 : \tau_2}
+\]</span></p>
+<p>Az operációs szemantika az elsőrendű esettel analóg. <span class="math display">\[
+  \frac{}{\lambda^\tau x.e \ val}
+\]</span> <span class="math display">\[
+  \frac{e \longmapsto e&#39;}{e\,e_1 \longmapsto e&#39;\,e_1}
+\]</span> <span class="math display">\[
+  \left[\frac{e\ val \ e_1 \longmapsto e_1&#39;}{e\,e_1 \longmapsto e\,e_1&#39;}\right]
+\]</span> <span class="math display">\[
+  \frac{[e_1\ val]}{(\lambda^\tau x.e_2)\,e_1 \longmapsto e_2[x \mapsto e_1]}
+\]</span> A szögletes zárójelezett szabály ill. feltétel az érték szerinti paraméterátadás esetén szükséges.</p>
+<p>Az így kiegészített operációs szemantikára is igaz, hogy nincs olyan kifejezés, mely egyszerre érték és át tudjuk írni és determinisztikus.</p>
+<h2 id="let-kifejezések.">Let kifejezések.</h2>
+<p>Ilyen például a let e in x.e', mely pl. azt fejezheti ki, hogy e'-ben az x előfordulásai e-t jelentenek</p>
+<h2 id="szorzat-és-összeg-típusok.">Szorzat és összeg típusok.</h2>
+<h3 id="szorzat-típusok">Szorzat típusok</h3>
+<p>A bináris szorzat típusokkal rendezett párokat tudunk leírni. A projekciókkal ki tudjuk szedni a párban levő elemeket. A nulláris szorzat az egyelemű típus, mely nem hordoz információt, így nincsen eliminációs szabálya. Ezek általánosításai a véges szorzat típusok, melyeknek a felhasználó által megadott nevű projekciókkal rendelkező változatát nevezik rekordnak.</p>
+<p>A szorzat típusok operációs szemantikája lehet <em>lusta</em> (lazy) és <em>mohó</em> (eager) -- A név szerinti és az érték szerinti paraméterátadás szemantikáról a függvény típusoknál beszélünk, véges adattípusoknál és induktív típusoknál (lásd később) lusta és mohó szemantikát mondunk. Lusta szemantika esetén egy tetszőleges <span class="math inline">\(\langle e,e&#39;\rangle\)</span> pár érték, míg mohó szemantika esetén szükséges, hogy <em>e</em> és <em>e'</em> már eleve értékek legyenek.</p>
+<p>A szintaxis a következő. <span class="math display">\[
+\tau, \tau&#39;,\ldots \ \in \ Ty \ ::= ... \,|\, \top \,|\, \tau \times \tau&#39; \\
+\]</span> <span class="math display">\[
+e,e&#39;,... \ \in \ Exp \ ::= \ldots \,|\, tt \,|\, \langle e_1, e_2\rangle \,|\, \ proj_1\,e \,|\, \ proj_2\,e
+\]</span> A nulláris szorzat típust egyelemű típusnak (top, unit) is nevezik, szokásos jelölései a <span class="math inline">\(\top\)</span>-on kívül <em>1</em> és <em>()</em>. Az egyetlen elemét <em>tt</em>-vel (trivially true) jelöljük. A bináris szorzatot (binary product) Descartes-szorzatnak vagy keresztszorzatnak is nevezik.</p>
+<p>A típusrendszer a következő. <span class="math display">\[
+  \frac{\Gamma \ wf}{\Gamma \vdash \ tt : \top}
+\]</span> <span class="math display">\[
+  \frac{\Gamma \vdash e_1 : \tau_1 \ \Gamma \vdash e_2 : \tau_2}{\Gamma \vdash \langle e_1, e_2\rangle : \tau_1 \times \tau_2}
+\]</span> <span class="math display">\[
+  \frac{\Gamma \vdash e : \tau_1 \times \tau_2}{\Gamma \vdash \ proj_1\,e : \tau_1}
+\]</span> <span class="math display">\[
+  \frac{\Gamma \vdash e : \tau_1 \times \tau_2}{\Gamma \vdash \ proj_2\,e : \tau_2}
+\]</span></p>
+<p>Az operációs szemantika a következő. <span class="math display">\[
+  \frac{}{\tt\ val}
+\]</span> <span class="math display">\[
+  \frac{[e_1\ val] \ [e_2\ val]}{\langle  e_1, e_2 \rangle\ val}
+\]</span> <span class="math display">\[
+  \left[\frac{e_1 \longmapsto e_1&#39;}{\langle e_1, e_2\rangle \longmapsto \langle e_1&#39;, e_2\rangle}\right]
+\]</span> <span class="math display">\[
+  \left[\frac{e_1 \ val \ e_2 \longmapsto e_2&#39;}{\langle e_1, e_2\rangle \longmapsto \langle e_1, e_2&#39;\rangle}\right]
+\]</span> <span class="math display">\[
+  \frac{e \longmapsto e&#39;}{\ proj_1\,e \longmapsto \ proj_1 e&#39;}
+\]</span> <span class="math display">\[
+  \frac{e \longmapsto e&#39;}{\ proj_2\,e \longmapsto \ proj_2 e&#39;}
+\]</span> <span class="math display">\[
+  \frac{[e_1\ val] \ [e_2\ val]}{\ proj_1\,\langle e_1, e_2\rangle \longmapsto e_1}
+\]</span> <span class="math display">\[
+  \frac{[e_1\ val] \ [e_2\ val]}{\ proj_2\,\langle e_1, e_2\rangle \longmapsto e_2}
+\]</span></p>
+<p>A szögletes zárójelbe tett feltételek és szabályok csak a mohó szemantikában használatosak. A <em>--,--</em> operátor konstruktor, míg a <span class="math inline">\(proj_1\)</span> és <span class="math inline">\(proj_2\)</span> az eliminátorok.</p>
+<h4 id="általános-véges-szorzat-típusok">Általános véges szorzat típusok</h4>
+<p>Van egy <span class="math inline">\(I = \{i_1, ..., i_n\}\)</span> véges halmazunk, mely neveket tartalmaz, és egy olyan szorzat típust adunk meg, mely minden névhez tartalmaz egy elemet.</p>
+<h3 id="összeg-típus">Összeg típus</h3>
+<h4 id="nulláris-és-bináris-összeg">Nulláris és bináris összeg</h4>
+Szintaxis.
+<span class="math display">\[\begin{align}
+  \tau, \tau&#39;,\ldots \ \in \ Ty \ &amp;::= \ldots \,|\, \bot \,|\, \tau_1 + \tau_2 \\
+  e,e&#39;,\ldots \ \in \ Exp \ &amp;::= \ldots \,|\, \ abort^\tau\,e \,|\, {\ inj_1}^{\tau_1,\tau_2}\, e \,|\, {\ inj_2}^{\tau_1,\tau_2}\, e \,|\, \ case\,e\,x_1.e_1\,x_2.e_2
+\end{align}\]</span>
+<p>A nulláris összeg típus (bottom, 0 típus, void típus) egy olyan választási lehetőséget ad meg, ahol egy alternatíva sincs. Emiatt nincs konstruktora. Az eliminációs operátora pedig abortálja a számítást, amint kap egy bottom típusú értéket (ami nem lehetséges). A bináris összeg típusba kétféleképpen injektálhatunk: vagy az első,vagy a második komponensébe, ezt jelöli <span class="math inline">\(inj_1\)</span> és <span class="math inline">\(inj_2\)</span>. Ezek aritása <em>(Ty,Ty,Exp)Exp</em>. Egy összeg típusú kifejezést esetszétválasztással (<em>case</em>) tudunk eliminálni, aritása <em>(Exp,Exp.Exp, Exp.Exp)Exp</em>.</p>
+<p>Típusrendszer. <span class="math display">\[
+  \frac{\Gamma \vdash e : \bot}{\Gamma \vdash \ abort^\tau\,e : \tau}
+\]</span> <span class="math display">\[
+  \frac{\Gamma \vdash e_1 : \tau_1}{\Gamma \vdash {\ inj_1}^{\tau_1,\tau_2}\,e_1 : \tau_1 + \tau_2}
+\]</span> <span class="math display">\[
+  \frac{\Gamma \vdash e_2 : \tau_2}{\Gamma \vdash {\ inj_2}^{\tau_1,\tau_2}\,e_2 : \tau_1 + \tau_2}
+\]</span> <span class="math display">\[
+  \frac{\Gamma \vdash e : \tau_1 + \tau_2 \ \Gamma,x_1:\tau_1\vdash e_1: \tau \ \Gamma,x_2:\tau_2\vdash e_2 : \tau}
+  {\Gamma \vdash \ case\,e\,x_1.e_1\,x_2.e_2:\tau}
+\]</span></p>
+<p>Operációs szemantika. Az <span class="math inline">\(\ inj_1\)</span> és <span class="math inline">\(\ inj_2\)</span> típusparamétereit nem írtuk ki a rövidség kedvéért, de ott vannak. <span class="math display">\[
+  \frac{e \longmapsto e&#39;}{\ abort^\tau\,e \longmapsto \ abort^\tau\,e&#39;}
+\]</span> <span class="math display">\[
+  \frac{[e \ val]}{\ inj_1\,e \ val}
+\]</span> <span class="math display">\[
+  \frac{[e \ val]}{\ inj_2\,e \ val}
+\]</span> <span class="math display">\[
+  \left[\frac{e \longmapsto e&#39;}{\ inj_1\,e \longmapsto \ inj_1\,e&#39;}\right]
+\]</span> <span class="math display">\[
+  \left[\frac{e \longmapsto e&#39;}{\ inj_2\,e \longmapsto \ inj_2\,e&#39;}\right]
+\]</span> <span class="math display">\[
+  \frac{e \longmapsto e&#39;}{\ case\,e\,x_1.e_1\,x_2.e_2 \longmapsto \ case\,e&#39;\,x_1.e_1\,x_2.e_2}
+\]</span> <span class="math display">\[
+  \frac{[e\ val]}{\ case\,(\ inj_1\,e)\,x_1.e_1\,x_2.e_2 \longmapsto e_1[x_1 \mapsto e]}
+\]</span> <span class="math display">\[
+  \frac{[e\ val]}{\ case\,(\ inj_2\,e)\,x_1.e_1\,x_2.e_2 \longmapsto e_2[x_2 \mapsto e]}
+\]</span></p>
+<h2 id="induktív-típusok-bool-természetes-számok.">Induktív típusok: Bool, természetes számok.</h2>
+<h3 id="induktív-és-koinduktív-típusokról-általában">Induktív és koinduktív típusokról általában</h3>
+<p>Az induktív típusok elemei konstruktorok véges sokszor való egymásra alkalmazásai. Tehát, ha minden konstruktorra megadjuk, hogy ahhoz mit rendeljen egy függvény, azzal az induktív típus minden elemére megadtuk a függvényt. Ezt hívják rekurziónak (vagy indukciónak).</p>
+<p>A koinduktív típusok elemei azok, melyeken véges sokszor lehet destrukciót végezni. Tehát, ha minden destruktorra meg van adva, hogy egy elem hogyan viselkedjen, azzal meg van határozva a koinduktív típus egy eleme. Ezt hívják generátornak (vagy koindukciónak).</p>
+<h3 id="természetes-számok">Természetes számok</h3>
+<h4 id="szintaxis-1">Szintaxis</h4>
+<span class="math display">\[\begin{align}
+\tau, \tau&#39;, \ldots \ \in \ Ty \ &amp;::= \ Nat \,|\, \tau_1 \rightarrow \tau_2 \\
+e,e&#39;, \ldots \ \in \ exp \ &amp;::= x \,|\, \ zero \,|\, \ suc\,e \,|\, \ rec\,e_0\,x.e_1\,e \,|\, \lambda^\tau x.e \,|\, e\,e&#39;
+\end{align}\]</span>
+<p>Kétféle természetes szám van (két konstruktora van a természetes számoknak): <em>zero</em> (nulla) és <em>suc,e</em>, amely valamely más természetes számnak, <span class="math inline">\(e\)</span>-nek a rákövetkezője. Pl. az 1-et úgy írjuk, hogy <span class="math inline">\(\ suc\,\ zero\)</span>, a 2-t úgy, hogy <em>suc,(suc,zero)</em> stb. A <em>rec</em> operátor a természetes számok eliminátora, aritása <em>(exp,exp.exp,exp)exp</em>. Ezzel tudunk függvényeket megadni a természetes számokon. <span class="math inline">\(\ rec\,e_0\,x.e_1\,e\)</span> az <span class="math inline">\(e_0\)</span> és <span class="math inline">\(x.e_1\)</span> által megadott függvény alkalmazva <span class="math inline">\(e\)</span> bemenetre. Ha a bemenet nulla, a függvény <span class="math inline">\(e_0\)</span>-t fog adni, ha a függvény kimenete valamilyen számra <em>x</em>, akkor a rákövetkezőjére <span class="math inline">\(e_1\)</span> (ami ugye függhet <em>x</em>-től).</p>
+<h4 id="típusrendszer-1">Típusrendszer</h4>
+<p>A környezetre és változókra vonatkozó szabályok a szokásosak. <span class="math display">\[
+  \frac{\Gamma\ wf}{\Gamma \vdash \ zero : \ Nat}
+\]</span> <span class="math display">\[
+  \frac{\Gamma \vdash e : \ Nat}{\Gamma \vdash \ suc\,e : \ Nat}
+\]</span> <span class="math display">\[
+  \frac{\Gamma \vdash e_0 : \tau \ \Gamma,x:\tau \vdash e_1 : \tau \ \Gamma \vdash e : \ Nat}{\Gamma \vdash
+\ rec\,e_0\,x.e_1\,e : \tau}
+\]</span> A függvényekre vonatkozó szabályok a szokásosak. <span class="math display">\[
+  \frac{\Gamma,x:\tau_1 \vdash e : \tau_2}{\Gamma \vdash \lambda^{\tau_1} x.e : \tau_1 \rightarrow \tau_2}
+\]</span> <span class="math display">\[
+  \frac{\Gamma \vdash e : \tau_1 \rightarrow \tau_2 \ \Gamma \vdash e_1 : \tau_1}{\Gamma \vdash e\,e_1 : \tau_2}
+\]</span></p>
+<h4 id="operációs-szemantika-1">Operációs szemantika</h4>
+<p>Értékek a nulla, a rákövetkező (mely egy érték rákövetkezője kell, hogy legyen mohó kiértékelésnél) és az absztrakció. <span class="math display">\[
+  \frac{}{\ zero\ val}
+\]</span> <span class="math display">\[
+  \frac{[e\ val]}{\ suc\,e\ val}
+\]</span> <span class="math display">\[
+  \frac{}{\lambda^\tau x.e\ val}
+\]</span> <span class="math display">\[
+  \left[\frac{e \longmapsto e&#39;}{\ suc\,e \longmapsto \ suc\,e&#39;}\right]
+\]</span> <span class="math display">\[
+  \frac{e \longmapsto e&#39;}{\ rec\,e_0\,x.e_1\,e \longmapsto \ rec\,e_0\,x.e_1\,e&#39;}
+\]</span> <span class="math display">\[
+  \frac{}{\ rec\,e_0\,x.e_1\,\ zero \longmapsto e_0}
+\]</span> <span class="math display">\[
+  \frac{\ suc\,e\ val}{\ rec\,e_0\,x.e_1\,(\ suc\,e) \longmapsto e_1[x \mapsto \ rec\,e_0\,x.e_1\,e]}
+\]</span> <span class="math display">\[
+  \frac{e \longmapsto e&#39;}{e\,e_1 \longmapsto e&#39;\,e_1}
+\]</span> <span class="math display">\[
+  \left[\frac{e\ val \ e_1 \longmapsto e_1&#39;}{e\,e_1 \longmapsto e\,e_1&#39;}\right]
+\]</span> <span class="math display">\[
+  \frac{[e_1\ val]}{(\lambda^\tau x.e_2)\,e_1 \longmapsto e_2[x \mapsto e_1]}
+\]</span> A szögletesen zárójelezett szabályok a mohó rákövetkezőhöz és érték szerinti függvényalkalmazáshoz kellenek. Ha nem vesszük őket hozzá az operációs szemantikához, akkor lusta rákövetkezőt és név szerinti paraméterátadást kapunk.</p>
+<p>Például az összeadás függvényt az alábbi módon adjuk meg. <span class="math display">\[
+\lambda^{Nat} y.\lambda^{Nat} z. \ rec\,z\,(x.\ suc\,x)\,y : \ Nat \rightarrow (\ Nat \rightarrow \ Nat)
+\]</span> Ez a következőképp működik: <em>y</em>-t és <em>z</em>-t akarjuk összeadni, emiatt <em>y</em>-on végzünk rekurziót. Ha <em>y = zero</em>, akkor <em>z</em>-t adunk vissza (hiszen <em>0+z</em> egyenlő <em>z</em>-vel). Ha <em>y = suc,e</em>, akkor <em>x</em>-ben megkötjük <em>rec,z,(x.suc,x),e</em> eredményét, majd hozzáadunk egyet.</p>
+<h3 id="bool">Bool</h3>
+<h4 id="szintaxis-2">Szintaxis</h4>
+<p><span class="math display">\[
+\tau, \tau&#39;, \ldots, \in \ Ty ::= Bool \| \tau \rightarrow \tau&#39;
+\]</span> <span class="math display">\[
+e,e&#39;,\ldots \in \ Exp ::= x | true | false | rec \ e_0 \ e\ e | e\ e&#39;
+\]</span></p>
+<h4 id="típusrendszer-2">Típusrendszer</h4>
+<p><span class="math display">\[
+  \frac{\Gamma\ wf}{\Gamma \vdash \ true : \ Bool}
+\]</span> <span class="math display">\[
+  \frac{\Gamma\ wf}{\Gamma \vdash \ false : \ Bool}
+\]</span> <span class="math display">\[
+  \frac{\Gamma \vdash e_0 : \tau \ \Gamma \vdash e_1 : \tau \ \Gamma \vdash e : \ Bool}{\Gamma \vdash
+\ rec\,e_0\,e_1\,e : \tau}
+\]</span> A függvényekre vonatkozó szabályok a szokásosak. <span class="math display">\[
+  \frac{\Gamma,x:\tau_1 \vdash e : \tau_2}{\Gamma \vdash \lambda^{\tau_1} x.e : \tau_1 \rightarrow \tau_2}
+\]</span> <span class="math display">\[
+  \frac{\Gamma \vdash e : \tau_1 \rightarrow \tau_2 \ \Gamma \vdash e_1 : \tau_1}{\Gamma \vdash e\,e_1 : \tau_2}
+\]</span></p>
+<p>Értékek a true, false és az absztrakció. <span class="math display">\[
+  \frac{}{\ true\ val}
+\]</span> <span class="math display">\[
+  \frac{}{\ false\ val}
+\]</span> <span class="math display">\[
+  \frac{}{\lambda^\tau x.e\ val}
+\]</span> <span class="math display">\[
+  \frac{e \longmapsto e&#39;}{\ rec\,e_0\,x.e_1\,e \longmapsto \ rec\,e_0\,x.e_1\,e&#39;}
+\]</span> <span class="math display">\[
+  \frac{}{\ rec\,e_0\,e_1\,\ true \longmapsto e_0}
+\]</span> <span class="math display">\[
+  \frac{}{\ rec\,e_0\,e_1\,\ false \longmapsto e_1}
+\]</span> <span class="math display">\[
+  \frac{e \longmapsto e&#39;}{e\,e_1 \longmapsto e&#39;\,e_1}
+\]</span> <span class="math display">\[
+  \left[\frac{e\ val \ e_1 \longmapsto e_1&#39;}{e\,e_1 \longmapsto e\,e_1&#39;}\right]
+\]</span> <span class="math display">\[
+  \frac{[e_1\ val]}{(\lambda^\tau x.e_2)\,e_1 \longmapsto e_2[x \mapsto e_1]}
+\]</span></p>
+<p><strong>Megjegyzés</strong>: A <em>rec</em> rekurzort akár <em>if</em>-nek is nevezhetnénk működését tekintve</p>
+<h4 id="példa-műveletek">Példa Műveletek</h4>
+<p>And <span class="math display">\[
+\lambda^{Bool}x.\lambda^{Bool}y.rec\ y\ false\ x
+\]</span> Or <span class="math display">\[
+\lambda^{Bool}x.\lambda^{Bool}y.rec\ true\ y\ x
+\]</span> Not <span class="math display">\[
+\lambda^{Bool}x.rec\ false\ true\ x
+\]</span></p>
+<h2 id="polimorfizmus-system-f-absztrakt-típusok.">Polimorfizmus (System F), absztrakt típusok.</h2>
+<p>Ld <a href="https://akaposi.github.io/tipusrendszerek/jegyzet.pdf">Kaposi Ambrus jegyzet</a> 9. szekció</p>
+<h2 id="altípus.">Altípus.</h2>
+<p>Ld <a href="https://akaposi.github.io/tipusrendszerek/jegyzet.pdf">Kaposi Ambrus jegyzet</a> 10. szekció</p>
+<h2 id="felhasznált-irodalom">Felhasznált irodalom</h2>
+<ul>
+<li><a href="https://akaposi.github.io/tipusrendszerek/jegyzet.pdf">Kaposi Ambrus - Nyelvek típusrendszere (jegyzet)</a></li>
+<li><a href="http://people.inf.elte.hu/pgj/nytr_msc/nytr_msc_20150924.pdf">Páli Gábor János - Nyelvek típusrendszere (diasor)</a></li>
+</ul>
+</body>
+</html>

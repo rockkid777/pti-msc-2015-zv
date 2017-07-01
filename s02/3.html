@@ -1,0 +1,577 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #0000ff; } /* Keyword */
+code > span.ch { color: #008080; } /* Char */
+code > span.st { color: #008080; } /* String */
+code > span.co { color: #008000; } /* Comment */
+code > span.ot { color: #ff4000; } /* Other */
+code > span.al { color: #ff0000; } /* Alert */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #008000; font-weight: bold; } /* Warning */
+code > span.cn { } /* Constant */
+code > span.sc { color: #008080; } /* SpecialChar */
+code > span.vs { color: #008080; } /* VerbatimString */
+code > span.ss { color: #008080; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { } /* Variable */
+code > span.cf { color: #0000ff; } /* ControlFlow */
+code > span.op { } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #ff4000; } /* Preprocessor */
+code > span.do { color: #008000; } /* Documentation */
+code > span.an { color: #008000; } /* Annotation */
+code > span.cv { color: #008000; } /* CommentVar */
+code > span.at { } /* Attribute */
+code > span.in { color: #008000; } /* Information */
+  </style>
+</head>
+<body>
+<h1 id="s02-3-multiparadigma-programozás-és-haladó-java-2">S02-3 Multiparadigma programozás és Haladó Java 2</h1>
+<h2 id="tartalom">Tartalom</h2>
+<ol style="list-style-type: decimal">
+<li><a href="#chapter01">Generikus programozás, típussal való paraméterezés, példányosítás és típustörlés</a></li>
+<li><a href="#chapter02">A C++ standard template könyvtár.</a>
+<ol style="list-style-type: decimal">
+<li><a href="#section01_01">Konténerek és iterátorok</a></li>
+<li><a href="#section01_02">Funktorok</a></li>
+<li><a href="#section01_03">Algoritmusok</a></li>
+</ol></li>
+<li><a href="#chapter03">Java annotációk</a></li>
+<li><a href="#chapter04">Önelemzés, osztálybetöltés</a></li>
+<li><a href="#chapter05">Objektumszerializáció</a></li>
+</ol>
+<hr />
+<h2 id="generikus-programozás-típussal-való-paraméterezés-példányosítás-és-típustörlés">1. Generikus programozás, típussal való paraméterezés, példányosítás és típustörlés <a name="chapter01"></a></h2>
+<ul>
+<li>A sablonoknak hasonló a célja mint a függvényeké: csökkenti a kódredundanciát
+<ul>
+<li>metódus: érték paraméterez metódus törzset</li>
+<li>sablon: típus paraméterez osztályt</li>
+</ul></li>
+<li>Így sablonnal csak egy osztályt kell megírnunk, nem kell az összes típusra megírni amivel használni szeretnénk</li>
+<li>pl:</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">class</span> Pair&lt;T1, T2&gt; { T1 elem1; T2 elem2; }</code></pre></div>
+<p><em>Megjegyzés: ezt úgy is megvalósíthatnánk, hogy <code>class Pair {Object elem1; Object elem2; }</code> viszont ebben az esetben akkor nekünk kellene mindenhova a típuskényszerítéséket leírnunk. -&gt; sok hibalehetőség</em></p>
+<ul>
+<li><strong>példányosítás:</strong> a sablon konkrét paraméterekkel való ellátása</li>
+<li>sablon paraméter megjelenhet a műveletekben formális paramétereként, lokális változó, és műveltek visszatérési érték típusában
+<ul>
+<li><strong>reification:</strong> sok nyelvben minden példányosítás külön típust hoz létre. pl: <code>Pair&lt;String Character&gt;</code> a <code>PairSC</code> típushoz, a <code>Pair&lt;double[], Boolean&gt;</code> a <code>PairDB</code> típushoz hasonló típust hoz létre. A <code>PairSC</code> olyan mint a fenti kód csak <code>T1</code>, <code>T2</code> helyett a konkrét típusok vannak: String és Character</li>
+<li><strong>típustörlés:</strong>
+<ul>
+<li>a típusértékek minden előfordulás helyére <code>Object</code> kerül a fordítás során, vagy ha megszorításokat (<code>Example&lt;T extends String&gt;</code>) alkalmaztunk akkor specifikusabb típus is kerülhet a helyére.</li>
+<li>a futtatórendszer nem is tud a típusparaméterekről</li>
+<li>törlés előtt a fordító megvizsgálja, hogy típushelyesen használjuk-e a sablonpéldányokat</li>
+<li>nem lehetnek primitív típusok, hiszen azokat nem lehet <code>Object</code>-el helyettesíteni</li>
+<li>a fordító legenerálja a típuskényszerítéseket</li>
+<li>ha fordul a kód akkor futási időben biztos, hogy nem kapunk típuskényszerítés miatt hibát</li>
+<li><code>List&lt;Integer&gt;</code> nem altípusa <code>List&lt;Number&gt;</code>-nek hiába <code>Integer &lt;: Number</code> igaz: gondoljunk bele, hogy létre hozunk egy <code>Integer</code>-ek listáját, majd azt értékül adjuk egy <code>Object</code>-eket tartalmazó listának (itt lesz fordítási hiba) akkor az <code>Integer</code>-ek listájába pakolhatnánk mindenféle <code>Object</code>-et</li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="c-standard-template-library">2. C++ Standard Template Library <a name="chapter02"></a></h2>
+<ul>
+<li>STL-t (Standard Template Library) még a C++ standardizálása előtt hozták létre</li>
+<li>A C++ Standard Library sok részére hatással volt, illetve sok mindent átvettek az STL-ből, az STL eredeti fejlesztői is résztvettek a C++ Standard Library megalkotásában.</li>
+<li>Tehát az STL nem része a C++ szabványnak, illetve nem összekeverendő a kettő</li>
+<li>Manapság amikor a C++ Standard Template Library-ről beszélünk akkor a Standard Library-ban lévő dolgok egy részhalmazára gondolok, mégpedig a következőkre:
+<ul>
+<li>algoritmusok</li>
+<li>konténerek</li>
+<li>funktorok</li>
+<li>iterátorok</li>
+</ul></li>
+<li>mitől &quot;Template&quot;?
+<ul>
+<li>a konténerek bármely beépített típussal használhatóak, vagy felhasználó által definiált típussal is, ha az megvalósít néhány alapvető metódust, pl: értékadás</li>
+<li>az algoritmusok a konténerektől függetlenek, amely leegyszerűsíti a könyvtár komplexitását</li>
+<li>ereje a template-ek használatában rejlik, amely fordítási idejű polimorfizmust tesz lehetővé</li>
+</ul></li>
+</ul>
+<h3 id="konténerek-és-iterátorok">2.1 Konténerek és iterátorok <a name="section01_01"></a></h3>
+<ul>
+<li>Sequence konténerek
+<ul>
+<li>array</li>
+<li>vector</li>
+<li>deque</li>
+<li>forward_list</li>
+<li>list</li>
+</ul></li>
+<li>Adapterek
+<ul>
+<li>stack</li>
+<li>queue</li>
+<li>priority_queue</li>
+</ul></li>
+<li>Asszociatív konténerek
+<ul>
+<li>set</li>
+<li>multiset</li>
+<li>map</li>
+<li>multimap</li>
+</ul></li>
+<li>Rendezetlen asszociatív konténerek
+<ul>
+<li>unordered_set</li>
+<li>unordered_multiset</li>
+<li>unordered_map</li>
+<li>unordered_multimap</li>
+</ul></li>
+</ul>
+<h4 id="asszociatív-konténerek">Asszociatív konténerek</h4>
+<ul>
+<li>rendezettség, összehasonlító típus</li>
+<li>keresőfa</li>
+<li>ekvivalencia</li>
+<li>logaritmikus bonyolultságú műveletek</li>
+<li>ekvivalens a és b:
+<ul>
+<li><code>(!(a &lt; b) &amp;&amp; !(b &lt; a))</code></li>
+<li>általános eset:
+<ul>
+<li><code>(!(s.key_komp() (a, b)) &amp;&amp; !(s.key_komp() (b, a)))</code></li>
+</ul></li>
+</ul></li>
+<li><code>multiset</code> és <code>multimap</code> esetén az ekvivalens elemen sorrendje nem definiált</li>
+<li>általánosan igaz, hogy megegyező értékekre a predikátumoknak hamisat kell visszaadniuk
+<ul>
+<li>multikonténereknél is</li>
+<li>különben a konténer invaliddá válik</li>
+</ul></li>
+</ul>
+<h4 id="iterátorok">Iterátorok</h4>
+<ul>
+<li>iterátorok arra jók, hogy végig tudjuk járni a konténereket</li>
+<li>5 fő típusa van
+<ul>
+<li>Input: előrefelé tudunk menni, illetve olvasni, módosítani nem, <code>*i</code> csak rvalue-ként használható</li>
+<li>Output: előrefelé tudunk menni, illetve csak írni, olvasni nem, <code>*i</code> csak lvalue-ként használható</li>
+<li>Forward: előrefelé, írni olvasni</li>
+<li>Bidirectional: előre, hátra tudunk menni, illetve írni olvasni</li>
+<li>Random access: random hozzáférést tesz lehetővé, nem csak egyesével tudunk lépkedni, írni olvasni tudunk</li>
+</ul></li>
+<li><code>vector</code>: random access iterátor</li>
+<li><code>deque</code>: random access iterátor</li>
+<li><code>list</code>: Bidirectional</li>
+<li>asszociatív konténerek: Bidirectional</li>
+<li>iterátorok invaliddá válhatnak:
+<ul>
+<li><code>vector</code>-nál ha re-allokáció történik akkor minden invaliddá válik: iterátorok, referenciák, pointerek</li>
+<li><code>deque</code>-nál:
+<ul>
+<li>széléről való törléskor csak a szélső iterátorok válnak invaliddá</li>
+<li>középről való törléskor minden invaliddá válik: iterátorok, referenciák, pointerek</li>
+<li>beszúráskor az összes, ha középre szúrtunk be, szélre való beszúráskor csak az iterátorok, a pointerek és referenciák megmaradnak</li>
+</ul></li>
+</ul></li>
+<li>példa: <code>std::vector&lt;double&gt;::iterator i = v.begin()</code></li>
+<li>iterátorok fajtái:
+<ul>
+<li><code>const_iterator</code></li>
+<li><code>reverse_iterator</code></li>
+<li><code>const_reverse_iterator</code></li>
+<li><code>istream_iterator</code>, <code>ostream_iterator</code></li>
+<li><code>istreambuf_iterator</code>, <code>ostreambuf_iterator</code></li>
+</ul></li>
+</ul>
+<h4 id="vector-re-allokáció">Vector re-allokáció</h4>
+<ul>
+<li><code>vector</code> re-allokáció folyamata:
+<ul>
+<li>új memóriaterület allokálása</li>
+<li>elemek átmásolása</li>
+<li>régi elemek megszüntetése</li>
+</ul></li>
+<li>re-allokáció költséges, illetve invalid iterátorokhoz vezet</li>
+<li>a kapacitás nem csökken automatikusan</li>
+<li>swap trükk:</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode c++"><code class="sourceCode cpp">vector&lt;<span class="dt">int</span>&gt; v;
+<span class="co">//...</span>
+vector&lt;<span class="dt">int</span>&gt;(v).swap(v);</code></pre></div>
+<ul>
+<li>C++ 11-től van <code>v.shrink_to_fit()</code></li>
+<li>van <code>iterator</code> -&gt; <code>const_iterator</code> konverzió, viszont visszafele nincs érthető okokból</li>
+<li>van <code>reverse_iterator</code> -&gt; <code>iterator</code> konverzió a <code>base()</code> tagfüggvénnyel, ami trükkös, lásd a következő képet</li>
+</ul>
+<div class="figure">
+<img src="img/reverse_iterator.png" alt="revers_iterator -&gt; iterator" />
+<p class="caption">revers_iterator -&gt; iterator</p>
+</div>
+<ul>
+<li>tehát i = ri.base() máshova fog mutatni</li>
+<li>törléskor ezért nem lesz jó, de beszúráskor még jó</li>
+</ul>
+<h4 id="speciális-iterátorok">Speciális iterátorok</h4>
+<div class="sourceCode"><pre class="sourceCode c++"><code class="sourceCode cpp"><span class="co">// másoljuk a std.input-ot std.output-ra...</span>
+copy( istreambuf_iterator&lt;<span class="dt">char</span>&gt;( cin ),
+      istreambuf_iterator&lt;<span class="dt">char</span>&gt;(),
+      ostreambuf_iterator&lt;<span class="dt">char</span>&gt;( cout ) );</code></pre></div>
+<h3 id="funktorok">2.2 Funktorok <a name="section01_02"></a></h3>
+<ul>
+<li>olyan objektumok amelyeknek van <code>operator()</code>-a globális függvényhívások szimulálására</li>
+<li>objektumok - állapotok, adattagok, egyéb tagfüggvények</li>
+<li>hatékonyak</li>
+<li>speciális hibák elkerülése</li>
+<li>két ősosztály van: <code>unary_function</code>, <code>binary_function</code> sablonok</li>
+<li>C++ 11-től a lambdákkal kiválthatók</li>
+<li><code>unary_function</code>, <code>binary_function</code>:
+<ul>
+<li>speciális <code>typedef</code>-eket biztosítanak</li>
+<li>a <code>typedef</code>-ekre szükségük van a függvényobjektum adaptereknek: <code>not1</code>, <code>not2</code>...</li>
+<li>ezek sablon osztályok és származtatni példányokból lehet</li>
+<li><code>unary_function</code> két sablon paraméter</li>
+<li><code>binary_function</code> két sablon paraméter</li>
+<li>az utolsó paraméter mindig a visszatérési érték</li>
+<li>az első, vagy első kettő, az <code>operator()</code> paramétere illetve paraméterei, értelem szerűen unary esetén 1, míg binary esetén kettő</li>
+</ul></li>
+<li>ha függvényekre akarjuk használni az adaptereket akkor direktbe ezt nem tudjuk megtenni, mert hiányoznak a <code>typedef</code>-ek</li>
+<li><code>ptr_fun</code> lehet a segítségünkre, ami egy alkalmazkodóképes funktort ad vissza aminek az <code>operator()</code>-a majd meghívja az eredeti függvényt</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode c++"><code class="sourceCode cpp"><span class="dt">bool</span> is_even( <span class="dt">int</span> x );
+<span class="co">// Első páratlan szám megkeresése:</span>
+list&lt;<span class="dt">int</span>&gt; c;
+<span class="co">//...</span>
+list&lt;<span class="dt">int</span>&gt;::iterator i = find_if( c.begin(), c.end(),  not1( ptr_fun( is_even ) ) );</code></pre></div>
+<ul>
+<li><code>mem_fun_ref</code>: lehetőséget ad arra, hogy a sorozat minden elemére meghívjuk az elemnek egy tagfüggvényét</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode c++"><code class="sourceCode cpp"><span class="kw">struct</span> Foo
+{
+    <span class="dt">void</span> bar();
+};
+list&lt;Foo&gt; c;
+<span class="co">// bar meghívása c összes elemén?</span>
+for_each( c.begin(), c.end(), mem_fun_ref( &amp;Foo::bar ) );</code></pre></div>
+<ul>
+<li><code>mem_fun</code>: ugyan az mint az előbbi csak ha bar virtuális metódus akkor a dinamikus típusnak megfelelőt fogja meghívni</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode c++"><code class="sourceCode cpp"><span class="kw">struct</span> Figure
+{
+    <span class="kw">virtual</span> <span class="dt">void</span> draw() <span class="at">const</span> = <span class="dv">0</span>;
+    <span class="kw">virtual</span> ~Figure() { };
+};
+<span class="co">//...</span>
+list&lt;Figure*&gt; c;
+<span class="co">// draw meghívása (a dinamikus típusnak megfelelő):</span>
+for_each( c.begin(), c.end(), mem_fun( &amp;Figure::draw ) );</code></pre></div>
+<ul>
+<li>funktoroknál elvárás, hogy ne tartson fenn olyan változót, illetve ne érjen el, amely befolyásolja az <code>operator()</code> eredményét, azaz az operátor értéke csak a paraméterektől függjön. Ez azért van így mert az algoritmusok másolatokat készíthetnek a funktorokról</li>
+</ul>
+<h3 id="algoritmusok">2.3 Algoritmusok <a name="section01_03"></a></h3>
+<ul>
+<li><code>find</code></li>
+<li><code>binary_search</code>: true ha talál ekvivalens elemet</li>
+<li><code>lower_bound</code>: iterator az első ekvivalens elemre</li>
+<li><code>upper_bound</code>: iterator az utolsó utáni ekvivalens elemre</li>
+<li><code>equal_range</code>: visszaad egy sub iterator-t amiben a paraméterben kapott értékkel ekvivalens elemek vannak</li>
+<li><p>a *_bound algoritmusok tehát olyan mint az <code>equal_range</code> által visszaadott iterator <code>begin()</code> és <code>end()</code>-je</p></li>
+<li>remove_(if)
+<ul>
+<li>igazából nem töröl, mivel konténer független az algoritmus, nem tudja, hogy kell</li>
+<li>átrendezi a konténer elemeit, hogy a megmaradóak előre kerüljenek, amíg a többi a végén</li>
+<li>végén általában változatlanok az elemek</li>
+<li>visszaad egy iterátort ami az új logikai végét jelenti a konténernek</li>
+<li>helyesen úgy tudjuk használni utána a konkrét konténer <code>erase</code> függvényét meghívjuk
+<ul>
+<li><code>c.erase( remove( c.begin(), c.end(), t ), c.end() );</code></li>
+</ul></li>
+</ul></li>
+</ul>
+<div class="figure">
+<img src="img/remove.png" alt="remove" />
+<p class="caption">remove</p>
+</div>
+
+<ul>
+<li>remove_if probléma -&gt; memory leak</li>
+</ul>
+<div class="figure">
+<img src="img/remove_if_1.png" alt="remove_if törlés előtt" />
+<p class="caption">remove_if törlés előtt</p>
+</div>
+<div class="figure">
+<img src="img/remove_if_2.png" alt="remove_if törlés után" />
+<p class="caption">remove_if törlés után</p>
+</div>
+
+<ul>
+<li>látható, hogy elvesztettünk néhány referenciát, megoldás lehet ha előbb végigmegyünk a listán, és de-allokáljuk a dinamikusan foglalt memóriát, majd null-ra állítjuk a pointereket</li>
+<li>ez után töröljük a nullpointereket a <code>remove_if</code>-el</li>
+<li>bizonyos konténerek esetén léteznek olyan tagfüggvények melyek neve (illetve célja) megegyezik egy algoritmuséval</li>
+<li>pl.: assoccont::find</li>
+<li>mindig válasszuk, ha lehet a konténerét mert hatékonyabb, helyes működés</li>
+<li>ciklusok helyett használjuk az algoritmusokat:
+<ul>
+<li>hatékonyság</li>
+<li>érvénytelen iterátorok elkerülése</li>
+<li>javíthat a kód átláthatóságán</li>
+</ul></li>
+</ul>
+<h2 id="java-annotációk">3. Java annotációk <a name="chapter03"></a></h2>
+<ul>
+<li>módosítószavak bővítése</li>
+<li>a programszöveg elemeihez rendelhetők
+<ul>
+<li>csomagokhoz, típusokhoz, metódusokhoz, ...</li>
+</ul></li>
+<li>plusz információt hordoznak
+<ul>
+<li>a java fordító számára</li>
+<li>speciális eszközök számára</li>
+</ul></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">@interface</span> Copyright {
+    <span class="bu">String</span> <span class="fu">value</span>();
+}
+
+<span class="at">@Copyright</span>(value=<span class="st">&quot;Copyright: Bender&quot;</span>)
+<span class="kw">public</span> <span class="kw">class</span> Metal {
+<span class="co">//...</span>
+}</code></pre></div>
+<ul>
+<li>@ speciális karaktert használjuk</li>
+<li>megszorítások
+<ul>
+<li>nem lehet generikus</li>
+<li>a metódusok benne
+<ul>
+<li>nem lehetnek generikusok</li>
+<li>nem lehet paraméterük</li>
+<li>a visszatérés érték típusa
+<ul>
+<li>primitív</li>
+<li>String</li>
+<li>Class vagy annak példányosítása</li>
+<li>felsorolási</li>
+<li>annotációs</li>
+<li>ezekból képzett 1 dimenziós tömb</li>
+</ul></li>
+</ul></li>
+<li>nem lehet szülőinterfésze</li>
+<li>nem lehet throws klózuk</li>
+</ul></li>
+<li>Implicit módon kiterjeszti a java.lang.annotation.Annotation interfészt</li>
+<li>Lehet belőle leszármaztatni</li>
+<li>Nem lehet rekurzív a definíciója</li>
+<li>Nem ütközhetnek metódusai az <code>Object</code> és az <code>Annotation</code> metódusaival (felüldefiniálás-ekviv.)</li>
+<li>elemei: nulla, egy vagy több</li>
+<li>nulla: marker annotációnak nevezzük, elhagyható az üres zárójel</li>
+<li>egy: konvenció, hogy a neve legyen <code>value</code>, ezáltal nem muszáj kiírni, hogy <code>value=&quot;blah&quot;</code></li>
+<li>default kulcsszóval alapértelmezett értéket rendelhetünk hozzá
+<ul>
+<li><code>String date() default &quot;[not_defined]&quot;;</code></li>
+</ul></li>
+<li>az annotációkat egymásba ágyazhatjuk: <code>@Author(@Name(...))</code></li>
+<li>Meta-annotáció:
+<ul>
+<li>annotációk annotálása</li>
+<li>önmagát is annotálhatja</li>
+</ul></li>
+<li>előre definiált annotációk:
+<ul>
+<li>Target</li>
+<li>Retention</li>
+<li>Inherited</li>
+<li>Override</li>
+<li>SupressWarnings</li>
+<li>Depracated</li>
+</ul></li>
+</ul>
+<h2 id="önelemzés-osztálybetöltés">4. Önelemzés, osztálybetöltés <a name="chapter04"></a></h2>
+<ul>
+<li>önelemzés nem egyenlő a dinamikus kötéssel</li>
+<li>egy típusleíró fájl alapján
+<ul>
+<li>osztályok</li>
+<li>interfészek</li>
+<li>annotációk</li>
+<li>felsorolási típusok</li>
+</ul></li>
+<li>futás közben: API van hozzá (<code>java.lang.reflect</code>)</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">import</span><span class="im"> java.lang.reflect.*;</span>
+<span class="kw">class</span> Example {
+    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span>(<span class="bu">String</span>[] args) <span class="kw">throws</span> <span class="bu">Exception</span> {
+        <span class="bu">Class</span> c = <span class="bu">Class</span>.<span class="fu">forName</span>(args[<span class="dv">0</span>]);
+        <span class="bu">Class</span>[] formalArgs = (args.<span class="fu">length</span> &gt; <span class="dv">2</span>)
+                                ? <span class="kw">new</span> <span class="bu">Class</span>[] {<span class="bu">String</span>.<span class="fu">class</span>}
+                                : <span class="kw">new</span> <span class="bu">Class</span>[] {};
+        <span class="bu">Object</span> o = c.<span class="fu">newInstance</span>();
+        <span class="bu">Method</span> m = c.<span class="fu">getMethod</span>(args[<span class="dv">1</span>],formalArgs);
+        <span class="bu">Object</span>[] actualArgs = (args.<span class="fu">length</span> &gt; <span class="dv">2</span>)
+                                ? <span class="kw">new</span> <span class="bu">Object</span>[] {args[<span class="dv">2</span>]}
+                                : <span class="kw">new</span> <span class="bu">Object</span>[] {};
+        <span class="bu">System</span>.<span class="fu">out</span>.<span class="fu">println</span>( m.<span class="fu">invoke</span>(o,actualArgs) );
+    }
+}</code></pre></div>
+<ul>
+<li>Class objectumok esetén: hozzáférhetünk a <code>getClass()</code> metódussal
+<ul>
+<li><code>&quot;Hello&quot;.getClass()</code> -&gt; String</li>
+</ul></li>
+<li><code>.class</code> használatával ha nincs objektumunk, csak a típus, pl.: <code>String.class</code></li>
+<li><code>forName</code>
+<ul>
+<li>típusbetöltés paraméterezhetően, teljesen dinamikusan</li>
+<li>fordításhoz nem kell a típus</li>
+<li>futtatáskor a classpath-ben kell lennie
+<ul>
+<li>pl.: <code>Class.forName(&quot;java.util.List&quot;)</code></li>
+</ul></li>
+</ul></li>
+<li>két fajta hiba léphet fel betöltéskor:
+<ul>
+<li><code>ClassNotFoundException</code></li>
+<li><code>LinkageError</code></li>
+</ul></li>
+<li>A <code>Class</code> osztály generikus, pl a <code>String</code> típus típusleíró objektuma <code>Class&lt;String&gt;</code> típusú</li>
+<li>metódusok amelyek <code>Class</code>-t adnak vissza:
+<ul>
+<li><code>Class.getSuperClass()</code></li>
+<li><code>Class.getInterfaces()</code></li>
+<li><code>Class.getClasses()</code></li>
+</ul></li>
+<li>egy class tulajdonságai:
+<ul>
+<li>módosítók</li>
+<li>típusparaméterek</li>
+<li>szülőosztály</li>
+<li>csomag</li>
+<li>konstruktorok</li>
+<li>tagok</li>
+</ul></li>
+<li>módosítók lekérdezése:
+<ul>
+<li>annotációk: külön erre a célra való műveletek</li>
+<li>nem annotáció módosítók maszkolással:
+<ul>
+<li>a <code>getModifiers()</code> egy integert ad vissza</li>
+<li>az int-ből maszkolással nyerhető ki a módosítók</li>
+<li>kinyerésre vannak speciális műveletek:
+<ul>
+<li><code>public static boolean isStatic(int mod)</code></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li>publikus információk:
+<ul>
+<li><code>getMethods()</code>, <code>getFields()</code>, ...</li>
+<li>örököltek is</li>
+</ul></li>
+<li>minden információ:
+<ul>
+<li><code>getDeclaredMethods()</code>, ...</li>
+<li>az örököltek nem</li>
+</ul></li>
+<li>a <code>Class.newInstance()</code> segítségével példányosíthatjuk az osztályt, az osztály paraméter nélküli konstruktorával</li>
+<li>a <code>Constructor.newInstance</code> ugyan az, de nem csak paraméter nélküli lehet</li>
+<li>típuskényszerítés a <code>public T cast(Object obj)</code> segítségével</li>
+<li>dinamikus típusellenőrzés a <code>public boolean isInstance(Object obj)</code> használatával</li>
+<li>lekérdezések: <code>isArray()</code>, <code>isPrimitive()</code></li>
+<li><code>java.lang.reflect.Member</code> interfész
+<ul>
+<li><code>java.lang.reflect.Field</code></li>
+<li><code>java.lang.reflect.Method</code></li>
+<li><code>java.lang.reflect.Constructor</code></li>
+</ul></li>
+<li>A Class-ból kiindulva megszerezhetők</li>
+<li>értéklekérdezés, beállítás:</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="bu">Class</span>&lt;<span class="bu">Point</span>&gt; c = <span class="bu">Point</span>.<span class="fu">class</span>;
+<span class="bu">Object</span> o = c.<span class="fu">newInstance</span>();
+<span class="bu">Field</span> x = c.<span class="fu">getField</span>(<span class="st">&quot;x&quot;</span>);
+x.<span class="fu">setInt</span>(o,<span class="dv">12</span>);
+<span class="bu">Point</span> p = c.<span class="fu">cast</span>(o);
+<span class="bu">System</span>.<span class="fu">out</span>.<span class="fu">println</span>(p.<span class="fu">x</span>);</code></pre></div>
+<ul>
+<li>önelemzés tulajdonságai:
+<ul>
+<li>pozitív:
+<ul>
+<li>rugalmasság</li>
+<li>újrafelhasználhatóság</li>
+<li>továbbfejleszthetőség, adaptálhatóság</li>
+</ul></li>
+<li>negatívum:
+<ul>
+<li>költséges</li>
+<li>futási idejű hibák:
+<ul>
+<li>nem talál valamit</li>
+<li>nincs joga valamihez</li>
+</ul></li>
+<li>biztonsági problémák:
+<ul>
+<li>privát tagokhoz hozzáférés</li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li>mire használjuk:
+<ul>
+<li>előre nem ismert kódot manipuláló kód írásánál:
+<ul>
+<li>keretrendszerek</li>
+<li>EJB</li>
+<li>vizuális szerkesztők</li>
+<li>nyomkövető, log rendszerek</li>
+</ul></li>
+<li>generatív programozás</li>
+<li>kóddal paraméterezhető kód</li>
+</ul></li>
+</ul>
+<h2 id="objektumszerializáció">5. Objektumszerializáció <a name="chapter05"></a></h2>
+<ul>
+<li>objektum elmentése -&gt; rekurzívan az általa hivatkozott objektumok mentése is</li>
+<li>hivatkozott objektum többszöri előfordulása esetén csak egyszer lesz elmentve</li>
+<li>a Serializable interfész megvalósításával érhetjük el
+<ul>
+<li>ennek nincsenek metódusai, csak oda kell rakni az osztályhoz</li>
+<li>csak arra a célra szolgál, hogy megjelöljük mint szerializálható osztályt</li>
+</ul></li>
+<li>a szerializációt a Java elvégzi helyettünk</li>
+<li>ha valami speciális dolgot kell csinálni az osztályunkkal szerializáció során akkor a következő metódusokat kell implementálnunk
+<ul>
+<li><code>writeObject</code></li>
+<li><code>readObject</code></li>
+<li><code>readObjectNoData</code></li>
+</ul></li>
+<li>mi történik:
+<ul>
+<li>metainformációk elmentése (objektum osztály, verzió)</li>
+<li>objektum adattagjainak elmentése</li>
+<li>hivatkozott objektumok rekurzív mentése</li>
+<li>korábban mentett objektum helyett egy mutató mentése</li>
+</ul></li>
+<li><code>transient</code> kulcsszó: ha az adattagot nem akarjuk szerializációkor menteni</li>
+<li>a szerializáció során mindegyik osztályhoz hozzárendelésre kerül egy verzió szám melynek neve <code>serialVersionUID</code>, ezt a futtató környezet arra használja, hogy de-szerializáció során megbizonyosodjon arról, hogy az objektum küldője és fogadója kompatibilis osztályt használnak</li>
+<li>ha a két verzió különbözik akkor egy <code>InvalidClassException</code> kivételt kapunk</li>
+<li>a verziót a <code>Serializable</code> interfészt megvalósító osztályunkban a <code>serialVersionUID</code> mező deklarálásával adhatjuk meg, amelynek <code>static</code>, <code>final</code> és <code>long</code>-nak kell lennie
+<ul>
+<li>pl.: <code>static final long serialVersionUID = 42L</code></li>
+</ul></li>
+<li>ha nem adjuk meg akkor generál nekünk egyet, de warning-ot kapunk</li>
+</ul>
+<h2 id="további-források">További források</h2>
+<ul>
+<li>Előadás anyagok</li>
+<li>http://www.cplusplus.com/reference/stl/</li>
+</ul>
+</body>
+</html>
