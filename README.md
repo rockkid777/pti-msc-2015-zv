@@ -37,6 +37,7 @@ A kidolgozások az ELTE IK honlapján elérhető [hivatalos tételsor](http://ww
     Típusrendszer és operációs szemantika kapcsolata: haladás és típusmegőrzés tétele. Magasabbrendű függvények, Church
     típusrendszere. Let kifejezések. Szorzat és összeg típusok. Induktív típusok: Bool, természetes számok.
     Polimorfizmus (System F), absztrakt típusok. Altípus.
+    [kidolgozás](s00/4.md)
     5. Informatikai projektek specialitásai és típusai. A projekt politikai, gazdasági és jogi környezete. Vállalati
     szintű tervezés, vállalatok életciklusai. Projekt szervezet felépítése. A projekt életciklusa.
     Projekttervezés: feladat és szervezet lebontási struktúra; időelemzés, kritikus út meghatározása,
