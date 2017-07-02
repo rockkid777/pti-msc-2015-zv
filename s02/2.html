@@ -1,0 +1,1106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #0000ff; } /* Keyword */
+code > span.ch { color: #008080; } /* Char */
+code > span.st { color: #008080; } /* String */
+code > span.co { color: #008000; } /* Comment */
+code > span.ot { color: #ff4000; } /* Other */
+code > span.al { color: #ff0000; } /* Alert */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #008000; font-weight: bold; } /* Warning */
+code > span.cn { } /* Constant */
+code > span.sc { color: #008080; } /* SpecialChar */
+code > span.vs { color: #008080; } /* VerbatimString */
+code > span.ss { color: #008080; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { } /* Variable */
+code > span.cf { color: #0000ff; } /* ControlFlow */
+code > span.op { } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #ff4000; } /* Preprocessor */
+code > span.do { color: #008000; } /* Documentation */
+code > span.an { color: #008000; } /* Annotation */
+code > span.cv { color: #008000; } /* CommentVar */
+code > span.at { } /* Attribute */
+code > span.in { color: #008000; } /* Information */
+  </style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="s2-02-multiparadigma-programozás-és-haladó-java-1">S2-02 Multiparadigma programozás és Haladó Java 1</h1>
+<h2 id="tartalom">Tartalom</h2>
+<ol style="list-style-type: decimal">
+<li><a href="#chapter01">Memóriakezelés: referencia- és érték-szemantika</a></li>
+<li><a href="#chapter02">Referenciakezelési technikák, Objektumok másolása, move-szemantika</a></li>
+<li><a href="#chapter03">Erőforrásbiztos programozás, RAII, destruktor és szemétgyűjtés</a></li>
+<li><a href="#chapter04">Kivételkezelés, kivételbiztos programozás</a></li>
+<li><a href="#chapter05">A konkurens programozás alapelemei Javában és C++-ban</a></li>
+<li><a href="#references">További források</a></li>
+</ol>
+<h2 id="memóriakezelés-referencia--és-érték-szemantika">1. Memóriakezelés: referencia- és érték-szemantika <a name="chapter01"></a></h2>
+<p>Ebben a fejezetben &quot;referencia&quot; alatt C++ referenciákat és pointereket értünk. Azaz bármit ami memóriacímet tárol (<em>Java-ban is referenciának hívják a pointereket</em>)</p>
+<h3 id="változók-viselkedésének-két-koncepciója">Változók viselkedésének két koncepciója</h3>
+<ol style="list-style-type: decimal">
+<li>Hatáskör (scope)
+<ul>
+<li>Megmondja, hogy a program szövegében hol van egy bizonyos azonosító (<em>identifier</em>, lehet változó vagy függvény is)</li>
+<li>Meghatározza a láthatóságot is: hol használható az azonosító</li>
+</ul></li>
+<li>Élettartam (life)
+<ul>
+<li>Meghatározza meddig biztonságos egy memóriahelyen tárolni az értékeinket futásidő alatt</li>
+<li>Az élettartam lejárta után azt a memóriahelyet már nem biztonságos olvasni és írni</li>
+</ul></li>
+</ol>
+<p>Normális változónak: hatásköre és élettartama van</p>
+<p>Referenciának: csak hatásköre van, élettartamot nem követ</p>
+<h3 id="érték-szemantika-value-semantics">Érték-szemantika (<em>Value semantics</em>)</h3>
+<ul>
+<li>Értékadáskor magának az értéknek a másolása a változóba</li>
+<li>C++-ban érték-szemantika az alapértelmezett</li>
+</ul>
+<p>Előnyök:</p>
+<ul>
+<li>Nincsenek memóriakezelési problémák
+<ul>
+<li>nincsenek &quot;csellengő&quot; (dangling) pointerek nemlétező memóriahelyre</li>
+<li>nincsenek drága heap allokációk</li>
+<li>nincsenek memóriaszivárgások</li>
+</ul></li>
+</ul>
+<h3 id="referencia-szemantika-reference-semantics">Referencia-szemantika (<em>Reference semantics</em>)</h3>
+<ul>
+<li>Értékadáskor a memória címének másolása a változóba
+<ul>
+<li>vagy pointer másolása</li>
+</ul></li>
+<li>Referencia és pointer közötti különbség: pointer lehet <code>NULL</code>, referencia nem</li>
+</ul>
+<p>Előnyök:</p>
+<ul>
+<li>Polimorfizmus megvalósítása</li>
+<li>Egyes esetekben jobb teljesítmény az érték-szemantikánál</li>
+<li>Nem mindent engedünk meg értékként másolni, például <code>std::cout</code>, <code>std::unique_ptr</code> és <code>std::shared_ptr</code></li>
+</ul>
+<h3 id="visszatérés-referenciával">Visszatérés referenciával</h3>
+<ul>
+<li>C++-ban alapértelmezésben a függvény értékkel tér vissza, amit másol</li>
+<li>Visszatérhetsz referenciával is ha a megjelölöd a függvény típusában</li>
+<li><strong>LÁBON LŐHETED MAGAD</strong>: ne térj vissza lokális változók címével, mivel azok élettartama a függvény scope-jához kötöttek
+<ul>
+<li>Emlékezz: referenciák nem követnek élettartamot</li>
+</ul></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;iostream&gt;</span>
+
+<span class="dt">int</span>&amp; f()            <span class="co">// Függvény ami referenciát ad vissza</span>
+{
+    <span class="dt">int</span> i = <span class="dv">300</span>;    <span class="co">// Lokális változó a stack-en</span>
+    <span class="cf">return</span> i;       <span class="co">// Visszatérés lokális i változó címével</span>
+}   <span class="co">// HIBA: mire f függvény végetért, lokális i változó kiment a scope-ból</span>
+    <span class="co">//       és törlődött!</span>
+
+<span class="dt">int</span> main()
+{
+    <span class="dt">int</span>&amp; x = f();
+
+    <span class="co">// FUTÁSIDEJŰ HIBA: az alábbi sor &quot;0&quot;-t fog kiírni &quot;300&quot; helyett!</span>
+    <span class="bu">std::</span>cout &lt;&lt; x &lt;&lt; <span class="bu">std::</span>endl;
+
+    <span class="cf">return</span> <span class="dv">0</span>;
+}</code></pre></div>
+<h3 id="copy-elision">Copy elision</h3>
+<ul>
+<li>Fordító képes kioptimalizálni az objektumok felesleges másolását</li>
+<li>C++98: Copy-konstruktorok elhagyása</li>
+<li>C++11: Move-konstruktorok elhagyása</li>
+<li>Másolásmentes értékszerinti átadás szemantika megvalósítása (<em>zero-copy pass-by-value</em>)</li>
+<li>Akkor alkalmazható, ha a változó egy temporary objektumból lett konstruálva
+<ul>
+<li>ide tartoznak a függvényparaméterek is</li>
+</ul></li>
+</ul>
+<ol style="list-style-type: decimal">
+<li><p>Inicializációkor</p>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">T x = T(T(T()));    <span class="co">// Ehelyett T x = T()</span>
+
+<span class="co">// Nem fogja a rakás copy-konstruktort meghívni,</span>
+<span class="co">// csak egy alapértelmezett konstruktort.</span></code></pre></div></li>
+<li><p>Függvényhívásban</p>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">T f() { <span class="cf">return</span> T(); }   <span class="co">// Visszatérés temporary-val</span>
+
+<span class="dt">int</span> main()
+{
+    T x = f();              <span class="co">// Ehelyett T x = T()</span>
+    T* p = <span class="kw">new</span> T(f());      <span class="co">// Ehelyett T* p = new T()</span>
+}</code></pre></div></li>
+</ol>
+<h2 id="referenciakezelési-technikák-objektumok-másolása-move-szemantika">2. Referenciakezelési technikák, Objektumok másolása, move-szemantika <a name="chapter02"></a></h2>
+<h3 id="referenciakezelési-technikák">Referenciakezelési technikák</h3>
+<h4 id="memóriakezelés">Memóriakezelés</h4>
+<p><strong>Memória szegmens</strong>: Operációs rendszer <span class="math inline">\(\Rightarrow\)</span> minden programnak egy területet tart fenn a memóriából.</p>
+<p><strong>Memóriacím</strong>: Minden bájt (memória hely) rendelkezik egy sorszámmal. Ezen keresztül elérhető a memória szegmensben. (Általában hexadecimális, pl.: <code>0x34c420</code>)</p>
+<ul>
+<li>Minden változó rendelkezik memóriacímmel</li>
+<li>C++-ban változókhoz hasonlóan kezelhetjük őket</li>
+<li>Típustól függően több bájton is tárolódhat egy változó értéke <span class="math inline">\(\Rightarrow\)</span> mindig az első bájt címét kapjuk vissza</li>
+</ul>
+<h4 id="referencia">Referencia</h4>
+<p>Egy változó memóriacímét az <code>&amp;</code> operátorral kérdezhetjük le, ez a referencia operátor. (<code>&amp;&lt;változónév&gt;</code> a változó első bájtjának memóriabeli címe).</p>
+<ul>
+<li>Referenciákat eltárolhatjuk változókban
+<ul>
+<li>ezzel alias lesz egy változónévhez (mint Linuxban a szimbolikus linkek)</li>
+</ul></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode c++"><code class="sourceCode cpp"><span class="dt">int</span> i = <span class="dv">128</span>;
+<span class="dt">int</span> j = i;  <span class="co">// egyszerű változó</span>
+<span class="dt">int</span>&amp; k = i; <span class="co">// referencia változó</span></code></pre></div>
+<div class="figure">
+<img src="img/referencia.png" alt="Referencia változók" width="200" />
+<p class="caption">Referencia változók</p>
+</div>
+<h4 id="pointerek">Pointerek</h4>
+<p>Speciálisabb változótípus: memóriacímet tárol értékként.</p>
+<ul>
+<li>új adat, mely másik adat memóriacímét tárolja</li>
+<li>általánosabb célú, mint a referencia</li>
+<li>Létrehozáskor: megadjuk a mutatott érték típusát
+<ul>
+<li>mutató létrehozása: <code>&lt;típus&gt;* &lt;mutatónév&gt;</code></li>
+<li>mutató típusa: <code>&lt;típus&gt;*</code></li>
+<li>pl.: <code>int* ip; // egy int-re mutató pointer</code></li>
+</ul></li>
+<li><p>pointer lehet <code>NULL</code>, referencia nem</p></li>
+<li>Ökölszabály:
+<ul>
+<li>ahol lehet használj referenciákat</li>
+<li>ahol muszáj, ott pointereket (de akkor már smart pointert a mai világban)</li>
+</ul></li>
+</ul>
+<h4 id="memóriaterületek">Memóriaterületek</h4>
+<p>Használat szempontjából háromféle memóriaterületet különböztetünk meg:</p>
+<ul>
+<li><em>globális terület</em>
+<ul>
+<li>konstansok, globális változók, statikus lokális változók</li>
+<li>program indulásakor le van foglalva nekik terület (még ha nincsenek is inicializálva)</li>
+<li>program futásának végéig jelen vannak</li>
+</ul></li>
+<li><em>stack (verem)</em>
+<ul>
+<li>lokális változók</li>
+<li>automatikusan jönnek létre definiáláskor, lokális scope végén automatikusan felszabadulnak</li>
+<li>függvények memóriaterületeit stack frame-eknek hívjuk
+<ol style="list-style-type: decimal">
+<li>függvényhíváskor hívó függvény (caller) stack frame-jének elmentése és hívott függvény (callee) stack frame-jének beállítása (function prologoue)</li>
+<li>paraméterek mozgatása regiszterekbe</li>
+<li>függvény végrehajtása</li>
+<li>végén return value írása regiszterbe</li>
+<li>hívott függvény stack frame pop-olása és visszatérés hívó függvénybe (function epilogue)</li>
+</ol></li>
+</ul></li>
+<li><em>heap (kupac, free store)</em>
+<ul>
+<li>futásidőben dinamikusan lefoglalható (általában a legnagyobb része a programnak)</li>
+<li>akkor foglaljunk a heap-en, amikor változó mérete csak futásidőben határozható meg, mérete stack overflow-t eredményezne vagy polimorfizmust szeretnénk megvalósítani</li>
+<li>lassabb elérni, mint a stack-et</li>
+</ul></li>
+</ul>
+<h4 id="memóriahely-felszabadítás">Memóriahely felszabadítás</h4>
+<p>A lefoglalt memóriát fel is kell szabadítani.</p>
+<ul>
+<li>automatikusan lefoglalt memória <span class="math inline">\(\Rightarrow\)</span> program automatikusan végzi, nincs befolyásunk</li>
+<li>manuálisan létrehozott memória <span class="math inline">\(\Rightarrow\)</span> nekünk kell törölni</li>
+<li>törlés:
+<ul>
+<li><code>delete</code> operátorral</li>
+<li>tömböket a <code>delete[]</code> operátorral (Ha tömbre is a <code>delete</code>-et használjuk, csak az első elem törlődik)</li>
+</ul></li>
+<li>Nem a mutatót, hanem a dinamikusan lefoglalt területet kell felszabadítani</li>
+<li>Több mutató hivatkozik ugyanarra a területre <span class="math inline">\(\Rightarrow\)</span> elég egyszer törölni</li>
+<li>Nem szabad összemosni: C++-os <code>new</code>, <code>delete</code> <span class="math inline">\(\neq\)</span> Klasszikus C-s <code>malloc</code>, <code>calloc</code>, <code>realloc</code>, <code>free</code>
+<ul>
+<li>Klasszikus C-s memóriafoglalás: alacsonyszintű, bájtok közvetlen manipulálása memórián (még csak nem is operátorok, hanem függvények a Standard C könyvtárban)</li>
+<li>C++-os memóriafoglalás: magasabb, objektumszintű, konstruktor és destruktor meghívása (rendes C++ operátorok, ám felül is lehet őket definiálni). Több lépésből állnak.
+<ul>
+<li><code>new</code>: 1. Memória lefoglalása 2. Konstruktor meghívása</li>
+<li><code>delete</code>: 1. Destruktor meghívása 2. Memória felszabadítása</li>
+</ul></li>
+<li>(<em>Megjegyzés: realloc alternatívája az std::vector használata</em>)</li>
+</ul></li>
+</ul>
+<h4 id="konstans-mutatók-referenciák">Konstans mutatók, referenciák</h4>
+<p>Módosíthatatlanná tehetjük a referenciákat a pointereket és az értékeket is:</p>
+<p><em>(Trükk: Értelmezzük fordított sorrendben a deklarációkat)</em></p>
+<div class="sourceCode"><pre class="sourceCode c++"><code class="sourceCode cpp"><span class="dt">double</span> d1 = <span class="dv">10</span>, d2 = <span class="dv">50</span>;
+<span class="dt">double</span> const_reference &amp;d1r = d1;                         <span class="co">// konstans referencia</span>
+<span class="dt">double</span> <span class="at">const</span> * pointer_to_const = &amp;d1;                    <span class="co">// mutató konstansra</span>
+<span class="dt">double</span> * <span class="at">const</span> const_pointer = &amp;d1;                       <span class="co">// konstans mutató</span>
+<span class="co">// konstans mutató konstans értékre</span>
+<span class="dt">double</span> <span class="at">const</span> * <span class="at">const</span> const_pointer_to_const_value = &amp;d1;  
+
+const_reference = <span class="dv">100</span>;                    <span class="co">// HIBA, az érték nem módosítható</span>
+*pointer_to_const = <span class="dv">50</span>;                   <span class="co">// HIBA, az érték nem módosítható</span>
+*const_pointer = <span class="dv">50</span>;                      <span class="co">// az érték módosítható</span>
+*const_pointer_to_const_value = <span class="dv">50</span>;       <span class="co">// HIBA</span>
+pointer_to_const = &amp;d2;                   <span class="co">// átállíthatjuk más memóriacímre</span>
+const_pointer = &amp;d2;                      <span class="co">// HIBA, a mutató nem állítható át</span>
+const_pointer_to_const_value = &amp;d2;       <span class="co">// HIBA</span></code></pre></div>
+<h4 id="konstruktor-destruktor">Konstruktor, Destruktor</h4>
+<p>Típusok mezői is lehetnek mutatók, melyeknek dinamikusan allokálhatunk memóriaterületet. Ezt a <em>konstruktorban</em> végezzük.</p>
+<p>A törlésről viszont gondoskodnunk kell. Ezt megtehetjük a <em>destruktorban</em></p>
+<ul>
+<li>A destruktor automatikusan lefut, ha a változó törlésre kerül
+<ul>
+<li>lokális változó <span class="math inline">\(\Rightarrow\)</span> blokk végén automatikusan törlődik</li>
+<li>dinamikus létrehozás esetén a <code>delete</code> váltja ki a destruktor meghívását</li>
+</ul></li>
+<li>A destruktorban csak a dinamikusan lefoglalt mezőket kell törölni (ha ilyen nincs, akkor a destruktor nem szükséges)</li>
+<li>mindig publikus</li>
+<li>nincs típusa</li>
+<li>nincs paramétere</li>
+<li>nem túlterhelhető</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode c++"><code class="sourceCode cpp"><span class="kw">class</span> &lt;típus&gt; {
+    <span class="kw">public</span>:
+    &lt;typusnév&gt;() { … } <span class="co">// konstruktor</span>
+    ~&lt;típusnév&gt;() { … } <span class="co">// destruktor</span>
+    …
+};</code></pre></div>
+<h3 id="objektumok-másolása">Objektumok másolása</h3>
+<p>Kétféle másolási megközelítés ismert:</p>
+<ul>
+<li><p><em>Sekély másolás (shallow copy)</em>: A típuspéldány a mezőivel együtt másolásra kerül egy új memóriaterületre. A dinamikusan lefoglalt mezőknek azonban az értéke nem másolódik (A régi és új példány mutatói ugyanazon területre fognak mutatni.)</p></li>
+<li><p><em>Mély másolás (deep copy)</em>: A típuspéldány minden mezőjével és azok által lefogalt memóriaterülettel együtt kerül másolásra. (A régi és az új példány mutatói nem ugyanazon területre fognak mutatni.)</p></li>
+</ul>
+<p>Példányok másolását két művelet teszi lehetővé: <em>másoló konstruktor</em>, <em>értékadó operátor</em></p>
+<h4 id="copy-konstruktor">Copy-konstruktor</h4>
+<p>Egy létező példány alapján újat hoz létre. Paraméterként egy másik (ugyanolyan típusú) példány referenciáját kapja, ennek a mezőit másolja le. (Ha nincs dinamikus tartalom, akkor az alapértelmezett megfelelő.)</p>
+<ul>
+<li>törzsben tud hivatkozni a másolandó példány mezőire</li>
+<li>a következő esetekben fut le:
+<ul>
+<li>közvetlen hívás: <code>MyType b(a);</code></li>
+<li>kezdeti értékadás: <code>MyType b = a;</code></li>
+<li>érték szerinti paraméterátadás</li>
+</ul></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode c++"><code class="sourceCode cpp"><span class="kw">class</span> MyType {
+    <span class="kw">private</span>:
+        <span class="dt">int</span>* _value;
+    <span class="kw">public</span>:
+        MyType(<span class="at">const</span> MyType&amp; other) { <span class="co">// másoló konstr.</span>
+            _value = <span class="kw">new</span> <span class="dt">int</span>;
+
+            <span class="co">// a dinamikus taralom létrehozása</span>
+            *_value = *other._value; <span class="co">// érték másolása</span>
+        }
+};</code></pre></div>
+<h4 id="értékadó-operátor">Értékadó operátor</h4>
+<p>A kezdeti értékadást kivéve, amikor a változónak értéket adunk, az értékadó operátor lép érvénybe.</p>
+<p>Megkapja a másolandó példány (konstans) referenciáját, és biztosítja taralmának átmásolását.</p>
+<ul>
+<li>az eddig meglévő, dinamikusan létrehozott értékeket törölni kell</li>
+<li>ellenőrizni kell, hogy a paraméterben kapott változó nem saját maga-e</li>
+<li>a <code>*this</code> (aktuális példány) referenciával kell visszatérni (a többszörös értékadás használatához)</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode c++"><code class="sourceCode cpp"><span class="kw">class</span> MyType {
+    <span class="kw">public</span>:
+    …
+        MyType&amp; <span class="kw">operator</span>=(<span class="at">const</span> MyType&amp; other){
+            <span class="cf">if</span> (<span class="kw">this</span> == &amp;other)
+                <span class="co">// ha ugyanazt a példányt kaptuk</span>
+                <span class="cf">return</span> *<span class="kw">this</span>; <span class="co">// nem csinálunk semmit</span>
+
+            *_value = *(other._value);
+            <span class="co">// különben a megfelelő módon másolunk</span>
+            <span class="cf">return</span> *<span class="kw">this</span>; <span class="co">// visszaadjuk a referenciát</span>
+        }
+};</code></pre></div>
+<h4 id="paraméterátadás">Paraméterátadás</h4>
+<p>Ahogy a változókat, úgy a paramétereket is háromféleképpen tudjuk átadni:</p>
+<ul>
+<li><strong>érték szerint</strong></li>
+<li><strong>referenciaként</strong></li>
+<li><strong>pointerként</strong></li>
+</ul>
+<p>Az érték szerinti átadás sokszor költséges lehet, mert ekkor a paraméterek másolódnak. A pointer és a referencia közötti döntést pedig az határozza meg, hogy míg a pointerek felvehetik a <code>NULL</code> értéket, addig a referenciák nem.</p>
+<p>Tehát a következők szerint érdemes a paraméterátadást használni:</p>
+<ul>
+<li><em>érték szerinti</em>: <code>f(int x)</code>
+<ul>
+<li>a függvény <strong>nem módosíthatja a paramétert</strong></li>
+<li>használd ezt, <strong>ha könnyű másolni</strong></li>
+<li>Ökölszabály: ha a paraméter mérete legfeljebb 2- vagy 3 szó (word), azaz 32-bit, akkor érdemes érték szerint átadni
+<ul>
+<li>egyszerű primitív típusok esetén ajánlott, mint pl.: <code>int</code>, <code>double</code>, <code>char</code>, <code>bool</code>, stb.</li>
+<li>Komplex típusok, saját osztályok, <code>std::string</code> és a különböző STL konténerek nem ajánlottak (továbbiakban ezeket a példákban <code>T</code>-vel jelöljük)</li>
+</ul></li>
+</ul></li>
+<li><em>pointer szerinti</em>: <code>f(T* x)</code>
+<ul>
+<li>a függvény <strong>módosíthatja a paramétert</strong>,</li>
+<li>használd ezt, <strong>ha költséges a másolás</strong>,</li>
+<li>továbbá ha a <strong>NULL lehet valid</strong> érték</li>
+</ul></li>
+<li><em>konstans pointer szerinti</em>: <code>f(const * T x)</code>
+<ul>
+<li>a függvény <strong>nem módosíthatja a pointer által mutatott értéket</strong>,</li>
+<li>használd ezt, <strong>ha költséges a másolás</strong>,</li>
+<li>továbbá ha a <strong>NULL lehet valid</strong> érték</li>
+</ul></li>
+<li><em>referencia szerinti</em>: <code>f(T&amp; x)</code>
+<ul>
+<li>a függvény <strong>módosíthatja a paramétert</strong></li>
+<li>használd ezt, <strong>ha költséges a másolás</strong>,</li>
+<li>továbbá ha a <strong>NULL NEM lehet valid</strong> érték</li>
+</ul></li>
+<li><em>konstans referencia szerinti</em>: <code>f(const int&amp; x)</code>
+<ul>
+<li>a függvény <strong>nem módosíthatja a paramétert</strong>,</li>
+<li>használd ezt, <strong>ha költséges a másolás</strong></li>
+<li>továbbá ha a <strong>NULL NEM lehet valid</strong> érték</li>
+<li>próbáljuk mindig ezt a változatot használni saját osztályokhoz, <code>std::string</code>-hez és STL adatszerkezetekhez, ha paramétert nem akarjuk módosítani
+<ul>
+<li>copy konstruktorok, copy assignmentek paraméterei</li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="move-szemantika">Move-szemantika</h3>
+<p>A C++-ban értékszemantika van. Ez egy tiszta memóriaterület szeparációt tud eredményezni, de sokszor teljesítményromlást okozhat nagy objektumok másolása esetén.</p>
+<p>Tekintsük a következő <code>Array</code> implementációt:</p>
+<div class="sourceCode"><pre class="sourceCode c++"><code class="sourceCode cpp"><span class="kw">class</span> Array{
+    <span class="kw">public</span>:
+        Array (<span class="at">const</span> Array&amp;);
+        Array&amp; <span class="kw">operator</span>=(<span class="at">const</span> Array&amp;);
+        ~Array ();
+    <span class="kw">private</span>:
+        <span class="dt">double</span> *val;
+};
+Array <span class="kw">operator</span>+(<span class="at">const</span> Array&amp; lhs, <span class="at">const</span> Array&amp; rhs){
+    Array res = left;
+    res += right;
+    <span class="cf">return</span> res;
+}</code></pre></div>
+<p>Az <code>Array</code> egy osztály, melynek <code>+</code> operátora összekonkatenálja a két paramétert és visszaad egy új listát.</p>
+<p>A következő függvény meghívásánál azonban több köztes <code>Array</code> példány keletkezik és szűnik meg:</p>
+<div class="sourceCode"><pre class="sourceCode c++"><code class="sourceCode cpp"><span class="dt">void</span> f()
+{
+ Array b, c, d;
+ …
+ Array a = b + c + d;
+}</code></pre></div>
+<p>A move-szemantika az ehhez hasonló problémákra ad megoldást.</p>
+<ul>
+<li>másolás helyett &quot;ellopja&quot; az erőforrást</li>
+<li>törölhető állapotban hagyja a másik objektumot</li>
+<li>teljesítményoptimalizáció, objektum mozgatása másolás nélkül</li>
+<li>objektum birtokosának megváltoztatása (<em>ownership transfer</em>)
+<ul>
+<li>például <code>std::unique_ptr</code>-t nem szabad másolni, különben ki lesz az erőforrás birtokosa akinek a scope-jából kimegy?</li>
+</ul></li>
+</ul>
+<p>Ehhez kell:</p>
+<ul>
+<li>overloadolni lehessen a <em>Copy-konstruktort</em> és az <em>értékadó operátort</em>, illetve egyéb függvényeket
+<ul>
+<li>meg kell tartani a backward compatibility-t</li>
+<li>meg kell különböztetni a bal- és jobbértékeket</li>
+</ul></li>
+</ul>
+<h4 id="rvalue-lvalue">RValue, LValue</h4>
+<p>Korábbi nyelvekben értékadás: <code>&lt;variable&gt; = &lt;expression&gt;</code> (pl.: <code>x = 5</code>)</p>
+<p>C/C++-ban értékadás: <code>&lt;expression&gt; = &lt;expression&gt;</code> (pl.: <code>*++ptr = *++qtr</code>)</p>
+<ul>
+<li>de nem minden esetben működik, pl.: <code>a+5 = x</code> helytelen.</li>
+</ul>
+<p><strong>Lvalue</strong>:</p>
+<ul>
+<li>kifejezés, mely értékadás után is létezik</li>
+<li>azonosítóval egy memóriaterületre hivatkozik</li>
+<li>minden változó és konstans változó Lvalue</li>
+<li>lehetővé teszi, hogy a <code>&amp;</code> operátorral (<em>Lvalue referencia operátor</em>) megszerezzük annak memóriacímét</li>
+</ul>
+<p><strong>Rvalue</strong>:</p>
+<ul>
+<li>átmeneti (temporary) kifejezés, ami értékadás után már nem létezik</li>
+<li>van értéke, de nem lehet értéket rendelni hozzá</li>
+<li>literálok (<code>5</code>) és aritmetikai kifejezések Rvalue-k</li>
+</ul>
+<h4 id="rvalue-referencia-operátor">Rvalue referencia operátor (&amp;&amp;)</h4>
+<p>A <code>&amp;&amp;</code> operátorral lehet kasztolni Lvalue-t Rvalue-vá. (balértékből jobbértéket)</p>
+<ul>
+<li>kikényszeríthetjük a move-szemantika használatát</li>
+</ul>
+<p>Példa:</p>
+<div class="sourceCode"><pre class="sourceCode c++"><code class="sourceCode cpp"><span class="kw">struct</span> S
+{
+ S() { a = ++cnt; <span class="bu">std::</span>cout &lt;&lt; <span class="st">&quot;S()&quot;</span> &lt;&lt; <span class="bu">std::</span>endl; }
+ S(<span class="at">const</span> S&amp; rhs) { a = rhs.a; <span class="bu">std::</span>cout &lt;&lt; <span class="st">&quot;copyCtr&quot;</span> &lt;&lt; <span class="bu">std::</span>endl; }
+ S(S&amp;&amp; rhs) { a = rhs.a; <span class="bu">std::</span>cout &lt;&lt; <span class="st">&quot;moveCtr&quot;</span>&lt;&lt; <span class="bu">std::</span>endl; }
+ S&amp; <span class="kw">operator</span>=(<span class="at">const</span> S&amp; rhs) { a = rhs.a; <span class="bu">std::</span>cout &lt;&lt; <span class="st">&quot;copy=&quot;</span> &lt;&lt; <span class="bu">std::</span>endl; <span class="cf">return</span> *<span class="kw">this</span>; }
+ S&amp; <span class="kw">operator</span>=(S&amp;&amp; rhs) { a = rhs.a; <span class="bu">std::</span>cout &lt;&lt; <span class="st">&quot;move=&quot;</span> &lt;&lt; <span class="bu">std::</span>endl; <span class="cf">return</span> *<span class="kw">this</span>; }
+ <span class="dt">int</span> a ;
+ <span class="at">static</span> <span class="dt">int</span> cnt;
+};
+<span class="dt">int</span> S::cnt = <span class="dv">0</span>;
+
+<span class="dt">int</span> main()
+{
+ S a, b;
+ swap( a, b);
+}</code></pre></div>
+<p>Move-operátor használata nélkül:</p>
+<div class="sourceCode"><pre class="sourceCode c++"><code class="sourceCode cpp"><span class="kw">template</span>&lt;<span class="kw">class</span> T&gt;
+<span class="dt">void</span> swap(T&amp; a, T&amp; b)
+{
+    T tmp(a);
+    a = b;
+    b = tmp;
+}</code></pre></div>
+<p>Eredmény:</p>
+<div class="sourceCode"><pre class="sourceCode c++"><code class="sourceCode cpp">S()       <span class="co">// S a</span>
+S()       <span class="co">// S b</span>
+copyStr   <span class="co">// T tmp(a)</span>
+copy=     <span class="co">// a = b</span>
+copy=     <span class="co">// b = tmp</span></code></pre></div>
+<p>Move-operátor használatával:</p>
+<div class="sourceCode"><pre class="sourceCode c++"><code class="sourceCode cpp"><span class="kw">template</span>&lt;<span class="kw">class</span> T&gt;
+<span class="dt">void</span> swap(T&amp; a, T&amp; b)
+{
+    T tmp(<span class="bu">std::</span>move(a));
+    a = <span class="bu">std::</span>move(b);
+    b = <span class="bu">std::</span>move(tmp);
+}</code></pre></div>
+<p>Eredmény:</p>
+<div class="sourceCode"><pre class="sourceCode c++"><code class="sourceCode cpp">S()       <span class="co">// S a</span>
+S()       <span class="co">// S b</span>
+moveCtr   <span class="co">// T tmp(std::move(a))</span>
+move=     <span class="co">// a = std::move(b)</span>
+move=     <span class="co">// b = std::move(tmp)</span></code></pre></div>
+<h3 id="perfect-forwarding">Perfect forwarding</h3>
+<ul>
+<li>Függvény kapott paraméterének továbbítása egy másik függvény paraméterének
+<ul>
+<li>úgy, hogy az érték megtartja kategóriáját (Lvalue vagy Rvalue)</li>
+</ul></li>
+<li>Megvalósítás <code>std::forward</code>-al</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span>&lt;<span class="kw">class</span> T&gt;
+<span class="dt">void</span> wrapper(T&amp;&amp; arg)
+{
+    <span class="co">// arg mindig Lvalue lesz</span>
+    foo(<span class="bu">std::</span>forward&lt;T&gt;(arg)); <span class="co">// T-től függően arg továbbítása Lvalue- vagy RValue-ként</span>
+}</code></pre></div>
+<p>Például saját <code>make_unique</code> írása (<code>unique_ptr</code> nem másolható):</p>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span>&lt;<span class="kw">class</span> T, <span class="kw">class</span> U&gt;
+<span class="bu">std::</span>unique_ptr&lt;T&gt; my_make_unique(U&amp;&amp; u)
+{
+    <span class="cf">return</span> <span class="bu">std::</span>unique_ptr&lt;T&gt;(<span class="kw">new</span> T(<span class="bu">std::</span>forward&lt;U&gt;(u)));
+}</code></pre></div>
+<h2 id="erőforrásbiztos-programozás-raii-destruktor-és-szemétgyűjtés">3. Erőforrásbiztos programozás, RAII, destruktor és szemétgyűjtés <a name="chapter03"></a></h2>
+<h3 id="resource-allocation-is-initialization-elv-raii">Resource Allocation is Initialization-elv (RAII)</h3>
+<ul>
+<li>Erőforrások: fájlok, mutexek, socket-ek</li>
+<li>Erőforrás becsomagolása egy objektumba, ahol
+<ul>
+<li>Konstruktor: megszerzi, lefoglalja az erőforrást, beállítja az osztály invariánsait</li>
+<li>Destruktor: elengedi, felszabadítja az erőforrást (nem dob kivételt!)</li>
+</ul></li>
+<li>Az erőforrás élettartama az azt &quot;becsomagoló&quot; objektum élettartamához, scope-jához kötött
+<ul>
+<li>Ha az objektum kimegy a scope-ból <span class="math inline">\(\Longrightarrow\)</span> destruktor automatikusan felszabadítja az erőforrást</li>
+<li>Szokás ezt az objektumot az erőforrás &quot;birtokosának&quot; is hívni</li>
+<li>Hasznos kerülni a globális változókat birtokosként, minél inkább lokálisabbra korlátozzuk a scope-ot, annál jobb</li>
+</ul></li>
+<li>Kivételbiztos (<em>exception safe</em>) programozás támogatása</li>
+</ul>
+<p>Példák:</p>
+<ul>
+<li><code>std::ifstream</code>, <code>std::ofstream</code>
+<ul>
+<li>Konstruktor: fájl megnyitása</li>
+<li>Destruktor: fájl lezárása</li>
+</ul></li>
+<li><code>std::string</code>
+<ul>
+<li>Konstruktor: <code>char</code> tömb dinamikus allokációja</li>
+<li>Destruktor: <code>char</code> tömb felszabadítását</li>
+</ul></li>
+<li>STL konténerek</li>
+<li><code>std::lock_guard</code>
+<ul>
+<li>Konstruktor: kölcsönös kizárás megvalósítása többszálú környezetben, mutex becsomagolása és lock-olása</li>
+<li>Destruktor: mutex elengedése</li>
+</ul></li>
+<li>RAII osztály írása hálózati socket-ekhez amik lezárják magukat</li>
+</ul>
+<h3 id="smart-pointerek-általában">Smart pointerek általában</h3>
+<ul>
+<li>RAII filzófiát terjesszük ki a memóriára
+<ul>
+<li>nem memóriában kell gondolkodni</li>
+<li>memóriát úgy kezeljük, mint általános erőforrást</li>
+</ul></li>
+<li><code>new</code> elrejtése konstruktorban, <code>delete</code> hívása destruktorban amikor smart pointer elhagyja a scope-ot</li>
+<li>Destruktorban automatikusan felszabadítja a becsomagolt objektumot a heap-ről</li>
+<li>Kivételkezelésnél hasznos
+<ul>
+<li>pre-C++11: mi van ha <code>new</code> és <code>delete</code> hívása között kivétel keletkezik és <code>delete</code> soha nem hívódik meg?</li>
+</ul></li>
+<li>Felüldefiniált operátorokkal (<code>*</code>, <code>-&gt;</code>) nyers pointer-ként használható</li>
+<li><code>get()</code>: nyers pointer visszaadása</li>
+</ul>
+<h3 id="auto-pointer-stdauto_ptr">Auto pointer (std::auto_ptr)</h3>
+<ul>
+<li>Legegyszerűbb smart pointer, ownership-modell alapján kezeli a memóriát
+<ul>
+<li><code>auto_ptr</code>-t birtokló objektum scope-jához kötött</li>
+</ul></li>
+<li>Copy konstruktor és copy assignment hívásakor nincs másolás <span class="math inline">\(\Longrightarrow\)</span> ownership átadása</li>
+<li>Még C++98-ból maradt meg</li>
+<li>Elavult, nem ajánlott
+<ul>
+<li>STL konténerekkel és algoritmusokkal nem működik jól</li>
+<li>Tömbökkel nem működik együtt</li>
+<li>Ownership átadása másoló műveletek felüldefiniálásával nem az igazi</li>
+<li>Nem lehet tetszőleges deleter-t adni neki</li>
+</ul></li>
+</ul>
+<h3 id="unique-pointer-stdunique_ptr">Unique pointer (std:unique_ptr)</h3>
+<ul>
+<li><code>auto_ptr</code> &quot;javított változata&quot; C++11-től, ajánlott</li>
+<li>STL-el jól működik</li>
+<li><em>move-only</em> típus, nem másolható
+<ul>
+<li>Copy konstruktora és copy assignment operátora le van tiltva</li>
+<li>Helyette van move konstruktora és copy assignment operátora <span class="math inline">\(\Longrightarrow\)</span> igazi ownership átmozgatás</li>
+</ul></li>
+<li>Template paraméterként tetszőleges deleter megadása</li>
+<li>Nincs overhead-je, ugyanannyit foglal mint egy nyers pointer
+<ul>
+<li>kivéve ha deleter-t adunk</li>
+</ul></li>
+<li>Érdemes <code>std::make_unique</code>-al foglalni memóriát
+<ul>
+<li>C++14-től</li>
+<li>&quot;No news means good news&quot;: explicit <code>new</code> operátor hibát dobhat</li>
+</ul></li>
+</ul>
+<h3 id="shared-pointer-stdshared_ptr">Shared pointer (std::shared_ptr)</h3>
+<ul>
+<li>Megosztott ownership több birtokos objektum között</li>
+<li>Referenciaszámlálót használó pointer
+<ul>
+<li>scope elhagyásakor számláló csökkentése eggyel</li>
+<li>amikor az utolsó <code>shared_ptr</code> kimegy a scope-ból és a referenciaszámláló nulla lesz: felszabadítás</li>
+</ul></li>
+<li><code>std::make_shared</code> (C++11-től): mint <code>std::make_unique</code></li>
+<li>Létrehozáskor egy külön memóriaterületen sharing group, control block létrehozása
+<ul>
+<li>ez a blokk tartalmazza a referenciaszámlálót és a menedzselt objektumot</li>
+<li>szálbiztos hozzáférés, referenciaszámláló növelésekor lock-olás</li>
+<li>ezért lassabb <code>unique_ptr</code>-nél, ha lehet inkább <code>unique_ptr</code>-t érdemes használni (tervezd meg jobban a szoftvered)</li>
+<li>(<em>incidens: Java programozók áttértek C++11-re, telerakták std::shared_ptr-el az egész programot és lassabban működött mint Java garbage collector-ja</em>)</li>
+</ul></li>
+<li><code>shared_ptr</code>-el lábon lőheted magad: ciklikus referenciák <span class="math inline">\(\Longrightarrow\)</span> memóriaszivárgás. Megoldások:
+<ul>
+<li><code>unique_ptr</code> használata és ownership mozgatása új birtokosnak</li>
+<li><code>weak_ptr</code> használata</li>
+</ul></li>
+</ul>
+<h3 id="weak-pointer-stdweak_ptr">Weak pointer (std::weak_ptr)</h3>
+<ul>
+<li>Referencia tárolása objektumra, amit <code>shared_ptr</code> már kezel
+<ul>
+<li>Egyfajta passzív megfigyelő, &quot;observer&quot;</li>
+<li>Nem birtokol semmit</li>
+</ul></li>
+<li>Nincs memóriakezelő művelete</li>
+<li>&quot;Ellenszer&quot; ciklikus <code>shared_ptr</code> referenciákra</li>
+<li>Ha kell, <code>shared_ptr</code>-é konvertálható</li>
+<li>Ha <code>shared_ptr</code> törlődik: üres helyre mutat!</li>
+</ul>
+<h3 id="szemétgyűjtés-garbage-collection-gc-java-ban">Szemétgyűjtés (<em>Garbage Collection, GC</em>) Java-ban</h3>
+<p>(<em>Nem találtam Multiparadigma programozás tananyagában C++ garbage collector-okról szóló részt. Ha mégis kell beszélni valamit róla, akkor a Boehm garbage collector-t érdemes megemlíteni.</em>)</p>
+<ul>
+<li>Java-ban csak allokálni lehet, deallokálás nem megengedett</li>
+<li>Referenciatípusok csak heap-en tárolódnak</li>
+<li>Referenciafajták Java-ban:
+<ul>
+<li>Strong reference: alapértelmezett referencia, GC nem törölheti</li>
+<li>Soft reference: ha egy objektumra minden referencia Soft, akkor nem garantált, hogy GC megtartja őket</li>
+<li>Weak reference: mint Soft, csak GC előbb szabadítja fel</li>
+</ul></li>
+<li>Szemétgyűjtés: a futtatórendszer időnként detektálja és deallokálja azokat az objektumokat, amik már nem elérhetők, nincs rájuk referencia</li>
+</ul>
+<h4 id="referenciaszámláló-szemétgyűjtés-reference-counting">Referenciaszámláló szemétgyűjtés (reference counting)</h4>
+<ul>
+<li>Minden egyes objektumra számoljuk, hogy hányan hivatkoznak rá</li>
+<li>Gyors, csak a számlálót kell növelni és csökkenteni
+<ul>
+<li><code>new</code>, allokáció: növelés eggyel</li>
+<li>referencia megszerzése, hivatkozás az objektumra máshonnan: növelés eggyel</li>
+<li>referencia elhagyása: csökkentés eggyel</li>
+</ul></li>
+<li>Ciklikus referenciák esetén viszont nem tud deallokálni, memóriaszivárgás törétnik (vesd össze: <code>std::shared_ptr</code>)</li>
+</ul>
+<h4 id="mark-and-sweep-szemétgyűjtés">Mark and Sweep szemétgyűjtés</h4>
+<ul>
+<li>Megjelöli (mark) az elérhető objektumokat, a jelöletlen objektumokat pedig törli (sweep)</li>
+<li>Gyökérhalmaz (root set): referenciák amik használatban vannak</li>
+<li>Mark and sweep két fázisa:
+<ol style="list-style-type: decimal">
+<li>Mark: gyökérhalmazból indulva a GC bejárja a referenciákat tartalmazó gráfot és megjelöli a használt objektumokat</li>
+<li>Sweep: végighalad a jelöletlen objektumokon és törli őket</li>
+</ol></li>
+<li>Naiv implementáció szünetelteti a programot szemétgyűjtés közben (&quot;stop the world&quot;)</li>
+</ul>
+<h4 id="generációs-szemétgyűjtés-generational">Generációs szemétgyűjtés (Generational)</h4>
+<ul>
+<li>Heap több részre, &quot;generációra&quot; van osztva
+<ol style="list-style-type: decimal">
+<li>Fiatal generáció (Young generation)</li>
+<li>Idős generáció (Old generation)</li>
+<li>Végleges generáció (Permanent genertion)</li>
+</ol></li>
+<li>Minden új objektum a fiatal generációba kerül</li>
+<li>Minor garbage collection: amikor a fiatal generáció megtelik (gyorsabb)</li>
+<li>A fiatal generáció túlélői (survivors) &quot;idősödnek&quot;, egy bizonyos &quot;kor&quot; elérése után pedig bekerülnek az idős generációba</li>
+<li>Major garbage collection: amikor az idős generáció megtelik (lassabb)</li>
+<li>Végleges generáció: JVM metaadatai tárolódnak amik az osztályokat leírják</li>
+</ul>
+<h2 id="kivételkezelés-kivételbiztos-programozás">4. Kivételkezelés, kivételbiztos programozás <a name="chapter04"></a></h2>
+<h3 id="hibakezelés">Hibakezelés</h3>
+<p>Hiba: program futása alatt bekövetkezett nemkívánt állapot. Két fajtáját különböztetjük meg:</p>
+<ul>
+<li>Logikai hiba (logic error): a program nem az elvárásnak megfelelő eredményt nyújtja, elő- vagy utófeltétel megsértése</li>
+<li>Futásidejű hiba (runtime error): rendszer állapotától függő hibás végrehajtás vagy megszakítás, mint például memória elfogyása, hibás IO, hibás hálózati kapcsolódás</li>
+</ul>
+<p>Hibakezelés alatt a runtime error-okkal foglalkozunk.</p>
+<h4 id="hibakezelés-klasszikus-c-ben">Hibakezelés klasszikus C-ben</h4>
+<ul>
+<li>függvény visszatérési értékei hibakódok / NULL referencia</li>
+<li>externális <code>errno</code> kód</li>
+<li>visszatérési érték vizsgálat, pl.: <code>fseek</code>, <code>int</code>-et ad, <code>bool</code>-ként kezeljük</li>
+<li>hiba flag-ek, pl.: hibaflag beállítódik <span class="math inline">\(\Rightarrow\)</span> többi IO művelet nem csinál semmit</li>
+<li><code>assert()</code>: nem teljesül a feltétel <span class="math inline">\(\Rightarrow\)</span> hibaüzenet, mely a felhasználó számára nemigazán érthető (pl. egy repülőpilótának nem bizalomgerjesztő egy ilyen üzenet: <code>Assertion failed: Inv() line 64</code>)</li>
+<li>hibakód változójának paraméterként való átadása referenciaként (klasszikus C-ben pointer)</li>
+<li>struct-al való visszatérés, mely az eredmény mellett tartalmazza a hibakódot is (mintha egy pair-ünk lenne)</li>
+</ul>
+<h4 id="kivételkezelés-alapköve-c-ben-jump-műveletek">Kivételkezelés alapköve C-ben: jump műveletek</h4>
+<ul>
+<li>Call-stack állapotát lehet a módszerrel elmenteni/visszaállítani
+<ul>
+<li>függvényhíváskor <span class="math inline">\(\Rightarrow\)</span> függvény stackframe a stack-re kerül</li>
+<li>a jump műveletekkel vissza lehet állni a stack-en korábbi állapotra (a bázispointer helyének segítségével)</li>
+</ul></li>
+</ul>
+<ol style="list-style-type: decimal">
+<li><code>jmp_buf x;</code> - reprezentálja az elmentett stack állapotot</li>
+<li><code>setjmp(x)</code> - elmenti a stack állapotát, illetve ide ugrik vissza a vezérlés <code>longjmp</code> hívása után</li>
+<li><code>longjmp(x, 5)</code> - kiváltja a stack visszaállítását az <code>x</code> által reprezentált állapotba. Mellékel egy hibakódot is, melyet a <code>setjmp</code> visszaad.</li>
+</ol>
+<p>Használat:</p>
+<div class="sourceCode"><pre class="sourceCode c++"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;setjmp.h&gt;</span>
+<span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span>
+
+jmp_buf x;
+
+<span class="dt">void</span> f()
+{
+    longjmp(x,<span class="dv">5</span>);
+}
+
+<span class="dt">int</span> main()
+{
+    <span class="dt">int</span> i = <span class="dv">0</span>;
+
+    <span class="cf">if</span> ( (i = setjmp(x)) == <span class="dv">0</span> )
+    {
+        f();
+    }
+    <span class="cf">else</span>
+    {
+        <span class="cf">switch</span>( i )
+        {
+        <span class="cf">case</span>  <span class="dv">1</span>:
+        <span class="cf">case</span>  <span class="dv">2</span>:
+        <span class="cf">default</span>: fprintf( stdout, <span class="st">&quot;error code = </span><span class="sc">%d\n</span><span class="st">&quot;</span>, i); <span class="cf">break</span>;
+        }
+    }
+    <span class="cf">return</span> <span class="dv">0</span>;
+}</code></pre></div>
+<p>Érezhetőek a következő megfeleltetések:</p>
+<ul>
+<li><code>setjmp</code> - <code>try</code></li>
+<li><code>longjmp</code> - <code>throw</code></li>
+<li><code>else</code> - <code>catch</code></li>
+</ul>
+<h4 id="static-assert-c11">Static Assert (C++11)</h4>
+<p>Fordítási időben kiszámolható boolean kifejezések (<code>bool_constexpr</code>) igazságértékét vizsgálja</p>
+<ul>
+<li>ugyanúgy, mint a sima <code>assert()</code>, hamis esetben hibát dob, de jelen esetben forítási hibát.</li>
+</ul>
+<h3 id="kivételkezelés">Kivételkezelés</h3>
+<h4 id="kivételkezelés-célja">Kivételkezelés célja</h4>
+<ul>
+<li>elválasztani a hiba fellépésének és kezelésének helyét (én detektálhatom a hibát, de másvalaki más modulban tudja mit csináljon vele)</li>
+<li>az adatot típushelyesen tudjuk a hiba fellépési helyétől a handler-hez szállítani</li>
+<li>ne járjon semmilyen extra (kód/idő/hely) hátránnyal, ha nem használjuk</li>
+<li>minden kivételt a megfelelő handler kapja el</li>
+<li>többszálú környezetben is megfelelő</li>
+<li>ha nincs hiba <span class="math inline">\(\Rightarrow\)</span> ne legyen overheadje (vagy legalábbis minimális legyen)
+<ul>
+<li><code>if</code>-ek nem jók, mert a folyamatos kiértékelés órajelet emészt</li>
+<li>kivételek megcsinálhatók úgy, hogy majdnem költségmentesek legyenek</li>
+</ul></li>
+</ul>
+<h4 id="try-catch">try-catch</h4>
+<div class="sourceCode"><pre class="sourceCode c++"><code class="sourceCode cpp"><span class="cf">try</span> {
+    f();
+    <span class="co">// ...</span>
+}
+<span class="cf">catch</span> (T1 e1) { <span class="co">/* handler for T1 */</span> }
+<span class="cf">catch</span> (T2 e2) { <span class="co">/* handler for T2 */</span> }
+<span class="cf">catch</span> (T3 e3) { <span class="co">/* handler for T3 */</span> }</code></pre></div>
+<ul>
+<li><code>throw</code> - bármi dobható, de az értelmes: <code>std:exception</code> leszármazottjai
+<ul>
+<li>Futásidejű hibákhoz: <code>std::runtime_error</code></li>
+<li>Logikai hibákhoz: <code>std::logic_error</code></li>
+</ul></li>
+<li><code>catch(T e)</code> - <code>T</code> típusú érték handlere
+<ol style="list-style-type: decimal">
+<li>Elkapja a kivételt, ha az <code>T</code> típusú</li>
+<li>vagy annak leszármazottja</li>
+<li>illetve pointer vagy referencia és a hivatkozott értékre fennáll 1) vagy 2)</li>
+</ol></li>
+<li>Nem szabad <code>new</code>-val exception-t létrehozni <span class="math inline">\(\Rightarrow\)</span> memóriaszivárgás</li>
+</ul>
+<h4 id="hierarchia">Hierarchia</h4>
+<ul>
+<li>Az öröklődést használjuk kivételek csoportosítására</li>
+<li>Az általánosabb handler elkapja a speciálisabb exceptiont</li>
+<li>A <code>catch</code> ágak a megadott sorrendben értékelődnek ki</li>
+<li>ezért figyelni kell a handlerek általánosságát és sorrendjét
+<ul>
+<li>A speciálisabb kerüljön felülre és az általánosabb alulra</li>
+</ul></li>
+</ul>
+<p>Továbbra sem ajánlott <code>new</code>-val kivételt létrehozni. Ha a dianamikus típussal akarunk játszani, inkább használjuk a következő megoldást:</p>
+<div class="sourceCode"><pre class="sourceCode c++"><code class="sourceCode cpp"><span class="kw">struct</span> ExceptionBase{
+    <span class="kw">virtual</span> <span class="dt">void</span> raise() { <span class="cf">throw</span> *<span class="kw">this</span>; }
+    <span class="kw">virtual</span> ~ExceptionBase() {}
+};
+
+<span class="kw">struct</span> ExceptionDerived : ExceptionBase{
+    <span class="kw">virtual</span> <span class="dt">void</span> raise() { <span class="cf">throw</span> *<span class="kw">this</span>; }
+};
+
+<span class="dt">void</span> foo(ExceptionBase&amp; e){
+    e.raise(); <span class="co">// Uses dynamic type of e while raising an exception.</span>
+}
+
+<span class="dt">int</span> main (<span class="dt">void</span>){
+    ExceptionDerived e;
+    <span class="cf">try</span> {
+        foo(e);
+    }<span class="cf">catch</span> (ExceptionDerived&amp; e) {
+        ...
+    }<span class="cf">catch</span> (...) {
+        ...
+    }
+}</code></pre></div>
+<h4 id="kivételkezelés-és-osztályok">Kivételkezelés és osztályok</h4>
+<p>Kérdéses esetek: konstruktor, destruktor</p>
+<ul>
+<li>Konstruktor
+<ul>
+<li>Ha a konstruktor dob, terület le lett foglalva, de a pointer nem lett beállítva <span class="math inline">\(\Rightarrow\)</span> nincs gond, a rendszer deallokálja</li>
+<li>De: a konstruktoron belül lefogalt területet a destruktor tudja felszabadítani. A destruktort viszont nem lehet meghívni mert az objektum létre se jött rendesen <span class="math inline">\(\Rightarrow\)</span> probléma</li>
+</ul></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode c++"><code class="sourceCode cpp"><span class="kw">class</span> X
+{
+    <span class="kw">public</span>:
+        X(<span class="dt">int</span> i) { p = <span class="kw">new</span> <span class="dt">char</span>[i]; init(); }
+        ~X() { <span class="kw">delete</span> [] p; }       <span class="co">// must not throw exception</span>
+    <span class="kw">private</span>:
+        <span class="dt">void</span> init() { ... <span class="cf">throw</span> ... }   <span class="co">// BAD: destructor won&#39;t run !</span>
+        <span class="dt">char</span> *p;                        <span class="co">// constructor was not completed</span>
+    };</code></pre></div>
+
+<p>Ha tagváltozó inicializálása dob hibát, akkor dob a konstruktor is</p>
+<div class="sourceCode"><pre class="sourceCode c++"><code class="sourceCode cpp"><span class="kw">class</span> X
+{
+    <span class="kw">public</span>:
+        X() { <span class="cf">throw</span> <span class="dv">1</span>; }
+};
+<span class="kw">class</span> Y
+{
+    <span class="kw">public</span>:
+        Y()
+        <span class="cf">try</span>
+            : x()
+        { }
+        <span class="cf">catch</span>( ... ) { <span class="co">/* throw; */</span> }
+    <span class="kw">private</span>:
+        X x;
+};
+<span class="dt">int</span> main(){
+    <span class="cf">try</span> {
+        Y y;
+        <span class="cf">return</span> <span class="dv">0</span>;
+    }
+    <span class="cf">catch</span> (<span class="dt">int</span> i)
+    {
+        <span class="bu">std::</span>cerr &lt;&lt; <span class="st">&quot;exception: &quot;</span> &lt;&lt; i &lt;&lt; <span class="bu">std::</span>endl;
+    }
+}</code></pre></div>
+<ul>
+<li>Destruktor
+<ul>
+<li>destruktorokat kétféle okból hívunk
+<ul>
+<li>nomális esetben</li>
+<li>kivételkezeléskor <span class="math inline">\(\Rightarrow\)</span> ha a destruktor is kivételt dob az nem definiált viselkedéshez vezet (legtöbbször a <code>terminate()</code> meghívásához)</li>
+</ul></li>
+<li><span class="math inline">\(\Rightarrow\)</span> Ökölszabály: <strong>destruktor nem dobhat kivételt</strong></li>
+</ul></li>
+</ul>
+<h4 id="noexcept-c11">Noexcept (C++11)</h4>
+<ul>
+<li>Kifejezhető vele, hogy egy kifejezés, függvény biztosan nem dob-e exceptiont</li>
+<li>Fordítási időben értékelődik ki</li>
+</ul>
+<p>Kétféle formában létezik:</p>
+<ul>
+<li>operátor forma: <code>bool noexcept(expr);</code>
+<ul>
+<li>Nem értékeli ki a kifejezést (hasonló a <code>sizeof</code>-hoz)</li>
+<li><code>false</code>, ha
+<ul>
+<li>a kifejesés dob</li>
+<li>a kifejesésben van dynamic_cast</li>
+<li>a kifejesésnek van <code>type_id</code>-ja</li>
+<li>van a kifejesésben függvény, ami nem <code>noexcept(true)</code> és nem <code>constexpr</code></li>
+</ul></li>
+<li><code>true</code> különben</li>
+</ul></li>
+<li>specifier forma: <code>void f() noexcept(expr) { }</code>
+<ul>
+<li>a régi <code>throw()</code> helyett van</li>
+<li>pl.: Ha <code>g()</code> nem dob, akkor <code>f()</code> sem:</li>
+</ul></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode c++"><code class="sourceCode cpp">    <span class="kw">template</span> &lt;<span class="kw">typename</span> T&gt;
+    <span class="dt">void</span> f() <span class="kw">noexcept</span> ( <span class="kw">noexcept</span>( T::g() ) )
+    {
+      g();
+    }</code></pre></div>
+<p>Magyarázat: <code>noexcept( T::g() )</code> - operátor formás noexcept, megmondja, hogy <code>g()</code> dob-e exception-t</p>
+<ul>
+<li>Ha igen, akkor <code>void f() noexcept(false)</code> lesz fordítás után</li>
+<li>Ha nem dob, akkor <code>void f() noexcept(true)</code> fordítás után</li>
+<li>tehát ha <code>g()</code> nem dob, akkor <code>f()</code> sem</li>
+</ul>
+<h2 id="a-konkurens-programozás-alapelemei-javában-és-c-ban">5. A konkurens programozás alapelemei Javában és C++-ban <a name="chapter05"></a></h2>
+<h3 id="problémák-a-c98-memóriamodellel">Problémák a C++98 memóriamodellel</h3>
+<ul>
+<li>Egyszálas vezérlésre tervezték</li>
+<li>Fordító kioptimalizálhat változókat, még <code>volatile</code> esetén is (az a kulcsszó is egyszálasra tervezett)</li>
+<li>Légből kapott értékeket kaphatunk</li>
+</ul>
+<h3 id="c11-memóriamodell">C++11 memóriamodell</h3>
+<ul>
+<li>Új memóriamodell, standard könyvtár-beli támogatás szálkezelésre, szinkronizációra és atomikus műveletekre</li>
+<li>Rendszer garantálja, hogy a párhuzamos végrehajtás szekvenciálisan konzisztens lesz</li>
+</ul>
+<h3 id="hogyan-írjunk-szálbiztos-singleton-t-c11-től">Hogyan írjunk szálbiztos Singleton-t C++11-től?</h3>
+<p>C++11 memóriamodellje már garantálja, hogy lokális statikus változók szálbiztosan jönnek létre</p>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">class</span> Singleton   <span class="co">// Meyers Singleton, nevét Scott Meyers-ről kapta</span>
+{
+<span class="kw">public</span>:
+    Singleton&amp; getInstance()
+    {
+        <span class="at">static</span> Singleton _instance;
+        <span class="cf">return</span> instance;
+    }
+
+<span class="kw">private</span>:
+    Singleton _instance;
+}</code></pre></div>
+<h3 id="stdthread"><code>std::thread</code></h3>
+<ul>
+<li>Konstruktorába függvénynevet, függvénypointert, funktort vagy lambdát adhatunk
+<ul>
+<li>továbbá függvények paramétereit</li>
+</ul></li>
+<li>Konstruktorhívás után új szálat indít, paraméterként kapott függvényt az új szálban hajtja végre</li>
+<li><code>thread.join()</code>
+<ul>
+<li>Hívó szálat blokkolja, amíg a létrehozott szál nem végez</li>
+<li>Ha függvény végzett és a szál destruktora meghívódott <code>join()</code> nélkül: <code>std::system_error</code> kivételt dob</li>
+<li>Írhatunk akár egy saját RAII-elvű <code>scoped_thread</code> osztályt, ami becsomagolja <code>std::thread-et</code> és destruktorában meghívja <code>join()</code>-t</li>
+</ul></li>
+<li><code>thread.detach()</code>
+<ul>
+<li>Megengedi hogy &quot;leváljon&quot; a száltól aki létrehozta</li>
+<li>Ne várja meg a főszál, míg a detach-elt szál befejeződjön, függetlenül hajtódik végre</li>
+<li>detach-elt szál futása végén felszabadítja erőforrásait és nem dob <code>std::systeM-error</code>-t</li>
+</ul></li>
+</ul>
+<h3 id="stdmutex"><code>std::mutex</code></h3>
+<ul>
+<li>Szinkronizációt segítő, kölcsönös kizárást megvalósító objektum amit a szál birtokol</li>
+<li>Műveletei:
+<ul>
+<li><code>lock()</code>: lezárás, más szálat nem enged a kölcsönösen kizárt régióba. Szál blokkol amíg nem sikerül megkapnia</li>
+<li><code>unlock()</code>: elengedés, más szál lefoglalhatja a mutexet</li>
+<li><code>try_lock()</code>: mint <code>lock()</code>, de sikertelen lock-olás esetén csak <code>false</code>-al tér vissza</li>
+</ul></li>
+<li>Változatai:
+<ul>
+<li><code>std::recursive_mutex</code>: a mutex birtokosa nem fogja saját magát blokkolni ha újra lefoglalja a mutexet</li>
+<li><code>std::timed_mutex</code>: megadható hogy amikor lock-olni akar, akkor mennyi ideig próbálkozzon</li>
+</ul></li>
+</ul>
+<h3 id="stdlock_guard"><code>std::lock_guard</code></h3>
+<ul>
+<li>RAII-csomagoló mutex számára
+<ul>
+<li>konstruktorban lezárja a mutexet</li>
+<li>scope-ot elhagyva destruktorban elengedi a mutexet</li>
+</ul></li>
+<li>Nem másolható
+<ul>
+<li><code>std::unique_lock</code>: csak move-olható</li>
+</ul></li>
+</ul>
+<h3 id="stdatomict"><code>std::atomic&lt;T&gt;</code></h3>
+<ul>
+<li>Csomagoló, a becsomagolt változóban atomikus írási és olvasási műveletek</li>
+<li>Nem kell állandóban <code>mutex.lock()</code>/<code>mutex.unlock()</code>-okat írni eléréséhez, csökkenti a boilerplate kódot</li>
+<li>Műveletei:
+<ul>
+<li><code>store()</code> (atomikus írás)</li>
+<li><code>load()</code> (atomikus olvasás)</li>
+</ul></li>
+</ul>
+<h3 id="párhuzamos-programozás-c-ban-stdasync-stdfuture-stdpromise">Párhuzamos programozás C++-ban (<code>std::async</code>, <code>std::future</code>, <code>std::promise</code>)</h3>
+<ul>
+<li><code>std::async</code>
+<ul>
+<li>Elndít egy aszinkron számítást új szálban</li>
+<li>Eredményét <code>future</code>-be írja</li>
+<li>Hiba esetén kivételobjektumot ír a <code>future</code>-be</li>
+</ul></li>
+<li><code>std::future</code>
+<ul>
+<li>Csak olvasható</li>
+<li><code>get()</code>-el kapjuk meg az eredményt és addig blokkolja a vezérlést, amíg meg nem kapjuk</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">
+<span class="bu">std::</span>future&lt;<span class="dt">int</span>&gt; myfuture = <span class="bu">std::</span>async(<span class="bu">std::</span>launch<span class="bu">::</span>async, myfunction);
+
+<span class="co">// ...</span>
+
+<span class="dt">int</span> x = myfuture.get()  <span class="co">// Blokkolni fog amíg std::async-ból</span>
+                        <span class="co">// indított szál nem végez és nincs eredmény</span></code></pre></div></li>
+<li><code>std::promise</code>
+<ul>
+<li>Egy külön szál írhatja</li>
+<li><code>future</code> készíthető belőle <code>promise.get_future()</code>-el</li>
+<li><code>promise</code> és <code>future</code> egy csatornát alkot, illetve termelő-fogyasztó munkamenet szimulálható
+<ul>
+<li><code>promise</code>: író (termelő)</li>
+<li><code>future</code>: olvasó (fogyasztó)</li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="konkurens-és-párhuzamos-programozás-java-ban">Konkurens és párhuzamos programozás Java-ban</h3>
+<h4 id="szálak">Szálak:</h4>
+<ul>
+<li>Támogató osztály: <code>java.lang.Thread</code></li>
+<li>Mindkét esetben a <code>run()</code> metódust kell felüldefiniálni</li>
+<li>Szál létrehozása:
+<ol style="list-style-type: decimal">
+<li>Saját szál származtatása a Thread osztályból: <code>new HelloThread().start()</code></li>
+<li><code>Runnable</code> interfészt megvalósító osztály létrehozása és <code>Thread</code> konstruktor paramétereként adása: <code>new Thread(new HelloRunnable()).start()</code></li>
+</ol></li>
+<li>Szálak lehetséges életciklusa:
+<ol style="list-style-type: decimal">
+<li>Létrejött (created)</li>
+<li>Futtatható (runnable)</li>
+<li>Futó (running)</li>
+<li>Blokkolt (blocked)</li>
+<li>Végetért (terminated)</li>
+</ol></li>
+</ul>
+<h4 id="alapvető-szinkronizáció">Alapvető szinkronizáció:</h4>
+<ul>
+<li><code>synchronized</code> metódus:
+<ul>
+<li>Szál annak az objektum lock-ján zárol, akié maga a <code>synchronized</code> metódus.</li>
+</ul></li>
+<li><code>synchronized</code> blokk:
+<ul>
+<li>Természetesen nem csak metódusokra implikálható, szinkronizációs blokkot is hozhatunk létre, melynek belsejében adhatjuk meg azokat az utasításokat melyekre kizárólagos hozzáférést szeretnénk biztosítani.</li>
+</ul></li>
+<li><code>volatile</code> változó:
+<ul>
+<li>Explicit lock nélküli szinkronizációt biztosít, rákényszerítve a fordítót, hogy mindig olvassa ki a volatile változó értékét s így nem fordulhat elő az, hogy elavult (cache-elt) értéket kapjunk.</li>
+</ul></li>
+<li>Konkurens használatra tervezett adatszerkezetek: <code>Vector</code>, <code>CopyOnWriteArrayList</code>, stb.</li>
+<li>Szinkronizációs osztályok: <code>Latch</code>, <code>Semaphore</code>, <code>Barrier</code></li>
+</ul>
+<h4 id="párhuzamos-programozás">Párhuzamos programozás</h4>
+<ul>
+<li><code>Future</code>: interfész, aszinkron számítás eredményét reprezentálja (mint C++11-ben az <code>std::future</code>)
+<ul>
+<li>Eredményt <code>get()</code>-el kaphatjuk meg, mely addig blokkolódik, míg meg nem kapja az eredményt.</li>
+<li>Alapimplementációja <code>FutureTask</code></li>
+</ul></li>
+<li><code>Executor</code>
+<ul>
+<li><code>Executor</code> egy szálat több <code>Runnable</code> objektum végrehajtására tud felhasználni. Elosztja a beérkező feladatokat egy pool-ban lévő szálak között.</li>
+<li><code>ExecutorService</code> egy kiterjesztése az <code>Executor</code>-nak. A taszkok beküldésekor (<code>submit()</code>) nem csak <code>Runnable</code>-t, hanem <code>Callable</code>-t is elfogad, ez <code>Future</code>-t tud visszaadni.</li>
+</ul></li>
+</ul>
+<h2 id="további-források">6. További források <a name="references"></a></h2>
+<ul>
+<li>http://aszt.inf.elte.hu/~gsd/multiparadigm/</li>
+<li>https://isocpp.org/faq</li>
+<li>http://thbecker.net/articles/rvalue_references/section_01.html</li>
+<li>https://docs.oracle.com/javase/tutorial/essential/concurrency/</li>
+<li>http://www.cplusplus.com/articles/z6vU7k9E/</li>
+<li>http://people.inf.elte.hu/groberto/elte_amp/eloadas_anyagok/elte_amp_ea09_eml.pdf</li>
+<li>http://people.inf.elte.hu/groberto/elte_amp/eloadas_anyagok/elte_amp_ea10_eml.pdf</li>
+<li>https://isocpp.org/wiki/faq/value-vs-ref-semantics</li>
+<li>http://en.cppreference.com/w/cpp/language/copy_elision</li>
+<li>http://aszt.inf.elte.hu/~gsd/multiparadigm/3_ptr_ref/ptrref4.cpp.html</li>
+<li>https://docs.microsoft.com/en-us/cpp/cpp/lvalues-and-rvalues-visual-cpp</li>
+<li>https://github.com/AnthonyCalandra/modern-cpp-features</li>
+<li>http://en.cppreference.com/w/cpp/language/raii</li>
+<li>https://isocpp.org/wiki/faq/cpp11-library#unique-ptr</li>
+<li>http://kitlei.web.elte.hu/segedanyagok/foliak/java/en-java-bsc/02object-orientation.pdf</li>
+<li>http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/gc01/index.html</li>
+</ul>
+</body>
+</html>
