@@ -18,7 +18,7 @@ A kidolgozások az ELTE IK honlapján elérhető [hivatalos tételsor](http://ww
     programok formális verifikációja (A helyesség-vizsgálati módszerek menete, a nevezetes programszerkezetek
     helyességének szabályai.) Az interferencia-mentesség és a holtpont-mentesség (Owicki-Gries) vizsgálata.
     A kölcsönös kizárás és megvalósítása.
-    [kidolgozás](s00/1.md)
+    [kidolgozás](s00/1.md), [pdf](s00/1.pdf)
     2. Absztrakt adattípus univerzális algebrai modellje, adattípus, absztrakt adattípus.
     Adattípus specifikációk, példák. Adattípusok specifikációjának elemzése. Tulajdonságok felírása, bizonyítása.
     Adattípus osztály specifikációja. Szignatúra morfizmus és kiterjesztése axiómákra. Paraméterátadás, annak jelentése,
@@ -26,59 +26,59 @@ A kidolgozások az ELTE IK honlapján elérhető [hivatalos tételsor](http://ww
     Szintaxis, jelentés. Az öröklődés definíciója a morfizmus diagram alapján. A Liskov féle értelemben vett szemantikai
     öröklődéssel előállított típus definíciója. Liskov féle szubsztitúciós elv. Liskov féle értelemben vett szemantikai
     öröklődéssel előállított típusra vonatkozó tétel. A tétel elő- utó-feltételes formája.
-    [kidolgozás](s00/2.md)
+    [kidolgozás](s00/2.md), [pdf](s00/2.pdf)
     3. Formális kontra informális definíciók, a formális szemantika alkalmazási területei, a szemantikamegadási
     módszerek áttekintése. Mesterséges nyelvek konkrét és absztrakt szintaxisa. Statikus és dinamikus szemantika.
     Attribútum-grammatikák és alkalmazásaik. Alapvető imperatív nyelvi elemek strukturális és természetes műveleti,
     illetve leíró szemantikája, hasonlóságok és különbségek. Kompozícionalitás és strukturális indukció. Rekurzív
     függvények és ciklusok leíró szemantikája, fixpont-elmélet.
-    [kidolgozás](s00/3.md)
+    [kidolgozás](s00/3.md), [pdf](s00/3.pdf)
     4. Absztrakt szintaxisfák, absztrakt kötéses fák, levezetési fák. Szintaxis, típusrendszer, operációs szemantika.
     Típusrendszer és operációs szemantika kapcsolata: haladás és típusmegőrzés tétele. Magasabbrendű függvények, Church
     típusrendszere. Let kifejezések. Szorzat és összeg típusok. Induktív típusok: Bool, természetes számok.
     Polimorfizmus (System F), absztrakt típusok. Altípus.
-    [kidolgozás](s00/4.md)
+    [kidolgozás](s00/4.md), [pdf](s00/4.pdf)
     5. Informatikai projektek specialitásai és típusai. A projekt politikai, gazdasági és jogi környezete. Vállalati
     szintű tervezés, vállalatok életciklusai. Projekt szervezet felépítése. A projekt életciklusa.
     Projekttervezés: feladat és szervezet lebontási struktúra; időelemzés, kritikus út meghatározása,
     erőforrás-ütemezés, költségvetés hozzárendelése, kritikus lánc módszer. A projektet kísérő folyamatok.
     Projektirányítási módszertanok (Prince, PMBOK CMM és CMMI). Projektirányítás emberi vonatkozásai.
-    [rövidebb kidolgozás](s01/5_short.md), [hosszabb kidolgozás](s01/5_extended.md)
+    [rövidebb kidolgozás](s01/5_short.md), [pdf](s01/5_short.pdf), [hosszabb kidolgozás](s01/5_extended.md), [pdf](s01/5_extended.pdf)
     6. Szoftverfejlesztési modellek (vízesés, spirális, evolúciós, RUP, XP, xUML). Architekturális minták és hatásuk
     a rendszer minőségi jellemzőire. Tervezési minták (GoF, valamint 3 további létrehozási minta). Konkurens minták.
     Antiminták, újratervezési minták.
-    [kidolgozás](s01/6.md)
+    [kidolgozás](s01/6.md), [pdf](s01/6.pdf)
     7. A szoftverfejlesztési modell fogalma. A komponens és komponens modell fogalma. UML kompozíciós diagram fogalma.
     A szoftverarchitektúrák fogalma, összetevői. A KobrA programfejlesztési modell alapjai. A KobrA modell környezeti
     térképe: vállalati vagy üzleti modell, használati modell, strukturális modell, viselkedési modell. Komponens
     specifikáció részei: funkcionális modell, viselkedési modell és strukturális modell.
-    [kidolgozás](s01/7.md)
+    [kidolgozás](s01/7.md), [pdf](s01/7.pdf)
     8. Komponens megvalósítása: kölcsönhatás modell, viselkedési vagy algoritmikus modell és strukturális modell.
     Komponens megtestesítés: finomítás és fordítás, a normál objektum forma (NOF) fogalma, komponensek
     újrafelhasználása, polcról levett komponensek, rendszer létrehozása komponensekből, termékcsalád fogalma.
     Rendszer létrehozása polcról levehető komponensekből. A burkoló és a híd fogalma, szerepük.
-    [kidolgozás](s01/8.md)
+    [kidolgozás](s01/8.md), [pdf](s01/8.pdf)
     9. A szoftverminőség komplex kérdésköre, termék és folyamat alapú megközelítés. A szoftverfejlesztés és a
     tesztelés kapcsolata, V modell, agilitás. A tesztelés szintjei. A tesztelés életciklusa. Teszttervezési technikák.
     Specifikáció alapú: ekvivalencia-osztályozás, határérték elemzés, döntési táblák, állapotgépek, használati eset
     tesztelés; struktúra alapú: utasítás és döntési lefedettség. Review technikák, statikus tesztelés. A tesztelés
     dokumentálása. Teszteszközök.
-    [kidolgozás](s01/9.md)
+    [kidolgozás](s01/9.md), [pdf](s01/9.pdf)
 - S2 - Programozási nyelvek
     1. Funkcionális nyelvek alapfogalmai: modell, kiértékelés, listák, curry-zés, magasabbrendű függvények, tisztaság.
     Típusok: algebrai adattípusok, típusosztályok, típuskonstruktorok, kindok. Monadikus programozás. Példák.
-    [kidolgozás](s02/1.md)
+    [kidolgozás](s02/1.md), [pdf](s02/1.pdf)
     2. Memóriakezelés: referencia- és érték-szemantika. Referenciakezelési technikák, Objektumok másolása,
     move-szemantika. Erőforrásbiztos programozás, RAII, destruktor és szemétgyűjtés. Kivételkezelés, kivételbiztos
     programozás. A konkurens programozás alapelemei Javában és C++-ban.
-    [kidolgozás](s02/2.md)
+    [kidolgozás](s02/2.md), [pdf](s02/2.pdf)
     3. Generikus programozás, típussal való paraméterezés, példányosítás és típustörlés. Absztrakt adatszerkezetek és
     algoritmusok. Konténerek és iterátorok. A C++ standard template könyvtár. Funktorok. Java annotációk. Önelemzés,
-    osztálybetöltés. Objektumszerializáció.[kidolgozás](s02/3.md)
+    osztálybetöltés. Objektumszerializáció.[kidolgozás](s02/3.md), [pdf](s02/3.pdf)
     4. A szerződésalapú programtervezés és -megvalósítás módszere, célja, szerepe. Szerződések leírását támogató nyelvi
     eszközök az Eiffel nyelvben. A szerződések formális jelentése Hoare-hármasokkal. A szerződések és a típusrendszer
     viszonya. Szerződések és objektum-orientáltság: öröklődés és felüldefiniálás. Üres referenciák. Kivételek.
-    [kidolgozás](s02/4.md)
+    [kidolgozás](s02/4.md), [pdf](s02/4.pdf)
 - S3 - Intelligens rendszerek
     1. Ismeretalapú rendszerek jellegzetes komponensei és szolgáltatásai. Az ismeretszerzés módszerei, az ismeretek
     fajtái, az ismeret-reprezentáció szintjei. Ontológia fogalma az informatikában. Az ontológia formája, tipikus elemei.
@@ -102,16 +102,16 @@ A kidolgozások az ELTE IK honlapján elérhető [hivatalos tételsor](http://ww
     vizsgálatára szolgáló eszközök (elérési, fedési fa). Petri doboz alkalmazása párhuzamos folyamatok modelljének
     felépítésében. Párhuzamos és elosztott rendszerek szemantikai leírása lehetséges formáinak (műveleti, leíró,
     axiomatikus) bemutatása egy konkrét példán keresztül.
-    [kidolgozás](s04/1.md)
+    [kidolgozás](s04/1.md), [pdf](s04/1.pdf)
     2. Többrétegű architektúra, elosztott szerveroldal. Kommunikációs eszközök: távolieljárás-hívás és üzenet alapú
     infrastruktúra (point-to-point és publish-subscribe modell). Névszolgáltatás. Enterprise JavaBeans komponensmodell,
     EJB-k fajtái. Beanek életciklusa. Dependency injection. Elosztott és globális tranzakciók.
-    [kidolgozás](s04/2.md)
+    [kidolgozás](s04/2.md), [pdf](s04/2.pdf)
     3. Többszálú programok ütemezése. A Java nyelv szinkronizációs eszközei. Jól szinkronizált programok, a
     happens-before reláció. Data race és race condition fogalma. Konkurrens használatra tervezett adatszerkezetek.
     Szinkronizáló osztályok. Szálak és feladatok. Félbeszakíthatóság. Haladási problémák (holtpont, kiéheztetés,
     livelock, priority inversion).
-    [kidolgozás](s04/3.md)
+    [kidolgozás](s04/3.md), [pdf](s04/3.pdf)
 - S5 - Szoftvertechnológia speciális területei
     1. A B helyettesítések szemantikája. A B komponensek fajtái, tulajdonságai. Interaktív bizonyító rendszer.
     Bizonyítandó állítások.
