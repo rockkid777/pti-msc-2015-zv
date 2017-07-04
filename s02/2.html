@@ -589,7 +589,7 @@ move=     <span class="co">// b = std::move(tmp)</span></code></pre></div>
 <li><em>move-only</em> típus, nem másolható
 <ul>
 <li>Copy konstruktora és copy assignment operátora le van tiltva</li>
-<li>Helyette van move konstruktora és copy assignment operátora <span class="math inline">\(\Longrightarrow\)</span> igazi ownership átmozgatás</li>
+<li>Helyette van move konstruktora és move assignment operátora <span class="math inline">\(\Longrightarrow\)</span> igazi ownership átmozgatás</li>
 </ul></li>
 <li>Template paraméterként tetszőleges deleter megadása</li>
 <li>Nincs overhead-je, ugyanannyit foglal mint egy nyers pointer
@@ -937,15 +937,18 @@ jmp_buf x;
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">class</span> Singleton   <span class="co">// Meyers Singleton, nevét Scott Meyers-ről kapta</span>
 {
 <span class="kw">public</span>:
-    Singleton&amp; getInstance()
+    Singleton(<span class="at">const</span> Singleton&amp;) = <span class="kw">delete</span>;
+    Singleton(Singleton&amp;&amp;) = <span class="kw">delete</span>;
+    Singleton&amp; <span class="kw">operator</span>=(<span class="at">const</span> Singleton&amp;) = <span class="kw">delete</span>;
+    Singleton&amp; <span class="kw">operator</span>=(Singleton&amp;&amp;) = <span class="kw">delete</span>;
+    <span class="at">static</span> Singleton&amp; getInstance() <span class="at">const</span>
     {
-        <span class="at">static</span> Singleton _instance;
-        <span class="cf">return</span> instance;
+        <span class="cf">return</span> _instance;
     }
-
 <span class="kw">private</span>:
-    Singleton _instance;
-}</code></pre></div>
+    Singleton() {}
+    <span class="at">static</span> Singleton _instance;
+};</code></pre></div>
 <h3 id="stdthread"><code>std::thread</code></h3>
 <ul>
 <li>Konstruktorába függvénynevet, függvénypointert, funktort vagy lambdát adhatunk

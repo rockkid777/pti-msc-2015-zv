@@ -365,7 +365,7 @@
 <span class="math display">\[\begin{align*}
 &amp; \langle S_1, s \rangle \Longrightarrow \langle S&#39;_1, s&#39; \rangle \\
 \cline{1-2}
-&amp; \langle S_1; S_2, s \rangle \Longrightarrow \langle S&#39;_1; S_2, s \rangle
+&amp; \langle S_1; S_2, s \rangle \Longrightarrow \langle S&#39;_1; S_2, s&#39; \rangle
 \end{align*}\]</span>
 <p>Végállapot:</p>
 <span class="math display">\[\begin{align*}
@@ -447,30 +447,30 @@ S_{SOS}[\![S]\!]s =
 <h4 id="skip-természetes-operációs-szemantikája">Skip természetes operációs szemantikája</h4>
 <span class="math display">\[\begin{align*}
 \cline{1-2}
-&amp; \langle \textbf{skip}, s \rangle \Longrightarrow s
+&amp; \langle \textbf{skip}, s \rangle \rightarrow s
 \end{align*}\]</span>
 <h4 id="értékadás-természetes-operációs-szemantikája">Értékadás természetes operációs szemantikája</h4>
 <span class="math display">\[\begin{align*}
 \cline{1-2}
-&amp; \langle x := a, s \rangle \Longrightarrow s[x \rightarrow A [\![a]\!] s]
+&amp; \langle x := a, s \rangle \rightarrow s[x \rightarrow A [\![a]\!] s]
 \end{align*}\]</span>
 <h4 id="szekvencia-természetes-operációs-szemantikája">Szekvencia természetes operációs szemantikája</h4>
 <span class="math display">\[\begin{align*}
-&amp; \langle S_1, s \rangle \Longrightarrow s&#39; \qquad 
- \langle S_2, s&#39; \rangle \Longrightarrow s&#39;&#39; \\
+&amp; \langle S_1, s \rangle \rightarrow s&#39; \qquad 
+ \langle S_2, s&#39; \rangle \rightarrow s&#39;&#39; \\
 \cline{1-2}
-&amp; \langle S_1; S_2, s \rangle \Longrightarrow \langle s&#39;&#39; \rangle
+&amp; \langle S_1; S_2, s \rangle \rightarrow \langle s&#39;&#39; \rangle
 \end{align*}\]</span>
 <h4 id="elágazás-természetes-operációs-szemantikája">Elágazás természetes operációs szemantikája</h4>
 <span class="math display">\[\begin{align*}
 &amp; \langle S_1, s \rangle \rightarrow s&#39; \\
 \cline{1-2} &amp;&amp; B[\![b]\!]s = tt \\
-&amp; \langle \textbf{if}\ b\ \textbf{then}\ S_1\ \textbf{else}\ S_2, s \rangle \Longrightarrow s&#39;
+&amp; \langle \textbf{if}\ b\ \textbf{then}\ S_1\ \textbf{else}\ S_2, s \rangle \rightarrow s&#39;
 \end{align*}\]</span>
 <span class="math display">\[\begin{align*}
 &amp; \langle S_2, s \rangle \rightarrow s&#39; \\
 \cline{1-2} &amp;&amp; B[\![b]\!]s = ff \\
-&amp; \langle \textbf{if}\ b\ \textbf{then}\ S_1\ \textbf{else}\ S_2, s \rangle \Longrightarrow s&#39;
+&amp; \langle \textbf{if}\ b\ \textbf{then}\ S_1\ \textbf{else}\ S_2, s \rangle \rightarrow s&#39;
 \end{align*}\]</span>
 <h4 id="ciklus-természetes-operációs-szemantikája">Ciklus természetes operációs szemantikája</h4>
 <span class="math display">\[\begin{align*}
@@ -523,7 +523,7 @@ S_{ds}[\![\textbf{while}\ b\ \textbf{do}\ S]\!] = FIX\ F\ \\
 <li>Minden szintaktikai elemhez megadunk egy függvényklózt</li>
 <li>Összetett kifejezések jelentése <span class="math inline">\(\Longrightarrow\)</span> részkifejezések jelentése alapján</li>
 <li>Denotációs szemantikában mindig a részkifejezéseket értékeljük ki először és az alapján a teljes kifejezést</li>
-<li>Például aritmetikai negációt sokszor elhibázzák. Igazából <span class="math display">\[A[\![-a]\!]s = A[\![0 - a]\!]s\]</span></li>
+<li>Például aritmetikai negációt sokszor elhibázzák (<span class="math inline">\(A[\![-a]\!]s = A[\![0 - a]\!]s\)</span>). Helyesen: <span class="math display">\[A[\![-a]\!]s = 0 - A[\![a]\!]s\]</span></li>
 <li>Kompozicionalitás kell a strukturális indukciós bizonyításokhoz</li>
 </ul>
 <h3 id="mi-bizonyítható-a-strukturális-indukcióval">Mi bizonyítható a strukturális indukcióval?</h3>
