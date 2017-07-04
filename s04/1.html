@@ -29,13 +29,13 @@
 <li>v: R → <span class="math inline">\(N_0\)</span> - az élek súlyait megadó függvény</li>
 <li>A helyek kezdeti súlyozását (kezdőállapot) az <span class="math inline">\(M_0\)</span> adja meg
 <ul>
-<li><span class="math inline">\(M_0\)</span>: P → <span class="math inline">\(N_0\)</span></li>
+<li><span class="math inline">\(M_0\)</span>: P → <span class="math inline">\(\mathbb{N}_0\)</span></li>
 <li>A helyek súlyozását (állapot) általában rendezett n-esként adjuk meg, pl.: <span class="math inline">\(M_0\)</span> = (1, 0, …, 2)</li>
 </ul></li>
 </ul>
 <p><strong>Normális háló:</strong> minden él súlya 1.</p>
 <p><strong>Kapacitás korlát:</strong></p>
-<p>A háló egyes helyeinek súlya nem haladhat meg egy előre megadott értéket: <span class="math inline">\(k: P \rightarrow N_0\)</span></p>
+<p>A háló egyes helyeinek súlya nem haladhat meg egy előre megadott értéket: <span class="math inline">\(k: P \rightarrow \mathbb{N}_0\)</span></p>
 <ul>
 <li>Szigorú működési szabály: a kapacitáskorlát túllépése esetén az átmenet nem megengedett</li>
 <li>Gyenge működési szabály: a felesleg elnyelődik</li>
@@ -56,13 +56,13 @@ vagyis az átmenetbe vezető élek súlyával csökken a kiinduló helyek súlya
 <h2 id="viselkedési-tulajdonságok">Viselkedési tulajdonságok</h2>
 <p><strong>Jelölések:</strong></p>
 <ul>
-<li><span class="math inline">\(M_0\)</span> [<span class="math inline">\(\varsigma\)</span>&gt; <span class="math inline">\(M_n\)</span>, ahol <span class="math inline">\(\varsigma\)</span> = <span class="math inline">\(t_1, t_2, .., t_n\)</span> akciósorozat<br />
-<span class="math inline">\(M_0 [t_1&gt; M_1 [t_2&gt; M_2 ... M_{n-1} [t_n&gt; M_n\)</span></li>
+<li><span class="math inline">\(\varsigma\)</span> = <span class="math inline">\(t_1, t_2, .., t_n\)</span> akciósorozat: a háló által végrehajtott átmenetek sorozata</li>
+<li><span class="math inline">\(M_0\)</span> [<span class="math inline">\(\varsigma\)</span>&gt; <span class="math inline">\(M_n\)</span> : az <span class="math inline">\(M_0\)</span> súlyozásból a <span class="math inline">\(\varsigma\)</span> akciósorozattal az <span class="math inline">\(M_n\)</span> súlyozásba jutunk. pl.: <span class="math inline">\(M_0 [t_1&gt; M_1 [t_2&gt; M_2 ... M_{n-1} [t_n&gt; M_n\)</span></li>
 <li><span class="math inline">\(L(N,M_0):\)</span> azon akciósorozatok halmaza, amely az N-ben elérhető az <span class="math inline">\(M_0\)</span> súlyozásból</li>
 <li>R(N, <span class="math inline">\(M_0\)</span>) : N hálóban az <span class="math inline">\(M_0\)</span> kezdő súlyozásból elérhető súlyozások halmaza</li>
 <li><span class="math inline">\(\sharp\)</span>(<span class="math inline">\(\varsigma\)</span>, t): <span class="math inline">\(\varsigma\)</span>-ban t átmenet előfordulásának száma</li>
 </ul>
-<p><strong>K – korlátosság (k <span class="math inline">\(\in\)</span> N):</strong></p>
+<p><strong>K – korlátosság (k <span class="math inline">\(\in \mathbb{N}\)</span>):</strong></p>
 <p>Az (N, <span class="math inline">\(M_0\)</span>) Petri háló k - korlátos, ha <span class="math inline">\(\forall\)</span>M <span class="math inline">\(\in\)</span> R(N,<span class="math inline">\(M_0\)</span>) : <span class="math inline">\(\forall\)</span>p <span class="math inline">\(\in\)</span> P : M(p) <span class="math inline">\(\leq\)</span> k</p>
 <p><strong>Biztonságos:</strong></p>
 <p>Egy Petri háló biztonságos, ha 1 - korlátos</p>
@@ -73,7 +73,7 @@ vagyis az átmenetbe vezető élek súlyával csökken a kiinduló helyek súlya
 (Nem lehet egyszer se végrehajtani az átmenetet)</li>
 <li><span class="math inline">\(L_1\)</span> szinten (aktivizálható): <span class="math inline">\(\exists\)</span><span class="math inline">\(\varsigma\)</span> <span class="math inline">\(\in\)</span> L(N, <span class="math inline">\(M_0\)</span>) : t <span class="math inline">\(\in\)</span> <span class="math inline">\(\varsigma\)</span><br />
 (Végrehajtható az átmenet)</li>
-<li><span class="math inline">\(L_2\)</span> szinten: <span class="math inline">\(\forall\)</span>k <span class="math inline">\(\in\)</span> N : <span class="math inline">\(\exists\)</span><span class="math inline">\(\varsigma\)</span> <span class="math inline">\(\in\)</span> L(N,<span class="math inline">\(M_0\)</span>) : #(<span class="math inline">\(\varsigma\)</span>, t) <span class="math inline">\(\geq\)</span> k<br />
+<li><span class="math inline">\(L_2\)</span> szinten: <span class="math inline">\(\forall\)</span>k <span class="math inline">\(\in \mathbb{N}\)</span> : <span class="math inline">\(\exists\)</span><span class="math inline">\(\varsigma\)</span> <span class="math inline">\(\in\)</span> L(N,<span class="math inline">\(M_0\)</span>) : #(<span class="math inline">\(\varsigma\)</span>, t) <span class="math inline">\(\geq\)</span> k<br />
 (Bármely korlátnál többször végrehajtható az átmenet)</li>
 <li><span class="math inline">\(L_3\)</span> szinten: <span class="math inline">\(\exists\)</span><span class="math inline">\(\varsigma\)</span> <span class="math inline">\(\in\)</span> L(N, <span class="math inline">\(M_0\)</span>) : #(<span class="math inline">\(\varsigma\)</span>, t) = <span class="math inline">\(\infty\)</span><br />
 (Van olyan végrehajtás, melyben tetszőlegesen sokszor végrehajtható az átmenet)</li>
@@ -83,7 +83,7 @@ vagyis az átmenetbe vezető élek súlyával csökken a kiinduló helyek súlya
 <p>Szigorúan <span class="math inline">\(L_k\)</span> eleven: <span class="math inline">\(L_k\)</span> eleven, de nem <span class="math inline">\(L_{k+1}\)</span></p>
 <p>Petri háló <span class="math inline">\(L_k\)</span> eleven: (N, <span class="math inline">\(M_0\)</span>) <span class="math inline">\(\forall\)</span>t <span class="math inline">\(\in\)</span> T : t <span class="math inline">\(L_k\)</span> eleven</p>
 <p><strong>Lefedhetőség:</strong></p>
-<p>(N, <span class="math inline">\(M_0\)</span>) Petri háló esetén az M súlyozás lefedhető, ha <span class="math inline">\(\exists\)</span>M' <span class="math inline">\(\in\)</span> R(<span class="math inline">\(M_0\)</span>) : <span class="math inline">\(\exists\)</span>p <span class="math inline">\(\in\)</span> P : M'(p) <span class="math inline">\(\geq\)</span> M(p)</p>
+<p>(N, <span class="math inline">\(M_0\)</span>) Petri háló esetén az M súlyozás lefedhető, ha <span class="math inline">\(\exists\)</span>M' <span class="math inline">\(\in\)</span> R(<span class="math inline">\(M_0\)</span>) : <span class="math inline">\(\forall\)</span>p <span class="math inline">\(\in\)</span> P : M'(p) <span class="math inline">\(\geq\)</span> M(p)</p>
 <h2 id="petri-hálók-vizsgálata">Petri hálók vizsgálata</h2>
 <p><strong>Elérhetőségi fa:</strong></p>
 <p>(N, <span class="math inline">\(M_0\)</span>) Petri háló elérhetőségi (végtelen esetben fedési) fája, olyan gráf, amelyben a csúcsok súlyozásokkal vannak címkézve, az élek pedig átmenetekkel.</p>
@@ -92,7 +92,7 @@ vagyis az átmenetbe vezető élek súlyával csökken a kiinduló helyek súlya
 <li>új := {<span class="math inline">\(M_0\)</span>}</li>
 <li>ciklus, amíg új <span class="math inline">\(\not=\)</span> <span class="math inline">\(\oslash\)</span>
 <ol style="list-style-type: lower-alpha">
-<li>M :<span class="math inline">\(\in\)</span> új, új := új  {M}</li>
+<li>M :<span class="math inline">\(\in\)</span> új, új := új <span class="math inline">\(\setminus\)</span> {M}</li>
 <li>ha M-ig a gyökértől létezik már M címkéjű csúcs <span class="math inline">\(\Rightarrow\)</span> M régi</li>
 <li>ha M-ben nincs aktivizálható átmenet <span class="math inline">\(\Rightarrow\)</span> M zsákutca</li>
 <li>M-ben <span class="math inline">\(\forall\)</span>t aktivizálható átmenetre kiszámoljuk MtM'-t
@@ -112,7 +112,7 @@ vagyis az átmenetbe vezető élek súlyával csökken a kiinduló helyek súlya
 <p><strong>Állapotgép:</strong> <span class="math inline">\(\forall\)</span>t <span class="math inline">\(\in\)</span> T: |•t| = |t•| = 1</p>
 <p><strong>Jelzett háló:</strong> <span class="math inline">\(\forall\)</span>p <span class="math inline">\(\in\)</span> P: |•p| = |p•| = 1</p>
 <h2 id="petri-dobozok">Petri dobozok</h2>
-<p>A Lab halmaz események egy előre megadott halmaza.</p>
+<p>Lab - események egy előre megadott halmaza.</p>
 <p><strong>Átcímkézés:</strong></p>
 <p><span class="math inline">\(\rho\)</span> átcímkézés egy reláció:</p>
 <p><span class="math inline">\(\rho\)</span> <span class="math inline">\(\subseteq\)</span> (mult(Lab)) × Lab, úgy, hogy (<span class="math inline">\(\oslash\)</span>, <span class="math inline">\(\alpha\)</span>) <span class="math inline">\(\in\)</span> <span class="math inline">\(\rho\)</span> akkor és csak akkor, ha <span class="math inline">\(\rho\)</span> = {(<span class="math inline">\(\oslash\)</span>, <span class="math inline">\(\alpha\)</span>)}.</p>
@@ -132,7 +132,7 @@ vagyis az átmenetbe vezető élek súlyával csökken a kiinduló helyek súlya
 </ul></li>
 <li><span class="math inline">\(\forall\)</span>t <span class="math inline">\(\in\)</span> T: <span class="math inline">\(\lambda\)</span>(t) egy átcímkézés,</li>
 </ul></li>
-<li>M a súlyozás (M: S × <span class="math inline">\(N_0\)</span>)</li>
+<li>M a súlyozás (M: S × <span class="math inline">\(\mathbb{N}_0\)</span>)</li>
 </ul>
 <div class="figure">
 <img src="img/petri_doboz.png" alt="Címkézett Petri háló" />
@@ -140,7 +140,7 @@ vagyis az átmenetbe vezető élek súlyával csökken a kiinduló helyek súlya
 </div>
 <p><strong>Lépés:</strong></p>
 <p>Átmenetek egy véges zsákja U <span class="math inline">\(\in\)</span> mult(T), (egy lépés) engedélyezett <span class="math inline">\(\Sigma\)</span>-ban, ha minden helyen van elég súly ahhoz, hogy szimultán végre tudjuk hajtani az összes U-beli átmenetet.</p>
-<p>Megjegyzés: Egy lépés nem kell, hogy maximális legyen, például {<span class="math inline">\(t0\)</span>} is egy lépése, illetve {<span class="math inline">\(t_0\)</span>}{<span class="math inline">\(t_1\)</span>}{<span class="math inline">\(t_2\)</span>} {<span class="math inline">\(t_2\)</span>} és {<span class="math inline">\(t_0\)</span>,<span class="math inline">\(t_2\)</span>}{<span class="math inline">\(t_1\)</span>}{<span class="math inline">\(t_2\)</span>} is egy lépéssorozata <span class="math inline">\(\Sigma_0\)</span>-nak.</p>
+<p>Megjegyzés: Egy lépés nem kell, hogy maximális legyen, például {<span class="math inline">\(t_0\)</span>} is egy lépése, illetve {<span class="math inline">\(t_0\)</span>}{<span class="math inline">\(t_1\)</span>}{<span class="math inline">\(t_2\)</span>} {<span class="math inline">\(t_2\)</span>} és {<span class="math inline">\(t_0\)</span>,<span class="math inline">\(t_2\)</span>}{<span class="math inline">\(t_1\)</span>}{<span class="math inline">\(t_2\)</span>} is egy lépéssorozata <span class="math inline">\(\Sigma_0\)</span>-nak.</p>
 <p><strong>T-megszorítás:</strong> <span class="math inline">\(\forall\)</span>t <span class="math inline">\(\in\)</span> T :• t <span class="math inline">\(\not=\)</span> <span class="math inline">\(\oslash\)</span> <span class="math inline">\(\not=\)</span> t•</p>
 <p><strong>ex-megszorítás:</strong> létezik legalább egy belépési és egy kilépési hely.</p>
 <p><strong>e-irányított háló:</strong> <span class="math inline">\(\Sigma\)</span> e-irányított, ha a belépési helyekhez nem vezet él.</p>
@@ -158,8 +158,13 @@ vagyis az átmenetbe vezető élek súlyával csökken a kiinduló helyek súlya
 <li>Szekvenciális kompozíció: <span class="math inline">\(\Omega_{;}\)</span> szekvenciálisan összekapcsolja <span class="math inline">\(\Sigma_1\)</span>-et és <span class="math inline">\(\Sigma_2\)</span>-t.</li>
 </ul>
 <h2 id="párhuzamos-és-elosztott-rendszerek-szemantikai-leírásának-lehetséges-formái">Párhuzamos és elosztott rendszerek szemantikai leírásának lehetséges formái</h2>
-<p><strong>Műveleti szemantika:</strong></p>
+<p><strong>Műveleti szemantika (cimkézett állapotátmentrendszer):</strong></p>
 <p>A műveleti szemantika azt mondja meg, hogy milyen lépéseket hajt végre a program, azonban helyesség bizonyítására nem alkalmas.</p>
+<p>Nyelvtan:</p>
+<p><span class="math display">\[P ::= \text{nil} \ | \ a \ p \ | \ a+p \qquad a,p\in A \text{ - események}\]</span> + : nem determinisztikus választás (kb. szelektív várakozás)</p>
+<p><em>Megjegyzés: vannak levezetési szabályok, de eléggé egyértelműek.</em></p>
+<p>Környezet: <span class="math inline">\((p,e) \in P \times P\)</span>: <span class="math inline">\(e || p\)</span> - az <span class="math inline">\(e\)</span> a <span class="math inline">\(p\)</span> környezete</p>
+<p><span class="math inline">\(p\)</span> megfelel az <span class="math inline">\(e\)</span> környezetnek, ha minden esetben: Amikor elakad a lebontás, akkor a környezet =nil kell legyen.</p>
 <p>Példák:</p>
 <ol style="list-style-type: decimal">
 <li><p><em>a b nil + b c nil || a(b nil + c nil) <span class="math inline">\(\xrightarrow{\text{a}}\)</span><br />
