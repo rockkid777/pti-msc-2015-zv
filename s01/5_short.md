@@ -25,9 +25,9 @@ Tartalom
 
 ### Alapfogalmak
 
-**Projekt**: 
+**Projekt**:
 
-* A projekt a kitűzött CÉL érdekében kölcsönösen egymásra ható tevékenységek csoportja
+* A projekt a kitűzött CÉL érdekében végzett, kölcsönösen egymásra ható tevékenységek csoportja
 * Magába foglal idő-, költség-, erőforrás-, terjedelem-, és minőségtényezőket.
 
 ### Informatikai projektek specialitásai
@@ -44,33 +44,33 @@ Tartalom
 
 ### Informatikai projektek típusai
 
-* Szoftver(termék) fejlesztési projekt
+* Szoftver(termék)fejlesztési projekt
 * Alkalmazásfejlesztési projekt
 * Alkalmazásintegrációs projekt
 * Rendszerintegrációs projekt
 * Bevezetési projekt
-* Infrastruktúra fejlesztési projekt
+* Infrastruktúrafejlesztési projekt
 * "Tanulmánykészítési" projekt (előkészítés, felmérés, bevizsgálás)
 * Tesztelési projekt
 
-**DE** leginkább ezeknek a keverékeiből áll össze egy informatikai projekt
+**DE** leginkább ezeknek a keverékeiből áll össze egy informatikai projekt.
 
 2.A projekt politikai, gazdasági és jogi környezete <a name="chapter02"></a>
 ---------------------------------------
 
 ### Politikai környezet
 
-* A vállalatokra közvetett hatással van a politikai környezet amelyben a vállalat él
+* A vállalatokra közvetett hatással van a politikai környezet, amelyben a vállalat él
 * A politikai környezet tényezői:
     * politikai stabilitás
-    * a politika beleszól a gazdaságba
+    * a politika beleszól a gazdaságba (politikai ráhatás)
     * a hatalmi ágak és azok együttműködése
 
 ### Gazdasági környezet:
 
 * Már közvetlenül befolyásolja a vállalat életét
-* Világgazdasági helyzet, haza gazdasági helyzet, gazdasági növekedés, infláció, beruházási kedv, koncepció
-* A munkanélküliség rossz, de rövid távon a vállalatok hasznot húzhatnak belőle, mert könnyebb munkaerőt találni
+* Világgazdasági helyzet, hazai gazdasági helyzet, gazdasági növekedés, infláció, beruházási kedv, koncepció
+* A munkanélküliség rossz, de rövidtávon a vállalatok hasznot húzhatnak belőle, mert könnyebb munkaerőt találni
 
 * Gazdasági szempontból egy vállalatot a SWOT analízis segítségével lehet elemezni. Ennek négy eleme:
 
@@ -78,16 +78,16 @@ Tartalom
 
         (pl. jó termék, projekt struktúra, üzleti kapcsolatok, stb.)
 
-    * Gyengesége(weaknesses): Negatív belső vállalati tényezők, amik a vállalkozás hátrányai és javíthatunk rajta
+    * Gyengeségek (weaknesses): Negatív belső vállalati tényezők, amik a vállalkozás hátrányai és javíthatunk rajta
 
         (pl. kevés erőforrás, nem ismert a vállalat, kevés projektvezető, stb.)
 
-    * Lehetőségek (opportunities): Pozitív külső politikai- vagy gazdasági tényezők,
+    * Lehetőségek (opportunities): Pozitív külső politikai vagy gazdasági tényezők,
 amiket nem tudunk befolyásolni, de kihasználhatjuk előnyként
 
         (pl. erős hazai/nemzetközi piaci pozíció, EU-s csatlakozás, stb.)
 
-    * Veszélyek (threats): Negatív külső politikai- vagy gazdasági tényezők, amiket nem tudunk befolyásolni,
+    * Veszélyek (threats): Negatív külső politikai vagy gazdasági tényezők, amiket nem tudunk befolyásolni,
 de fel kell készülnünk rájuk
 
         (pl. csökkenő gazdasági növekedés, erős konkurencia, stb.)
@@ -101,7 +101,7 @@ de fel kell készülnünk rájuk
 ---------------------------------------
 
 * A vállalati szintű tervezés egyik legfontosabb kérdése a szervezeti felépítés
-* Ezek a szervezetek lehetnek 
+* Ezek a szervezetek lehetnek
     + formálisak, melyek tulajdonosi és/vagy vezetői döntések alapján jönnek létre
 	+ informálisak, melyek spontán emberi kapcsolatok alapján jönnek létre
 * Egy vállalat életében mindkét fajta szervezet fontos
@@ -124,15 +124,15 @@ de fel kell készülnünk rájuk
 
     _Hátrányok_: Nincs projekttulajdonos, gyenge kommunikáció, rugalmatlan, gyenge erőforrás koordináció
 
-* Projekt csapat
+* Projektcsapat
 
     ![Projekt csapat](img/projekt_csapat.png){ width="350px" }
 
-    _Előnyök_: Széles projektvezetői hatáskör, széles szakértelmű csapat, egyértelmű erőforrás hozzárendelés
+    _Előnyök_: Széles projektvezetői hatáskör, széles szakértelmű csapat, egyértelmű erőforrás-hozzárendelés
 
     _Hátrányok_: Szakértelem öszpontosítása elvész, csapatok közötti interaktivitás hiánya
 
-A funkcionális szervezet és projekt csapat felépítésű szervezetek között léteznek még ún. mátrix felépítések, melyek
+A funkcionális szervezet és projektcsapat felépítésű szervezetek között léteznek még ún. mátrix felépítésűek, melyek
 egyfajta átmenetet képeznek a kettő között.
 
 ### Vállalatok életútja
@@ -174,21 +174,21 @@ egyfajta átmenetet képeznek a kettő között.
 
 A projekt életciklusát hat fázisra lehet osztani:
 
-1. Projekt előkészítés
+1. Projekt előkészítése
 2. Projektindítás
 3. Projekttervezés
-4. Projekt követés
+4. Projektkövetés
 5. Projektzárás
 6. Projekt utóélete
 
-### Projekt előkészítés
+### Projekt előkészítése
 
 * A projekt előkészítése az **ajánlattétellel** kezdődik
     + ekkor dől el, hogy az ügyfél elfogadja-e az ajánlatot
-	+ ekkor került a projektvezető kijelölésre
-* Ezek után a **Projekt definíciós dokumentum** (Projektterv) készül el
+	+ ekkor kerül a projektvezető kijelölésre
+* Ezek után a **Projektdefiníciós dokumentum** (Projektterv) készül el
     + élő dokumentum
-	+ a projekt célja, a feladatok meghatározása, a szerepek, az időkeretek, stb lesznek benne meghatározva
+	+ a projekt célja, a feladatok meghatározása, a szerepek, az időkeretek, stb. lesznek benne meghatározva
 
 ### Projektindítás
 
@@ -205,7 +205,7 @@ A projekt életciklusát hat fázisra lehet osztani:
 
 * A projekt követés a tervezés és a projektzárás közötti időtartam alatt a projekt megfigyelése
 * Ekkor fut a tényleges projekt és készül a termék
-* Információgyűjtés, adatösszeítés, elemzés (pl.: állapotjelentés, teljesítmény mérés, stb.) és még további különböző 
+* Információgyűjtés, adatösszeítés, elemzés (pl.: állapotjelentés, teljesítmény mérés, stb.) és még további különböző
 tevékenységek a projekt sikeres zárásának érdekében
 
 ### Projektzárás
@@ -218,7 +218,7 @@ tevékenységek a projekt sikeres zárásának érdekében
         + műszaki okokból
         + terjedelem jelentős megváltozása miatt
         + időzítési okokból
-        + költségvetési okokból, stb
+        + költségvetési okokból, stb.
 
 * Egy projekt zárása után rendszerint keletkezik egy projektzáró dokumentum
     + a projekt adatai
@@ -249,9 +249,9 @@ tevékenységek a projekt sikeres zárásának érdekében
     * **MIKOR** csináljuk meg?
     * Milyen **KÖLTSÉGGEL** csináljuk meg?
 
-* Az első két kérdésre a válaszhoz 
-    + a szervezet lebontási struktúrára (OBS - Organizational Breakdown Structure) és
-    + a feladat lebontási struktúrát (WBS - Work Breakdown Structure) van szükség
+* Az első két kérdésre a válaszhoz
+    + a szervezetlebontási struktúrára (OBS - Organizational Breakdown Structure) és
+    + a feladatlebontási struktúrára (WBS - Work Breakdown Structure) van szükség
 
 * Ezek után az OBS-t és WBS-t összevetve kiadhatjuk a feladatokat és meghatározhatjuk az felelősségeket
 
@@ -270,36 +270,36 @@ tevékenység legkorábbi kezdése késést szenvedne
 #### Időterv
 
 * Az időterv a fentiekben leírtaknak megfelelő háló
-* Segítéségével meghatározhatjuk az _időjátékot_ és a _Kritikus utat_
+* Segítéségével meghatározhatjuk az _időjátékot_ és a _kritikus utat_
 
-* Az időterv értékeinek meghatározásához 
+* Az időterv értékeinek meghatározásához
     + először előrefelé haladva meghatározzuk a tevékenységek legkorábbi kezdéseit és befejezéseit
 	+ majd visszafele haladva a legkésőbbi kezdéseket és befejezéseket, valamint a teljes időjátékot
 
-* A kritikus útat azok a tevékenységek határozzák meg, melyek teljes időjátéka nulla.
+* A kritikus utat azok a tevékenységek határozzák meg, melyek teljes időjátéka nulla.
 
 ![Időterv](img/idoterv4.png){ width="350px" }
 
 ### Erőforrás-ütemezés <a name="section06_04"></a>
 
-* Ezzel a módszerrel lehetőség nyílik az erőforrás-túlterhelés enyhítésére, megszűntetésére
-* Az erőforrás-túlterhelés megoldására többféle lehetősg létezik:
-    * az időjáték kihasználásával a nem kritikus tevékenységeket időben eltolva.
-    * további erőforrás bevonásával
-    * erőforrás átcsoportosításával
-    * túlórával
-    * határidő eltolással
+* Ezzel a módszerrel lehetőség nyílik az erőforrás-túlterhelés enyhítésére, megszüntetésére
+* Az erőforrás-túlterhelés megoldására többféle lehetőség létezik:
+    * az időjáték kihasználásával a nem kritikus tevékenységek időbeli eltolása
+    * további erőforrások bevonása
+    * erőforrás átcsoportosítása
+    * túlórák
+    * határidő eltolása
 
 ### Költségvetés hozzárendelése <a name="section06_05"></a>
 
 * A projekttervezés alatt a költségek megtervezése is rendkívül fontos, melynek elemei a következők:
-    * Áru költség
+    * Áruköltség
     * Alvállalkozói költség
-    * Élőmunka költség
+    * Élőmunka költsége
     * Egyéb
         + utazás
-        + oktaktás
-        + helyiség bérlet, stb
+        + oktatás
+        + helyiségbérlet, stb.
 
 ### Kritikus lánc módszer <a name="section06_06"></a>
 
@@ -331,7 +331,7 @@ A követelmények priorizálására egy jó módszer a MoSCoW szabály:
 
 * A változáskezelés nem létezik követelménykezelés és konfigurációkezelés nélkül
     + a követelménykezelés kell, hogy tudjunk mihez viszonyítani
-	+ a konfigurációkezelés ahhoz kell, hogy követni tudjuk min változtattunk eddig
+	+ a konfigurációkezelés ahhoz kell, hogy követni tudjuk, min változtattunk eddig
 
 A változáskezelésnek több célja van:
 
@@ -343,10 +343,10 @@ A változáskezelésnek több célja van:
 
 * **kockázat**: annak a valószínűsége, hogy előre nem látható esemény következik be
 
-* Az IT projekek kulcskockázatai:
+* Az IT projektek kulcskockázatai:
 	* feladat méretének növekedése
 	* hiba az eredeti becslésben
-	* résztvevő (kulcs) munkatárs távozása
+	* résztvevő (kulcs)munkatárs távozása
 	* érdekelt felek közötti egyetértés felborulása
 
 * A kockázatok súlyosságát jellemzőik alapján tudjuk meghatározni:
@@ -367,8 +367,7 @@ előírásokat, ajánlásokat nyújtanak
 
 ### PMBOK
 
-* A PMBOK (Project Management Body of Knowledge) teljes gyűjteménye a folyamatok, legjobb technikáknak, terminológiáknak,
-és szabályoknak, melyek a projektmenedzsment iparban sztenderdként elfogadottak.
+* A PMBOK (Project Management Body of Knowledge) teljes gyűjteménye a folyamatok, legjobb technikáknak, terminológiáknak, és szabályoknak, melyek a projektmenedzsment-iparban sztenderdként elfogadottak.
 
 ### CMM, CMMI
 
@@ -382,32 +381,32 @@ teljesítménybeli növekedést lehessen elérni
 
 * A személyiségi modellek megpróbálják bizonyos személyiségi jegyek alapján csoportosítani az embereket
 * Segítenek a csapat tagjainak kiválasztásában, motiválásában, a megfelelő kommunikáció kialakításában
-* Óvatosan kell azonban kezelni, nem szabad embereket beskatulyázni
+* Óvatosan kell azonban kezelni, nem szabad az embereket beskatulyázni
 
 #### Myers-Biggs Type Indicator (MBTI)
 
-* Négy féle dimenzió mentén megy a jellemzés:
+* Négyféle dimenzió mentén megy a jellemzés:
 
-    1. Extrovertált - Introvertált
-    2. Érzékelő - Intuitív
-    3. Gondolkodó - Érző
-    4. Követő - Rögtönző
+    1. Extrovertált - Introvertált (E/I)
+    2. Érzékelő - Intuitív (S/N)
+    3. Gondolkodó - Érző (T/F)
+    4. Követő - Rögtönző (J/P)
 
 ### Csapatszerepek
 
-* Töbféle csapatszerepet definiálhatunk, melyeket a személyiségi jegyek alapján kategorizálunk
+* Többféle csapatszerepet definiálhatunk, melyeket a személyiségi jegyek alapján kategorizálunk
 
 	* Feladatközpontú szerep
 	    + Formáló: szerepek, határok, felelősségi körök kialakítása
-	    + Megvalósító: tervek, ötletek kipróbálása, megvalósítása,
-	    + Befejező: végrehajtási hibáktól való védelem, célok, határidők, múlasztások
+	    + Megvalósító: tervek, ötletek kipróbálása, megvalósítása
+	    + Befejező: végrehajtási hibáktól való védelem, célok, határidők, mulasztások
 	* Emberközpontú szerep
 	    + Koordinátor: csoport céljai, delegáció, döntéshozatal
-	    + Csapatmunkás: diplomatikus, csapat tagok közötti interakció, csapatszellem
+	    + Csapatmunkás: diplomatikus, csapattagok közötti interakció, csapatszellem
 	    + Lehetőségfelkutató: csoporton kívüli lehetőségek, ötletek, fejlemények
 	* Szellemi szerep
-	    + Ötletadó: Új ötletek, konstruktív, innovatív, 
-	    + Megfigyelő értékelő: problémaelemzés, helyzet, lehetőség, ötlet értékelés
+	    + Ötletadó: Új ötletek, konstruktív, innovatív,
+	    + Megfigyelő, értékelő: problémaelemzés, helyzet-, lehetőség-, ötletértékelés
 	    + Specialista: speciális szakértelem, csak bizonyos témák, néha hasznos, de akkor nagyon
 
 ### Vezetési szerepek, stílusok
@@ -416,39 +415,39 @@ teljesítménybeli növekedést lehessen elérni
 	* figyelem az emberekre
 	* figyelem a termelésre
 
-* Ezek alapján pedig 5 fajta csoprotot lehet alkotni, ahogy az ábrán is látható:
+* Ezek alapján pedig 5 fajta csoportot lehet alkotni, ahogy az ábrán is látható:
 
 ![Vezetési szerepek](img/vezetesi_szerepek.png){ width="350px" }
 
 * 1/1 - elszegényedett
-    
-    lehetetlen hatékony termlés, az emberek lusták, minimumot teszi meg, főnök mőgé bújik
+
+    lehetetlen a hatékony termelés, az emberek lusták, a minimumot teszik meg, főnök mőgé bújnak
 * 1/9 - klubmenedszer
-    
-    barátság a lényeg, a termelés mellékes, barátságos légkör, emberi szükségletek
+
+    a barátság a lényeg, a termelés mellékes, barátságos légkör, emberi szükségletek
 * 9/1 - zsarnok
-    
+
     az emberek gépek, a legtöbbet kell kihozni belőlük, munka elvégzése az erőforrás árán is
 * 5/5 - középutas
-    
-    első a termelés, de a hangulat is fontos, folyamatos engyensúlyozás,
+
+    első a termelés, de a hangulat is fontos, folyamatos egyensúlyozás,
     mindkettőt éppen az elvárásoknak megfelelően, könnyen kiég
-* 9/9 - csapat menedzser
-    
-    hatékony munka előfeltétele a az emberi harmónia, bizalom, tiszteleten alapuló kapcsolat
+* 9/9 - csapatmenedzser
+
+    a hatékony munka előfeltétele az emberi harmónián, bizalmon, tiszteleten alapuló kapcsolat
 
 * Egyik sem recept mindenre (válsághelyzet vs. 9/9)
 
 ### Ösztönzés, ösztönzési elméletek
 
 * Az ösztönzésre meglehetősen sok elmélet és modell létezik
-* Az ösztönzés folyamata, egy folytonos, körkörös folyamat a _kielégítetlen igény_, a _valamilyen célra irányuló 
+* Az ösztönzés folyamata, egy folytonos, körkörös folyamat a _kielégítetlen igény_, a _valamilyen célra irányuló
 tevékenység_, és az _igény kielégítése_ között
-* Az embereknek a pénzen és a munkafeltételen kívül más igényeik is vannak, pl.
+* Az embereknek a pénzen és a munkafeltételeken kívül más igényeik is vannak, pl.
     + _elismerés_
 	+ _valahova tartozás_
- 
-* Marslow sorrendet állított fel az egyéb szükségletek között:
+
+* Maslow sorrendet állított fel az egyéb szükségletek között:
 
     1. élettani igény
     2. biztonsági igény
